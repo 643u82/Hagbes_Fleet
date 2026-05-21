@@ -1,5 +1,5 @@
 {
-    'name': 'Hagbes Fleet Management',
+    'name': 'Hagbes Fleet Managements',
     'version': '18.0.1.1.0',
     'category': 'Fleet',
     'summary': 'Vehicle fleet management with assignment and maintenance tracking',
