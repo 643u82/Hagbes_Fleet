@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- Tree View: No Create, No Edit -->
+        <record id="view_lost_sale_tree" model="ir.ui.view">
+            <field name="name">lost.sale.tree</field>
+            <field name="model">lost.sale</field>
+            <field name="arch" type="xml">
+                <list string="Lost Sales" create="0" edit="0">
+                    <field name="date"/>
+                    <field name="product_id"/>
+                    <field name="customer_id"/>
+                    <field name="quantity_requested"/>
+                    <field name="quantity_available"/>
+                    <field name="quantity_lost"/>
+                   
+                    <field name="reason"/>
+                </list>
+            </field>
+        </record>
+
+         <!-- Form View: Enhanced Read-Only -->
+        <record id="view_lost_sale_form" model="ir.ui.view">
+            <field name="name">lost.sale.form</field>
+            <field name="model">lost.sale</field>
+            <field name="arch" type="xml">
+                <form string="Lost Sale Record" edit="0">
+                    <header>
+                        <h2>⚠️ Lost Sale Summary</h2>
+                        <p class="text-muted">Recorded on <field name="date" widget="date"/></p>
+                    </header>
+
+                    <sheet>
+                        <!-- Sales Order Context -->
+                        <group string="Order Context" col="2">
+                            <field name="customer_id" string="Customer"/>
+                            <field name="reason" string="Reason for Loss"/>
+                        </group>
+
+                        <!-- Product & Stock Details -->
+                        <group string="Product and Stock Details" col="4">
+                            <field name="product_id" string="Product"/>
+                            <field name="product_category_id" string="Category"/>
+                            <field name="quantity_requested" string="Qty Requested" widget="float"/>
+                            <field name="quantity_available" string="Qty Available" widget="float"/>
+                            <field name="quantity_lost" string="Qty Lost" widget="float"/>
+                        </group>
+
+                        <!-- Location Info -->
+                        <group string="Location and Organization" col="4">
+                            <field name="branch_id" string="Branch"/>
+                            <field name="warehouse_id" string="Warehouse"/>
+                            <field name="company_id" string="Company"/>
+                        </group>
+
+                        <!-- Alternative Availability -->
+                        <group string="Other Branch Availability" col="4">
+                            <field name="branch_stock_info" string="Available Elsewhere" widget="text" readonly="1">
+                                <div class="alert alert-info" style="white-space: pre-wrap; font-family: monospace;">
+                                    <field name="branch_stock_info"/>
+                                </div>
+                            </field>
+                        </group>
+
+                        <!-- Optional: Smart Buttons -->
+                        <div class="oe_chatter">
+                            <field name="message_follower_ids" widget="mail_followers"/>
+                            <field name="activity_ids" widget="mail_activity"/>
+                        </div>
+
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Action Window -->
+        <record id="action_lost_sales" model="ir.actions.act_window">
+            <field name="name">Lost Sales</field>
+            <field name="res_model">lost.sale</field>
+            <field name="view_mode">list,form</field>
+            <field name="views">
+                [(list, ref('view_lost_sale_tree')), (form, ref('view_lost_sale_form'))]
+            </field>
+        </record>
+
+        <!-- Menu Item -->
+        <menuitem 
+            id="menu_lost_sales_root"
+            name="Lost Sales"
+            parent="sale.sale_order_menu"
+            sequence="100"
+            action="action_lost_sales"/>
+
+    </data>
+</odoo>

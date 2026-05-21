@@ -1,0 +1,356 @@
+<odoo>
+    <!-- ==================== Workshop Order Views ==================== -->
+    <record id="view_workshop_order_graph" model="ir.ui.view">
+        <field name="name">workshop.order.graph</field>
+        <field name="model">workshop.order</field>
+        <field name="arch" type="xml">
+            <graph string="Workshop Orders" type="bar">
+
+                <!-- X-axis grouping -->
+                <field name="job_open_date" interval="month" type="row"/>
+                <field name="job_close_date" interval="month" type="row"/>
+                <field name="branch_id" type="row"/>
+
+                <!-- TWO VALID MEASURES -->
+                <field name="opened_count" type="measure"/>
+                <field name="closed_count" type="measure"/>
+
+            </graph>
+        </field>
+    </record>
+
+    <record id="view_workshop_order_tree" model="ir.ui.view">
+        <field name="name">workshop.order.tree</field>
+        <field name="model">workshop.order</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name" readonly="1"/>
+                <field name="customer_id"/>
+                <field name="vehicle_id"/>
+                <field name="status"/>
+                <field name="total_bill"/>
+                <field name="company_id"/>
+                <field name="branch_id"/>
+
+            </list>
+        </field>
+    </record>
+
+    <record id="view_workshop_order_form" model="ir.ui.view">
+        <field name="name">workshop.order.form</field>
+        <field name="model">workshop.order</field>
+        <field name="arch" type="xml">
+            <form string="Workshop Job Order">
+
+                <header>
+                    <button name="action_open_mrcv"
+                            type="object"
+                            class="oe_highlight"
+                            string="Initiate MRCV"
+                            invisible="status == 'closed'"/>
+                    <button name="action_validate_and_close_job"
+                            string="Validate &amp; Close Job"
+                            type="object"
+                            class="btn-success"
+                            invisible="status == 'closed'"/>
+                    <button name="action_create_quotation_from_mrcv"
+                            string="Create Quotation"
+                            type="object"
+                            class="btn-primary"
+                            invisible="sale_order_id != False"/>
+                    <button name="action_create_quotation_from_mrcv"
+                            string="Update Quotation"
+                            type="object"
+                            class="btn-warning"
+                            invisible="sale_order_id == False or status == 'closed'"/>
+                    <button name="action_create_quotation_from_mrcv"
+                            string="Finalize Quotation (Sync Job)"
+                            type="object"
+                            class="btn-success"
+                            invisible="sale_order_id == False or status != 'closed'"/>
+                </header>
+
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_sale_order"
+                                type="object"
+                                class="oe_stat_button"
+                                icon="fa-usd"
+                                invisible="sale_order_id == False">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Sale Order</span>
+                            </div>
+                        </button>
+                    </div>
+
+                    <!-- JOB INFO FIRST ROW -->
+                    <group col="2">
+                        <group>
+                            <field name="name"  readonly="1"/>
+                            <field name="customer_id"/>
+<!--                            <field  name="sale_order_id"/>-->
+                        </group>
+                        <group>
+                            <field name="status" readonly="1"/>
+                            <field name="company_id" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <!-- ACCORDION STYLE SECTIONS -->
+                    <group string="🚗 Vehicle Information" col="2">
+                        <group>
+                            <field name="vehicle_id" domain="[('customer_id', '=', customer_id)]" context="{'default_customer_id': customer_id}"/>
+                            <field name="vehicle_driver_name"/>
+                        </group>
+                        <group>
+                            <field name="vehicle_driver_phone"/>
+                            <field name="branch_id" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <group string="📝 Job Details" col="2">
+                        <group>
+                            <field name="description"/>
+                            <field name="reading_km"/>
+                        </group>
+                        <group>
+                            <field name="hours"/>
+                            <field name="hourly_rate"/>
+                            <field name="service_charges"/>
+                            <field name="material_total" readonly="1"/>
+                            <field name="total_bill" readonly="1" force_save="1"/>
+                        </group>
+                    </group>
+
+                    <group string="🔧 Engine Information" col="2">
+                        <group>
+                            <field name="engine_make"/>
+                            <field name="engine_model"/>
+                        </group>
+                        <group>
+                            <field name="engine_serial"/>
+                        </group>
+                    </group>
+
+                    <group string="⚙️ Mounted Equipment" col="2">
+                        <group>
+                            <field name="mounted_type"/>
+                            <field name="mounted_make"/>
+                        </group>
+                        <group>
+                            <field name="mounted_model"/>
+                            <field name="mounted_serial"/>
+                        </group>
+                    </group>
+
+                    <group string="🔍 Inspection Report" col="2" >
+                        <group>
+                            <field name="missing_parts"/>
+                        </group>
+                        <group>
+                            <field name="remark"/>
+                        </group>
+                    </group>
+
+                    <!-- TABS -->
+                    <notebook>
+
+                        <!-- Pictures -->
+                        <page string="📸 Pictures">
+                            <field name="image_ids">
+                                <kanban class="o_kanban_small" default_group_by="">
+                                    <field name="name"/>
+                                    <field name="image"/>
+                                    <field name="create_date"/>
+                                    <templates>
+                                        <t t-name="kanban-box">
+                                            <div class="o_kanban_card">
+                                                <div style="text-align:center;padding:5px;">
+                                                    <field name="image" widget="image"
+                                                           options="{'preview_image':'image'}"/>
+                                                </div>
+                                                <div class="oe_kanban_details" style="text-align:center;">
+                                                    <strong><field name="name"/></strong>
+                                                    <div><field name="create_date"/></div>
+                                                </div>
+                                                <div style="text-align:center;margin-top:5px;">
+                                                    <button type="object"
+                                                            name="action_open_image_tab"
+                                                            string="Open"
+                                                            class="btn-secondary"/>
+                                                </div>
+                                            </div>
+                                        </t>
+                                    </templates>
+                                </kanban>
+                                <form>
+                                    <sheet>
+                                        <group>
+                                            <field name="name" placeholder="E.g. Front View"/>
+                                            <field name="image" widget="image" options="{'accepted_file_extensions': 'image/*', 'size': [800, 800]}"/>
+                                        </group>
+                                    </sheet>
+                                </form>
+                            </field>
+                        </page>
+
+                        <!-- Accessories -->
+                        <page string="🧰 Accessories">
+                            <group>
+                                <button name="action_load_accessories"
+                                        type="object"
+                                        string="Load Accessories"
+                                        class="btn-primary"/>
+                            </group>
+                            <field name="accessory_line_ids">
+                                <list editable="bottom">
+                                    <field name="accessory_id"/>
+                                    <field name="status" widget="radio"/>
+                                    <field name="remark"/>
+                                </list>
+                            </field>
+                        </page>
+
+                        <!-- Tasks -->
+                        <page string="🛠 Tasks">
+                            <field name="task_ids">
+                                <list editable="bottom">
+                                    <field name="description"/>
+                                    <field name="technician_id"/>
+                                    <field name="section_id"/>
+                                    <field name="status"/>
+                                    <field name="company_id" readonly="1"/>
+                                    <field name="branch_id" readonly="1"/>
+                                </list>
+                                <form>
+                                    <sheet>
+                                        <group col="2">
+                                            <field name="description"/>
+                                            <field name="technician_id"/>
+                                            <field name="section_id"/>
+                                            <field name="status"/>
+                                            <field name="company_id"/>
+                                            <field name="branch_id"/>
+                                        </group>
+                                    </sheet>
+                                </form>
+                            </field>
+                        </page>
+
+                        <!-- MRCVs -->
+                        <page string="📄 MRCVs">
+                            <field name="mrcv_ids" readonly="1">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="date"/>
+                                    <field name="partner_id"/>
+                                    <field name="state"/>
+                                </list>
+                            </field>
+                        </page>
+
+                    </notebook>
+
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+
+
+    <record id="action_workshop_order" model="ir.actions.act_window">
+        <field name="name">Job Orders</field>
+        <field name="res_model">workshop.order</field>
+        <field name="view_mode">graph,list,form</field>
+    </record>
+
+
+
+    <!-- ==================== Workshop Task Views ==================== -->
+    <record id="view_workshop_task_tree" model="ir.ui.view">
+        <field name="name">workshop.task.tree</field>
+        <field name="model">workshop.task</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="job_id"/>
+                <field name="description"/>
+                <field name="technician_id"/>
+                <field name="section_id"/>
+                <field name="status"/>
+                <field name="company_id"/>
+                <field name="branch_id"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_workshop_task_form" model="ir.ui.view">
+        <field name="name">workshop.task.form</field>
+        <field name="model">workshop.task</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="job_id"/>
+                        <field name="description"/>
+                    </group>
+                    <group>
+                        <field name="technician_id"/>
+                        <field name="section_id"/>
+                        <field name="status"/>
+                        <field name="company_id"/>
+                        <field name="branch_id"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_workshop_task" model="ir.actions.act_window">
+        <field name="name">Tasks</field>
+        <field name="res_model">workshop.task</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+        <record id="view_workshop_model_list" model="ir.ui.view">
+        <field name="name">workshop.model.list</field>
+        <field name="model">workshop.model</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="manufacturer"/>
+                <field name="company_id"/>
+                <field name="branch_id"/>
+            </list>
+        </field>
+    </record>
+    <!-- ==================== Workshop Models ==================== -->
+    <!-- Form View -->
+    <record id="view_workshop_model_form" model="ir.ui.view">
+        <field name="name">workshop.model.form</field>
+        <field name="model">workshop.model</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="category_id"/>
+                        <field name="manufacturer"/>
+                    </group>
+                    <group>
+                        <field name="description"/>
+                        <field name="company_id"/>
+                        <field name="branch_id"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_workshop_model" model="ir.actions.act_window">
+        <field name="name">Vehicle Models</field>
+        <field name="res_model">workshop.model</field>
+        <field name="view_mode">graph,list,form</field>
+    </record>
+</odoo>

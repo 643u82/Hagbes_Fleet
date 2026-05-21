@@ -1,0 +1,21 @@
+<odoo>
+  <record id="hide_job_publish_buttons" model="ir.ui.view">
+    <field name="name">hr.job.form.remove.publish.toggles</field>
+    <field name="model">hr.job</field>
+    <field name="inherit_id" ref="website_hr_recruitment.view_hr_job_form_website_published_button"/>
+    <field name="arch" type="xml">
+
+      <!-- Remove 'is_published' publish button from button_box -->
+      <xpath expr="//field[@name='is_published']" position="replace">
+        <!-- removed -->
+      </xpath>
+
+      <!-- Remove 'website_published' toggle near title -->
+      <xpath expr="//field[@name='website_published']" position="replace">
+        <!-- removed -->
+      </xpath>
+
+    </field>
+  </record>
+</odoo>
+

@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Vehicle Requisition Report Template -->
+        <template id="report_fleet_requisition">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="o">
+                    <t t-call="web.external_layout">
+                        <div class="page">
+                            <!-- Header Section -->
+                            <div class="header">
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <div>
+                                        <h1>Vehicle Requisition Form</h1>
+                                        <p style="color: #666;">Hagbes Fleet Management System</p>
+                                    </div>
+                                    <div style="text-align: right;">
+                                        <h3>Reference: <span t-field="o.name"/></h3>
+                                        <p>Date: <span t-field="o.date_of_request" t-options="{'widget': 'date', 'format': 'dd/MM/yyyy'}"/></p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Requisition Details -->
+                            <div class="section" style="margin-top: 20px;">
+                                <h2>Requisition Details</h2>
+                                <table style="width: 100%; border-collapse: collapse; border: 1px solid #ddd;">
+                                    <tbody>
+                                        <tr style="border-bottom: 1px solid #ddd;">
+                                            <th style="width: 30%; padding: 8px; text-align: left; background-color: #f5f5f5;">Requested By</th>
+                                            <td style="padding: 8px;"><span t-field="o.request_by.name"/></td>
+                                        </tr>
+                                        <tr style="border-bottom: 1px solid #ddd;">
+                                            <th style="padding: 8px; text-align: left; background-color: #f5f5f5;">Department</th>
+                                            <td style="padding: 8px;"><span t-field="o.department_id.name"/></td>
+                                        </tr>
+                                        <tr style="border-bottom: 1px solid #ddd;">
+                                            <th style="padding: 8px; text-align: left; background-color: #f5f5f5;">Destination</th>
+                                            <td style="padding: 8px;"><span t-field="o.destination"/></td>
+                                        </tr>
+                                        <tr style="border-bottom: 1px solid #ddd;">
+                                            <th style="padding: 8px; text-align: left; background-color: #f5f5f5;">Purpose</th>
+                                            <td style="padding: 8px;"><span t-field="o.purpose"/></td>
+                                        </tr>
+                                        <tr style="border-bottom: 1px solid #ddd;">
+                                            <th style="padding: 8px; text-align: left; background-color: #f5f5f5;">Date From</th>
+                                            <td style="padding: 8px;">
+                                                <span t-field="o.date_from" t-options="{'widget': 'datetime', 'format': 'dd/MM/yyyy HH:mm', 'tz': 'Africa/Addis_Ababa'}"/>
+                                                (EAT)
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th style="padding: 8px; text-align: left; background-color: #f5f5f5;">Date To</th>
+                                            <td style="padding: 8px;">
+                                                <span t-field="o.date_to" t-options="{'widget': 'datetime', 'format': 'dd/MM/yyyy HH:mm', 'tz': 'Africa/Addis_Ababa'}"/>
+                                                (EAT)
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            
+                            <!-- Traveller Information -->
+                            <div class="section" style="margin-top: 20px;">
+                                <h2>Traveller Information</h2>
+                                <table style="width: 100%; border-collapse: collapse; border: 1px solid #ddd;">
+                                    <tbody>
+                                        <tr style="border-bottom: 1px solid #ddd;">
+                                            <th style="width: 30%; padding: 8px; text-align: left; background-color: #f5f5f5;">Number of Travellers</th>
+                                            <td style="padding: 8px;"><span t-field="o.traveller_count"/></td>
+                                        </tr>
+                                        <tr>
+                                            <th style="padding: 8px; text-align: left; background-color: #f5f5f5;">Traveller</th>
+                                            <td style="padding: 8px;">
+                                                <t t-if="o.traveller">
+                                                    <span t-field="o.traveller.name"/>
+                                                </t>
+                                                <t t-if="o.traveller_names">
+                                                    <br/>
+                                                    <span t-field="o.traveller_names"/>
+                                                </t>
+                                                <t t-if="not o.traveller and not o.traveller_names">
+                                                    <span style="color: #666;">Not specified</span>
+                                                </t>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            
+                            <!-- Vehicle Assignment -->
+                            <div class="section" style="margin-top: 20px;">
+                                <h2>Vehicle Assignment</h2>
+                                <table style="width: 100%; border-collapse: collapse; border: 1px solid #ddd;">
+                                    <tbody>
+                                        <tr style="border-bottom: 1px solid #ddd;">
+                                            <th style="width: 30%; padding: 8px; text-align: left; background-color: #f5f5f5;">Assigned Vehicle</th>
+                                            <td style="padding: 8px;">
+                                                <t t-if="o.vehicle_id">
+                                                    <span t-field="o.vehicle_id.name"/> 
+                                                    (Plate: <span t-field="o.vehicle_id.plate_number"/>)
+                                                </t>
+                                                <t t-else="">
+                                                    <span style="color: #666;">Not yet assigned</span>
+                                                </t>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th style="padding: 8px; text-align: left; background-color: #f5f5f5;">Assigned By</th>
+                                            <td style="padding: 8px;">
+                                                <t t-if="o.assigned_by">
+                                                    <span t-field="o.assigned_by.name"/> 
+                                                    on <span t-field="o.assigned_date" t-options="{'widget': 'datetime', 'format': 'dd/MM/yyyy HH:mm', 'tz': 'Africa/Addis_Ababa'}"/>
+                                                </t>
+                                                <t t-else="">
+                                                    <span style="color: #666;">Not assigned</span>
+                                                </t>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            
+                            <!-- Approval Status -->
+                            <div class="section" style="margin-top: 20px;">
+                                <h2>Approval Status</h2>
+                                <table style="width: 100%; border-collapse: collapse; border: 1px solid #ddd;">
+                                    <tbody>
+                                        <tr style="border-bottom: 1px solid #ddd;">
+                                            <th style="width: 30%; padding: 8px; text-align: left; background-color: #f5f5f5;">Current Status</th>
+                                            <td style="padding: 8px;">
+                                                <span t-field="o.state" t-options="{'widget': 'selection'}"/>
+                                            </td>
+                                        </tr>
+                                        <tr style="border-bottom: 1px solid #ddd;">
+                                            <th style="padding: 8px; text-align: left; background-color: #f5f5f5;">Department Approval</th>
+                                            <td style="padding: 8px;">
+                                                <t t-if="o.dept_approved_by">
+                                                    Approved by <span t-field="o.dept_approved_by.name"/> 
+                                                    on <span t-field="o.dept_approved_date" t-options="{'widget': 'datetime', 'format': 'dd/MM/yyyy HH:mm', 'tz': 'Africa/Addis_Ababa'}"/>
+                                                </t>
+                                                <t t-else="">
+                                                    <span style="color: #666;">Pending</span>
+                                                </t>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th style="padding: 8px; text-align: left; background-color: #f5f5f5;">Fleet Assignment</th>
+                                            <td style="padding: 8px;">
+                                                <t t-if="o.assigned_by">
+                                                    Assigned by <span t-field="o.assigned_by.name"/> 
+                                                    on <span t-field="o.assigned_date" t-options="{'widget': 'datetime', 'format': 'dd/MM/yyyy HH:mm', 'tz': 'Africa/Addis_Ababa'}"/>
+                                                </t>
+                                                <t t-else="">
+                                                    <span style="color: #666;">Pending</span>
+                                                </t>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            
+                            <!-- Footer with Signatures -->
+                            <div class="section" style="margin-top: 30px;">
+                                <h2>Signatures</h2>
+                                <div style="display: flex; justify-content: space-between; margin-top: 20px;">
+                                    <div style="width: 30%; text-align: center;">
+                                        <div style="border-top: 1px solid #000; padding-top: 10px; margin-top: 40px;">
+                                            <p style="margin: 5px 0; font-weight: bold;">Requester</p>
+                                            <p style="margin: 5px 0;"><span t-field="o.request_by.name"/></p>
+                                            <p style="margin: 5px 0; color: #666;">Date: <span t-field="o.date_of_request" t-options="{'widget': 'date', 'format': 'dd/MM/yyyy'}"/></p>
+                                        </div>
+                                    </div>
+                                    <div style="width: 30%; text-align: center;">
+                                        <div style="border-top: 1px solid #000; padding-top: 10px; margin-top: 40px;">
+                                            <p style="margin: 5px 0; font-weight: bold;">Department Manager</p>
+                                            <p style="margin: 5px 0;">
+                                                <t t-if="o.dept_approved_by">
+                                                    <span t-field="o.dept_approved_by.name"/>
+                                                </t>
+                                            </p>
+                                            <p style="margin: 5px 0; color: #666;">
+                                                <t t-if="o.dept_approved_date">
+                                                    Date: <span t-field="o.dept_approved_date" t-options="{'widget': 'datetime', 'format': 'dd/MM/yyyy', 'tz': 'Africa/Addis_Ababa'}"/>
+                                                </t>
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div style="width: 30%; text-align: center;">
+                                        <div style="border-top: 1px solid #000; padding-top: 10px; margin-top: 40px;">
+                                            <p style="margin: 5px 0; font-weight: bold;">FMO Officer</p>
+                                            <p style="margin: 5px 0;">
+                                                <t t-if="o.assigned_by">
+                                                    <span t-field="o.assigned_by.name"/>
+                                                </t>
+                                            </p>
+                                            <p style="margin: 5px 0; color: #666;">
+                                                <t t-if="o.assigned_date">
+                                                    Date: <span t-field="o.assigned_date" t-options="{'widget': 'datetime', 'format': 'dd/MM/yyyy', 'tz': 'Africa/Addis_Ababa'}"/>
+                                                </t>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Report Footer -->
+                            <div style="text-align: center; margin-top: 40px; color: #666;">
+                                <p>Generated on <span t-esc="datetime.datetime.now().strftime('%d/%m/%Y %H:%M')"/> (EAT)</p>
+                                <p>Hagbes Fleet Management System - Confidential</p>
+                            </div>
+                        </div>
+                    </t>
+                </t>
+            </t>
+        </template>
+        
+        <!-- Report Action -->
+        <record id="action_report_fleet_requisition" model="ir.actions.report">
+            <field name="name">Vehicle Requisition</field>
+            <field name="model">fleet.requisition</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">hagbes_fleet.report_fleet_requisition</field>
+            <field name="print_report_name">'Vehicle Requisition - %s' % (object.name)</field>
+            <field name="paperformat_id" ref="base.paperformat_euro"/>
+            <field name="binding_model_id" ref="model_fleet_requisition"/>
+            <field name="binding_type">report</field>
+            <field name="groups_id" eval="[(6, 0, [ref('base.group_user'), ref('hagbes_fleet.group_fleet_manager'), ref('hagbes_fleet.group_fleet_admin')])]"/>
+        </record>
+    </data>
+</odoo>

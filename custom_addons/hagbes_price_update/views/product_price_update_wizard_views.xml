@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+     
+    <record id="view_product_price_update_wizard_form" model="ir.ui.view">
+        <field name="name">product.price.update.wizard.form</field>
+        <field name="model">product.price.update.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Update Product Prices">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="update_type" widget="radio" options="{'horizontal': true}"/>
+                        </h1>
+                    </div>
+                    
+                    <group>
+                        <group string="Update Parameters">
+                            <field name="fixed_value" 
+                                   invisible="update_type != 'fixed'" required="update_type == 'fixed'"/>
+                            <field name="percentage_value" 
+                                   invisible="update_type != 'percentage'" required="update_type == 'percentage'"/>
+                            <field name="direct_value" 
+                                   invisible="update_type != 'direct'" required="update_type == 'direct'"/>
+                            <field name="margin_percent" 
+                                   invisible="update_type != 'margin'" required="update_type == 'margin'"/>
+                        </group>
+                        
+                        <group string="Options">
+                            <field name="apply_to_variants"/>
+                            <field name="check_margin_limits"/>
+                        </group>
+                    </group>
+                    
+                    <notebook>
+                        <page string="Product Selection">
+                            <group>
+                                <group string="Filter by Category">
+                                    <field name="category_ids" widget="many2many_tags"/>
+                                </group>
+                                <!-- Adding product group filter -->
+                                <group string="Filter by Product Group">
+                                    <!-- <field name="product_group_ids" widget="many2many_tags"/> -->
+                                </group>
+                            </group>
+                            
+                            <group string="Selected Products">
+                                <field name="product_template_ids"
+                                       widget="many2many"
+                                       context="{'tree_view_ref': 'hagbes_price_update.view_product_template_tree_price_update'}"
+                                       invisible="not apply_to_variants"/>
+                                <field name="product_ids"
+                                       widget="many2many"
+                                       context="{'tree_view_ref': 'hagbes_price_update.view_product_product_tree_price_update'}"
+                                       invisible="apply_to_variants"/>
+                            </group>
+                        </page>
+                        
+                     
+                        <page string="Preview">
+                            <group>
+                                <group>
+                                    <field name="total_products" readonly="1"/>
+                                    <field name="total_price_increase" readonly="1"/>
+                                </group>
+                            </group>
+                           
+                            <field name="preview_lines" readonly="1">
+                                <list group_by="product_group_id"
+                                      decoration-danger="margin_check_passed == False" 
+                                      decoration-success="margin_check_passed == True">
+                                    <field name="product_id" string="Product"/>
+                                    <field name="product_description" string="Description"/>
+                                    <field name="product_group_id" string="Group"/>
+                                    <field name="old_price" string="Current Price" widget="monetary"/>
+                                    <field name="markup_percent" string="Markup %" widget="percentage"/>
+                                    <field name="new_price" string="New Price" widget="monetary"/>
+                                    <field name="price_difference" string="Difference" widget="monetary"/>
+                                    <field name="margin_check_passed" string="Update" widget="boolean_toggle"/>
+                                    <field name="order_history_count" string="Order History"/>
+                                    <field name="currency_id" invisible="1"/>
+                                    <button name="action_view_order_history" type="object" 
+                                            string="View Orders" class="btn-link" 
+                                            invisible="order_history_count == 0"/>
+                                </list>
+                            </field>
+                        </page>
+                        
+                        <page string="Reason">
+                            <group>
+                                <field name="reason" nolabel="1" placeholder="Enter reason for price update..."/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                
+                <footer>
+                    <!-- Preview button always visible -->
+                    <button name="action_preview" string="Preview Changes" type="object"
+                            class="btn-secondary"/>
+                    <button name="action_update_prices" string="Update Prices" type="object"
+                            class="btn-primary"
+                            confirm="Are you sure you want to update the prices for selected products?"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- Custom tree for product.product -->
+    <record id="view_product_product_tree_price_update" model="ir.ui.view">
+        <field name="name">product.product.tree.price.update</field>
+        <field name="model">product.product</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="default_code"/>
+                <field name="name"/>
+                <field name="product_group_id"/>
+                <field name="list_price"/>
+                <field name="standard_price"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Custom tree for product.template -->
+    <record id="view_product_template_tree_price_update" model="ir.ui.view">
+        <field name="name">product.template.tree.price.update</field>
+        <field name="model">product.template</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="default_code"/>
+                <field name="name"/>
+                <field name="categ_id"/>
+                <field name="product_group_id"/>
+                <field name="list_price"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_product_price_update_wizard" model="ir.actions.act_window">
+        <field name="name">Update Product Prices</field>
+        <field name="res_model">product.price.update.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>

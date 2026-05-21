@@ -1,0 +1,38 @@
+<odoo>
+    <!-- Partner Tree View Inheritance -->
+    <record id="view_partner_tree_workshop" model="ir.ui.view">
+        <field name="name">res.partner.tree.workshop</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//list" position="inside">
+                <button name="action_create_workshop_job" 
+                        type="object" 
+                        string="Create Job" 
+                        icon="fa-wrench" 
+                        class="btn-primary"
+                        groups="hagbes_workshop_management.group_workshop_user"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Partner Form View Inheritance -->
+    <record id="view_partner_form_workshop" model="ir.ui.view">
+        <field name="name">res.partner.form.workshop</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_create_workshop_job" 
+                        type="object" 
+                        class="oe_stat_button" 
+                        icon="fa-wrench"
+                        groups="hagbes_workshop_management.group_workshop_user">
+                    <div class="o_stat_info">
+                        <span class="o_stat_text">Create Job</span>
+                    </div>
+                </button>
+            </xpath>
+        </field>
+    </record>
+</odoo>

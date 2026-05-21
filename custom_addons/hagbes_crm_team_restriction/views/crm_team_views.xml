@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_crm_team_form_inherit" model="ir.ui.view">
+        <field name="name">crm.team.form.inherit.branch</field>
+        <field name="model">crm.team</field>
+        <field name="inherit_id" ref="sale.crm_team_salesteams_view_form"/>
+        <field name="arch" type="xml">
+            <!-- Insert branch_id after company_id -->
+            <field name="company_id" position="after">
+                <field name="branch_id" required="1"/>
+            </field>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,121 @@
+{
+  "validation_timestamp": "2026-05-08T14:11:13.222905",
+  "module_path": ".",
+  "overall_status": "failed",
+  "validations": {
+    "deployment_validation": {
+      "name": "Deployment Pipeline Validation",
+      "status": "failed",
+      "success": false,
+      "errors": [
+        "2026-05-08 14:11:13,538 - INFO - \ud83d\ude80 Starting HAGBES FLEET deployment validation pipeline...\n2026-05-08 14:11:13,539 - INFO - \ud83d\udd0d Validating Python compilation...\n2026-05-08 14:11:13,909 - INFO - \u2705 Python compilation passed: 40 files validated\n2026-05-08 14:11:13,909 - INFO - \ud83d\udd0d Validating XML syntax...\n2026-05-08 14:11:13,944 - INFO - \u2705 XML validation passed: 27 files validated\n2026-05-08 14:11:13,945 - INFO - \ud83d\udd0d Validating manifest dependencies...\n2026-05-08 14:11:13,953 - INFO - \u2705 Manifest validation passed\n2026-05-08 14:11:13,953 - INFO - \ud83d\udd0d Validating security access rules completeness...\n2026-05-08 14:11:13,954 - INFO - \u2705 Security access rules validation passed\n2026-05-08 14:11:13,954 - INFO - \ud83d\udd0d Validating ORM schema consistency...\n2026-05-08 14:11:14,004 - INFO - \ud83d\udd0d Validating approval workflow integrity...\n2026-05-08 14:11:14,011 - INFO - \u2705 Approval workflow integrity validation passed\n2026-05-08 14:11:14,020 - INFO - Validation report generated: deployment/validation_report.txt\n2026-05-08 14:11:14,020 - ERROR - \ud83d\udeab DEPLOYMENT BLOCKED - Critical validation failures detected\n2026-05-08 14:11:14,020 - ERROR - Critical errors: 2\n2026-05-08 14:11:14,020 - ERROR -   \u274c Model in approval_integration.py missing _name attribute\n2026-05-08 14:11:14,020 - ERROR -   \u274c Model in hr_employee.py missing _name attribute"
+      ],
+      "warnings": [],
+      "details": {
+        "stdout": "",
+        "return_code": 1
+      },
+      "execution_time": 0.831521
+    },
+    "schema_guard": {
+      "name": "ORM \u2194 PostgreSQL Schema Validation",
+      "status": "failed",
+      "success": false,
+      "errors": [
+        "2026-05-08 14:11:14,646 - INFO - \ud83d\ude80 Starting ORM \u2194 PostgreSQL schema validation...\n2026-05-08 14:11:14,652 - INFO - \ud83d\udd0d Extracting ORM model definitions...\n2026-05-08 14:11:14,705 - INFO - Extracted 15 ORM models\n2026-05-08 14:11:14,705 - INFO - \ud83d\udd0d Extracting database schema...\n2026-05-08 14:11:14,808 - ERROR - Database connection failed: connection to server at \"localhost\" (127.0.0.1), port 5432 failed: fe_sendauth: no password supplied\n\n2026-05-08 14:11:14,812 - ERROR - Schema validation failed: connection to server at \"localhost\" (127.0.0.1), port 5432 failed: fe_sendauth: no password supplied\n\n2026-05-08 14:11:14,812 - ERROR - \ud83d\udeab SCHEMA VALIDATION FAILED - Critical inconsistencies detected"
+      ],
+      "warnings": [],
+      "details": {
+        "stdout": "",
+        "return_code": 1
+      },
+      "execution_time": 0.811472
+    },
+    "workflow_integrity": {
+      "name": "Approval Workflow Integrity",
+      "status": "passed",
+      "success": true,
+      "errors": [],
+      "warnings": [
+        "2026-05-08 14:11:15,301 - INFO - \ud83d\ude80 Starting approval workflow integrity validation...\n2026-05-08 14:11:15,307 - INFO - \ud83d\udd0d Validating approval states...\n2026-05-08 14:11:15,314 - INFO - \u2705 Approval states validation passed: 10 states found\n2026-05-08 14:11:15,314 - INFO - \ud83d\udd0d Validating approval buttons...\n2026-05-08 14:11:15,321 - INFO - \u2705 Approval buttons validation passed: 6 buttons validated\n2026-05-08 14:11:15,321 - INFO - \ud83d\udd0d Validating security groups...\n2026-05-08 14:11:15,326 - INFO - \u2705 Security groups validation passed\n2026-05-08 14:11:15,326 - INFO - \ud83d\udd0d Validating state transitions...\n2026-05-08 14:11:15,327 - INFO - \u2705 State transitions validation passed\n2026-05-08 14:11:15,327 - INFO - \ud83d\udd0d Validating workflow configuration...\n2026-05-08 14:11:15,327 - INFO - \u2705 Workflow configuration validation passed\n2026-05-08 14:11:15,331 - INFO - Workflow integrity report generated: deployment/workflow_integrity_report.txt\n2026-05-08 14:11:15,332 - INFO - \ud83c\udf89 WORKFLOW INTEGRITY PROTECTED - All validations passed"
+      ],
+      "details": {
+        "stdout": "",
+        "return_code": 0
+      },
+      "execution_time": 0.463147
+    },
+    "security_regression": {
+      "name": "Security Regression Protection",
+      "status": "failed",
+      "success": false,
+      "errors": [
+        "2026-05-08 14:11:15,629 - INFO - \ud83d\ude80 Starting security regression protection validation...\n2026-05-08 14:11:15,632 - INFO - \ud83d\udd0d Validating management reports protection...\n2026-05-08 14:11:15,638 - INFO - \u2705 Management reports protection validated\n2026-05-08 14:11:15,638 - INFO - \ud83d\udd0d Validating department isolation...\n2026-05-08 14:11:15,641 - INFO - \u2705 Department isolation validated\n2026-05-08 14:11:15,641 - INFO - \ud83d\udd0d Validating property approval restrictions...\n2026-05-08 14:11:15,647 - INFO - \ud83d\udd0d Validating FMO approval restrictions...\n2026-05-08 14:11:15,647 - INFO - \ud83d\udd0d Validating menu visibility...\n2026-05-08 14:11:15,648 - INFO - \u2705 Menu visibility validated\n2026-05-08 14:11:15,648 - INFO - \ud83d\udd0d Validating access rules completeness...\n2026-05-08 14:11:15,649 - INFO - \u2705 Access rules completeness validated\n2026-05-08 14:11:15,650 - INFO - Security validation report generated: deployment/security_validation_report.txt\n2026-05-08 14:11:15,650 - ERROR - \ud83d\udeab SECURITY COMPROMISED - Violations detected\n2026-05-08 14:11:15,650 - ERROR - Security violations: 2\n2026-05-08 14:11:15,650 - ERROR -   \u274c unrestricted_property_approval: Property approval not restricted to fleet managers\n2026-05-08 14:11:15,650 - ERROR -   \u274c unrestricted_fmo_approval: FMO approval not restricted to FMO officers"
+      ],
+      "warnings": [],
+      "details": {
+        "stdout": "",
+        "return_code": 1
+      },
+      "execution_time": 0.309593
+    },
+    "backup_system": {
+      "name": "Backup & Recovery System",
+      "status": "passed",
+      "success": true,
+      "errors": [],
+      "warnings": [],
+      "details": {
+        "status": "Backup system script validated"
+      },
+      "execution_time": 0
+    },
+    "regression_tests": {
+      "name": "Automated Regression Tests",
+      "status": "passed",
+      "success": true,
+      "errors": [],
+      "warnings": [],
+      "details": {
+        "status": "Regression test suite validated"
+      },
+      "execution_time": 0
+    },
+    "runtime_monitor": {
+      "name": "Runtime Monitoring System",
+      "status": "passed",
+      "success": true,
+      "errors": [],
+      "warnings": [],
+      "details": {
+        "status": "Runtime monitoring system validated"
+      },
+      "execution_time": 0
+    }
+  },
+  "summary": {
+    "total_validations": 7,
+    "passed_validations": 4,
+    "failed_validations": 3,
+    "total_warnings": 1,
+    "critical_issues": 3
+  },
+  "deployment_readiness": {
+    "ready_for_production": false,
+    "blocking_issues": [
+      "Deployment Pipeline Validation: 2026-05-08 14:11:13,538 - INFO - \ud83d\ude80 Starting HAGBES FLEET deployment validation pipeline...\n2026-05-08 14:11:13,539 - INFO - \ud83d\udd0d Validating Python compilation...\n2026-05-08 14:11:13,909 - INFO - \u2705 Python compilation passed: 40 files validated\n2026-05-08 14:11:13,909 - INFO - \ud83d\udd0d Validating XML syntax...\n2026-05-08 14:11:13,944 - INFO - \u2705 XML validation passed: 27 files validated\n2026-05-08 14:11:13,945 - INFO - \ud83d\udd0d Validating manifest dependencies...\n2026-05-08 14:11:13,953 - INFO - \u2705 Manifest validation passed\n2026-05-08 14:11:13,953 - INFO - \ud83d\udd0d Validating security access rules completeness...\n2026-05-08 14:11:13,954 - INFO - \u2705 Security access rules validation passed\n2026-05-08 14:11:13,954 - INFO - \ud83d\udd0d Validating ORM schema consistency...\n2026-05-08 14:11:14,004 - INFO - \ud83d\udd0d Validating approval workflow integrity...\n2026-05-08 14:11:14,011 - INFO - \u2705 Approval workflow integrity validation passed\n2026-05-08 14:11:14,020 - INFO - Validation report generated: deployment/validation_report.txt\n2026-05-08 14:11:14,020 - ERROR - \ud83d\udeab DEPLOYMENT BLOCKED - Critical validation failures detected\n2026-05-08 14:11:14,020 - ERROR - Critical errors: 2\n2026-05-08 14:11:14,020 - ERROR -   \u274c Model in approval_integration.py missing _name attribute\n2026-05-08 14:11:14,020 - ERROR -   \u274c Model in hr_employee.py missing _name attribute",
+      "ORM \u2194 PostgreSQL Schema Validation: 2026-05-08 14:11:14,646 - INFO - \ud83d\ude80 Starting ORM \u2194 PostgreSQL schema validation...\n2026-05-08 14:11:14,652 - INFO - \ud83d\udd0d Extracting ORM model definitions...\n2026-05-08 14:11:14,705 - INFO - Extracted 15 ORM models\n2026-05-08 14:11:14,705 - INFO - \ud83d\udd0d Extracting database schema...\n2026-05-08 14:11:14,808 - ERROR - Database connection failed: connection to server at \"localhost\" (127.0.0.1), port 5432 failed: fe_sendauth: no password supplied\n\n2026-05-08 14:11:14,812 - ERROR - Schema validation failed: connection to server at \"localhost\" (127.0.0.1), port 5432 failed: fe_sendauth: no password supplied\n\n2026-05-08 14:11:14,812 - ERROR - \ud83d\udeab SCHEMA VALIDATION FAILED - Critical inconsistencies detected",
+      "Security Regression Protection: 2026-05-08 14:11:15,629 - INFO - \ud83d\ude80 Starting security regression protection validation...\n2026-05-08 14:11:15,632 - INFO - \ud83d\udd0d Validating management reports protection...\n2026-05-08 14:11:15,638 - INFO - \u2705 Management reports protection validated\n2026-05-08 14:11:15,638 - INFO - \ud83d\udd0d Validating department isolation...\n2026-05-08 14:11:15,641 - INFO - \u2705 Department isolation validated\n2026-05-08 14:11:15,641 - INFO - \ud83d\udd0d Validating property approval restrictions...\n2026-05-08 14:11:15,647 - INFO - \ud83d\udd0d Validating FMO approval restrictions...\n2026-05-08 14:11:15,647 - INFO - \ud83d\udd0d Validating menu visibility...\n2026-05-08 14:11:15,648 - INFO - \u2705 Menu visibility validated\n2026-05-08 14:11:15,648 - INFO - \ud83d\udd0d Validating access rules completeness...\n2026-05-08 14:11:15,649 - INFO - \u2705 Access rules completeness validated\n2026-05-08 14:11:15,650 - INFO - Security validation report generated: deployment/security_validation_report.txt\n2026-05-08 14:11:15,650 - ERROR - \ud83d\udeab SECURITY COMPROMISED - Violations detected\n2026-05-08 14:11:15,650 - ERROR - Security violations: 2\n2026-05-08 14:11:15,650 - ERROR -   \u274c unrestricted_property_approval: Property approval not restricted to fleet managers\n2026-05-08 14:11:15,650 - ERROR -   \u274c unrestricted_fmo_approval: FMO approval not restricted to FMO officers"
+    ],
+    "recommendations": [
+      "\u274c Fix all failed validations before production deployment",
+      "\ud83d\udea8 Resolve all critical issues immediately",
+      "\ud83d\udd27 Fix Deployment Pipeline Validation: 2026-05-08 14:11:13,538 - INFO - \ud83d\ude80 Starting HAGBES FLEET deployment validation pipeline...\n2026-05-08 14:11:13,539 - INFO - \ud83d\udd0d Validating Python compilation...\n2026-05-08 14:11:13,909 - INFO - \u2705 Python compilation passed: 40 files validated\n2026-05-08 14:11:13,909 - INFO - \ud83d\udd0d Validating XML syntax...\n2026-05-08 14:11:13,944 - INFO - \u2705 XML validation passed: 27 files validated\n2026-05-08 14:11:13,945 - INFO - \ud83d\udd0d Validating manifest dependencies...\n2026-05-08 14:11:13,953 - INFO - \u2705 Manifest validation passed\n2026-05-08 14:11:13,953 - INFO - \ud83d\udd0d Validating security access rules completeness...\n2026-05-08 14:11:13,954 - INFO - \u2705 Security access rules validation passed\n2026-05-08 14:11:13,954 - INFO - \ud83d\udd0d Validating ORM schema consistency...\n2026-05-08 14:11:14,004 - INFO - \ud83d\udd0d Validating approval workflow integrity...\n2026-05-08 14:11:14,011 - INFO - \u2705 Approval workflow integrity validation passed\n2026-05-08 14:11:14,020 - INFO - Validation report generated: deployment/validation_report.txt\n2026-05-08 14:11:14,020 - ERROR - \ud83d\udeab DEPLOYMENT BLOCKED - Critical validation failures detected\n2026-05-08 14:11:14,020 - ERROR - Critical errors: 2\n2026-05-08 14:11:14,020 - ERROR -   \u274c Model in approval_integration.py missing _name attribute\n2026-05-08 14:11:14,020 - ERROR -   \u274c Model in hr_employee.py missing _name attribute",
+      "\ud83d\udd27 Fix ORM \u2194 PostgreSQL Schema Validation: 2026-05-08 14:11:14,646 - INFO - \ud83d\ude80 Starting ORM \u2194 PostgreSQL schema validation...\n2026-05-08 14:11:14,652 - INFO - \ud83d\udd0d Extracting ORM model definitions...\n2026-05-08 14:11:14,705 - INFO - Extracted 15 ORM models\n2026-05-08 14:11:14,705 - INFO - \ud83d\udd0d Extracting database schema...\n2026-05-08 14:11:14,808 - ERROR - Database connection failed: connection to server at \"localhost\" (127.0.0.1), port 5432 failed: fe_sendauth: no password supplied\n\n2026-05-08 14:11:14,812 - ERROR - Schema validation failed: connection to server at \"localhost\" (127.0.0.1), port 5432 failed: fe_sendauth: no password supplied\n\n2026-05-08 14:11:14,812 - ERROR - \ud83d\udeab SCHEMA VALIDATION FAILED - Critical inconsistencies detected",
+      "\ud83d\udd27 Fix Security Regression Protection: 2026-05-08 14:11:15,629 - INFO - \ud83d\ude80 Starting security regression protection validation...\n2026-05-08 14:11:15,632 - INFO - \ud83d\udd0d Validating management reports protection...\n2026-05-08 14:11:15,638 - INFO - \u2705 Management reports protection validated\n2026-05-08 14:11:15,638 - INFO - \ud83d\udd0d Validating department isolation...\n2026-05-08 14:11:15,641 - INFO - \u2705 Department isolation validated\n2026-05-08 14:11:15,641 - INFO - \ud83d\udd0d Validating property approval restrictions...\n2026-05-08 14:11:15,647 - INFO - \ud83d\udd0d Validating FMO approval restrictions...\n2026-05-08 14:11:15,647 - INFO - \ud83d\udd0d Validating menu visibility...\n2026-05-08 14:11:15,648 - INFO - \u2705 Menu visibility validated\n2026-05-08 14:11:15,648 - INFO - \ud83d\udd0d Validating access rules completeness...\n2026-05-08 14:11:15,649 - INFO - \u2705 Access rules completeness validated\n2026-05-08 14:11:15,650 - INFO - Security validation report generated: deployment/security_validation_report.txt\n2026-05-08 14:11:15,650 - ERROR - \ud83d\udeab SECURITY COMPROMISED - Violations detected\n2026-05-08 14:11:15,650 - ERROR - Security violations: 2\n2026-05-08 14:11:15,650 - ERROR -   \u274c unrestricted_property_approval: Property approval not restricted to fleet managers\n2026-05-08 14:11:15,650 - ERROR -   \u274c unrestricted_fmo_approval: FMO approval not restricted to FMO officers",
+      "\ud83d\uded1 DO NOT deploy to production until all issues are resolved",
+      "\ud83d\udd0d Run validation again after fixing issues",
+      "\ud83d\udc65 Consider peer review of critical changes"
+    ]
+  }
+}

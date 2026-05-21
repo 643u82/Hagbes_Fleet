@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- CRM APP visible for Operation Director -->
+    <record id="crm.crm_menu_root" model="ir.ui.menu">
+        <field name="groups_id" eval="[(4, ref('hagbes_crm_team_restriction.group_operation_director'))]"/>
+    </record>
+
+    
+   <!-- Reporting allowed for Operation Director -->
+    <record model="ir.ui.menu" id="crm.crm_menu_report">
+        <field name="groups_id" eval="[(4, ref('hagbes_crm_team_restriction.group_operation_director'))]"/>
+    </record>
+    
+   
+
+
+</odoo>

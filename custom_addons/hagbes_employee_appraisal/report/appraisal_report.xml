@@ -1,0 +1,10 @@
+<odoo>
+    <report
+        id="report_employee_appraisal"
+        model="employee.appraisal"
+        string="Employee Appraisal Report"
+        report_type="qweb-pdf"
+        name="employee_appraisal.report_appraisal_template"
+        file="employee_appraisal.report_appraisal_template"
+    />
+</odoo>

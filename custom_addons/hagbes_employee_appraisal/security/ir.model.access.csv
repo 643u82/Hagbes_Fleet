@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_appraisal_criteria_category,access_appraisal_criteria_category,model_appraisal_criteria_category,,1,1,1,1
+access_appraisal_criteria,access_appraisal_criteria,model_appraisal_criteria,,1,1,1,1
+access_employee_appraisal,access_employee_appraisal,model_employee_appraisal,,1,1,1,1
+access_employee_appraisal_line,access_employee_appraisal_line,model_employee_appraisal_line,,1,1,1,1

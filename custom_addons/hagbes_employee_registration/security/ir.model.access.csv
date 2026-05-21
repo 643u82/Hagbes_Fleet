@@ -1,0 +1,17 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_hr_employee_report,access_hr_employee_report,model_hr_employee,,1,0,0,0
+access_employee_children_hr,employee.children HR access,model_employee_children,,1,0,0,0
+access_employee_children_user,employee.children user access,model_employee_children,,1,0,0,0
+access_employee_witness_user,access.employee.witness user access,model_employee_witness,,1,0,0,0
+access_employee_witness_hr,employee.witness hr access,model_employee_witness,hr.group_hr_user,1,1,1,1
+access_hr_employee_public_internal_read,hr.employee.public internal read,model_hr_employee_public,base.group_user,1,0,0,0
+access_employee_resignation,employee.resignation,model_employee_resignation,,1,1,1,1
+access_employee_resignation_acceptance,employee.resignation.acceptance,model_employee_resignation_acceptance,,1,1,1,1
+access_employee_discipline,employee.discipline,model_employee_discipline,,1,1,1,1
+access_employee_Retirement,employee.retirement,model_employee_retirement,,1,1,1,1
+access_employee_termination,employee.termination,model_employee_termination,,1,1,1,1
+access_hr_discipline_user,employee.discipline user,model_employee_discipline,employee_registration.group_hr_discipline,1,1,1,0
+access_sms_wizard,sms.wizard,model_sms_wizard,base.group_system,1,1,1,0
+access_sms_wizard_hr,sms.wizard.hr,model_sms_wizard,hr.group_hr_user,1,1,1,0
+access_approval_remark_wizard,access_approval_remark_wizard,model_approval_remark_wizard,,1,1,1,1
+

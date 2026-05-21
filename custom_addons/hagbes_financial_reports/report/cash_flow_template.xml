@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_cash_flow">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <div class="page">
+                    <style>
+                        .table-sm th, .table-sm td { padding: 2px 5px; vertical-align: middle; }
+                        .section-header { background-color: #f2f2f2; font-weight: bold; text-transform: uppercase; }
+                        .group-header { font-weight: bold; }
+                        .account-line { padding-left: 20px; }
+                        .text-grey { color: #888; }
+                        .text-red { color: red; }
+                    </style>
+
+                    <div class="text-center mb-4">
+                        <h2 class="mt-0">Cash Flow Statement</h2>
+                        <div>
+                            <span t-esc="data['date_from']" t-options='{"widget": "date"}'/> - 
+                            <span t-esc="data['date_to']" t-options='{"widget": "date"}'/>
+                        </div>
+                    </div>
+
+                    <table class="table table-sm table-borderless">
+                        <thead>
+                            <tr class="border-bottom">
+                                <th style="width: 50%">Description</th>
+                                <th class="text-end">
+                                    <span t-esc="data['date_to']" t-options='{"widget": "date"}'/>
+                                </th>
+                                <t t-if="data['has_comparison']">
+                                    <th class="text-end">
+                                        <span t-esc="data['date_compare']" t-options='{"widget": "date"}'/>
+                                    </th>
+                                </t>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Summary Beginning Balance -->
+                            <t t-if="data.get('summary_lines') and len(data['summary_lines']) > 0">
+                                <tr class="section-header">
+                                    <td><span t-esc="data['summary_lines'][0]['name']"/></td>
+                                    <td class="text-end">
+                                        <span t-esc="data['summary_lines'][0]['current']" t-options='{"widget": "monetary", "display_currency": company.currency_id}'/>
+                                    </td>
+                                    <t t-if="data['has_comparison']">
+                                        <td class="text-end">
+                                            <span t-esc="data['summary_lines'][0]['previous']" t-options='{"widget": "monetary", "display_currency": company.currency_id}'/>
+                                        </td>
+                                    </t>
+                                </tr>
+                            </t>
+
+                            <t t-foreach="data['sections']" t-as="section">
+                                <!-- Group Header -->
+                                <tr class="group-header">
+                                    <td colspan="100%"><span t-esc="section['name']"/></td>
+                                </tr>
+                                
+                                <!-- Lines -->
+                                <tr t-foreach="section['lines']" t-as="line">
+                                    <td class="account-line">
+                                        <span t-esc="line['name']"/>
+                                    </td>
+                                    <td class="text-end">
+                                        <span t-att-class="'text-red' if line['current'] &lt; 0 else ('text-grey' if line['current'] == 0 else '')" 
+                                              t-esc="line['current']" t-options='{"widget": "monetary", "display_currency": company.currency_id}'/>
+                                    </td>
+                                    <t t-if="data['has_comparison']">
+                                        <td class="text-end">
+                                            <span t-att-class="'text-red' if line['previous'] &lt; 0 else ('text-grey' if line['previous'] == 0 else '')" 
+                                                  t-esc="line['previous']" t-options='{"widget": "monetary", "display_currency": company.currency_id}'/>
+                                        </td>
+                                    </t>
+                                </tr>
+                                
+                                <!-- Group Total -->
+                                <tr class="fw-bold border-top">
+                                    <td class="ps-4"><span t-esc="section.get('total_name', 'Total')"/></td>
+                                    <td class="text-end">
+                                        <span t-att-class="'text-red' if section['total_current'] &lt; 0 else ''" 
+                                              t-esc="section['total_current']" t-options='{"widget": "monetary", "display_currency": company.currency_id}'/>
+                                    </td>
+                                    <t t-if="data['has_comparison']">
+                                        <td class="text-end">
+                                            <span t-att-class="'text-red' if section['total_previous'] &lt; 0 else ''" 
+                                                  t-esc="section['total_previous']" t-options='{"widget": "monetary", "display_currency": company.currency_id}'/>
+                                        </td>
+                                    </t>
+                                </tr>
+                            </t>
+
+                            <!-- Summary Net Increase & Closing -->
+                            <t t-if="data.get('summary_lines')">
+                                <t t-foreach="data['summary_lines'][1:]" t-as="sum_line">
+                                    <tr class="section-header">
+                                        <td><span t-esc="sum_line['name']"/></td>
+                                        <td class="text-end">
+                                            <span t-esc="sum_line['current']" t-options='{"widget": "monetary", "display_currency": company.currency_id}'/>
+                                        </td>
+                                        <t t-if="data['has_comparison']">
+                                            <td class="text-end">
+                                                <span t-esc="sum_line['previous']" t-options='{"widget": "monetary", "display_currency": company.currency_id}'/>
+                                            </td>
+                                        </t>
+                                    </tr>
+                                </t>
+                            </t>
+                        </tbody>
+                    </table>
+                </div>
+            </t>
+        </t>
+    </template>
+
+    <record id="action_report_cash_flow" model="ir.actions.report">
+        <field name="name">Cash Flow Statement</field>
+        <field name="model">custom.cash.flow.wizard</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">custom_financial_reports.report_cash_flow</field>
+        <field name="report_file">custom_financial_reports.report_cash_flow</field>
+        <field name="binding_model_id" ref="model_custom_cash_flow_wizard"/>
+        <field name="binding_type">report</field>
+    </record>
+</odoo>

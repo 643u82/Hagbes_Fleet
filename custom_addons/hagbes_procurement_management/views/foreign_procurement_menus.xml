@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Hide default Purchase menus -->
+        <record id="purchase.menu_procurement_management" model="ir.ui.menu">
+            <field name="groups_id" eval="[(6, 0, [ref('base.group_no_one')])]"/>
+        </record>
+
+      
+        <record id="purchase.menu_purchase_root" model="ir.ui.menu">
+            <field name="groups_id" eval="[(6, 0, [ref('purchase.group_purchase_user')])]"/>
+        </record>
+
+        <record id="purchase.menu_purchase_rfq" model="ir.ui.menu">
+            <field name="groups_id" eval="[(6, 0, [ref('base.group_no_one')])]"/>
+        </record>
+        <record id="purchase.menu_purchase_form_action" model="ir.ui.menu">
+            <field name="groups_id" eval="[(6, 0, [ref('base.group_no_one')])]"/>
+        </record>
+        
+        <record id="purchase.menu_purchase_products" model="ir.ui.menu">
+            <field name="active" eval="False"/>
+        </record>
+
+      
+        <record id="purchase.menu_purchase_config" model="ir.ui.menu">
+            <field name="active" eval="False"/>
+        </record>
+
+        <!-- FOREIGN PROCUREMENT SECTION -->
+        <menuitem id="menu_foreign_procurement_root"
+                  name="Foreign Procurement"
+                  parent="purchase.menu_purchase_root"
+                  sequence="50"
+                  groups="hagbes_procurement_management.group_foreign_procurement_user"/>
+
+        <!-- Restrict entire procurement subtree by applying the group on this section -->
+        <menuitem id="menu_procurement_section"
+                  name="Procurement"
+                  parent="menu_foreign_procurement_root"
+                  sequence="5"
+                  groups="hagbes_procurement_management.group_foreign_procurement_user"/>
+
+        <menuitem id="menu_purchase_requests"
+                  name="Purchase Requests"
+                  parent="menu_procurement_section"
+                  action="action_purchase_request"
+                  sequence="5"
+                  groups="hagbes_procurement_management.group_foreign_procurement_user"/>
+
+        <menuitem id="menu_manual_inventory"
+                  name="Manual Inventory Entry"
+                  parent="purchase.menu_purchase_root"
+                  action="action_manual_inventory_entry"
+                  sequence="10"
+                  groups="hagbes_procurement_management.group_manual_inventory_user"/>
+
+
+        <record id="action_foreign_purchase_orders" model="ir.actions.act_window">
+            <field name="name">Foreign Purchase Orders</field>
+            <field name="res_model">purchase.order</field>
+            <field name="view_mode">list,form</field>
+            <field name="domain">[('order_type', '=', 'foreign')]</field>
+            <field name="context">{ 'default_order_type': 'foreign', 'search_default_approved': 1 }</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create your first foreign purchase order!
+                </p>
+                <p>
+                    Purchase orders for foreign suppliers with special procurement processes.
+                </p>
+            </field>
+            <field name="groups_id" eval="[(6,0,[ref('hagbes_procurement_management.group_foreign_procurement_user')])]"/>
+        </record>
+
+        <menuitem id="menu_foreign_purchase_orders"
+                  name="Purchase Orders"
+                  parent="menu_procurement_section"
+                  action="action_foreign_purchase_orders"
+                  sequence="20"
+                  groups="hagbes_procurement_management.group_foreign_procurement_user"/>
+
+        <menuitem id="menu_foreign_payment_requests"
+                  name="Payment Requests"
+                  parent="menu_foreign_procurement_root"
+                  sequence="15"
+                  groups="hagbes_procurement_management.group_foreign_procurement_user"/>
+
+        <menuitem id="menu_foreign_payment_request_all"
+                  name=" Requests"
+                  parent="menu_foreign_payment_requests"
+                  action="action_foreign_payment_request"
+                  sequence="10"
+                  groups="hagbes_procurement_management.group_foreign_procurement_user"/>
+
+        <menuitem id="menu_foreign_bank_process"
+                  name="Bank Follow-up"
+                  parent="menu_foreign_procurement_root"
+                  sequence="10"
+                  groups="hagbes_procurement_management.group_foreign_procurement_user"/>
+
+        <menuitem id="menu_foreign_bank_process_all"
+                  name="Bank Processes"
+                  parent="menu_foreign_bank_process"
+                  action="action_foreign_bank_process"
+                  sequence="10"
+                  groups="hagbes_procurement_management.group_foreign_procurement_user"/>
+
+        <!-- <menuitem id="menu_foreign_shipment"
+                  name="Shipment Tracking"
+                  parent="menu_foreign_procurement_root"
+                  sequence="30"
+                  groups="hagbes_procurement_management.group_foreign_procurement_user"/>
+
+        <menuitem id="menu_foreign_shipment_all"
+                  name="Shipments"
+                  parent="menu_foreign_shipment"
+                  action="hagbes_procurement_management.action_foreign_shipment"
+                  sequence="1"
+                  groups="hagbes_procurement_management.group_foreign_procurement_user"/> -->
+
+        <menuitem id="menu_foreign_landing"
+                  name="Landing Process"
+                  parent="menu_foreign_procurement_root"
+                  sequence="40"
+                  groups="hagbes_procurement_management.group_foreign_procurement_user"/>
+
+        <menuitem id="menu_foreign_costing"
+                  name="Costing &amp; Landed Costs"
+                  parent="menu_foreign_landing"
+                  action="action_foreign_costing"
+                  sequence="27"
+                  groups="hagbes_procurement_management.group_foreign_procurement_user"/>
+
+        <!-- Transit Management -->
+        <menuitem id="menu_transit_management_section"
+                  name="Transit Management"
+                  parent="menu_foreign_procurement_root"
+                  sequence="15"
+                  groups="hagbes_procurement_management.group_foreign_procurement_transit"/>
+
+        <menuitem id="menu_transit_management"
+                  name="Transit Processes"
+                  parent="menu_transit_management_section"
+                  action="action_foreign_transit_process"
+                  sequence="10"
+                  groups="hagbes_procurement_management.group_foreign_procurement_transit"/>
+
+        <!-- The LOCAL PROCUREMENT SECTION was removed from this file to avoid conflicts. Its definitions are in local_procurement_menus.xml -->
+        <menuitem id="menu_unified_vendors_root"
+                  name="Vendors"
+                  parent="purchase.menu_purchase_root"
+                  sequence="65"
+                  groups="purchase.group_purchase_user"/>
+
+        <!-- Vendor Management Submenus -->
+        <menuitem id="menu_all_vendors"
+                  name="All Vendors"
+                  parent="menu_unified_vendors_root"
+                  action="base.action_partner_supplier_form"
+                  sequence="10"/>
+
+        <menuitem id="menu_foreign_vendors"
+                  name="Foreign Vendors"
+                  parent="menu_unified_vendors_root"
+                  sequence="20"/>
+
+        <menuitem id="menu_local_vendors_list"
+                  name="Local Vendors"
+                  parent="menu_unified_vendors_root"
+                  sequence="30"/>
+
+        <menuitem id="menu_vendor_categories_unified"
+                  name="Vendor Categories"
+                  parent="menu_unified_vendors_root"
+                  action="base.action_partner_category_form"
+                  sequence="40"/>
+
+        <menuitem id="menu_vendor_evaluation_unified"
+                  name="Vendor Evaluation"
+                  parent="menu_unified_vendors_root"
+                  sequence="50"/>
+
+        <!-- SALES PRICE UPDATE SECTION -->
+<!-- 
+
+        <menuitem id="menu_sales_price_update_root"
+                  name="Sales Price Update"
+                  parent="purchase.menu_purchase_root"
+                  sequence="70"
+                  groups="base.group_user"/>
+
+     
+        <menuitem id="menu_sales_price_dashboard"
+                  name="Dashboard"
+                  parent="menu_sales_price_update_root"
+                  sequence="1"/>
+
+       
+        <menuitem id="menu_price_management_section"
+                  name="Price Management"
+                  parent="menu_sales_price_update_root"
+                  sequence="5"/>
+
+        <menuitem id="menu_price_lists"
+                  name="Price Lists"
+                  parent="menu_price_management_section"
+                  sequence="10"/>
+
+        <menuitem id="menu_price_updates"
+                  name="Price Updates"
+                  parent="menu_price_management_section"
+                  sequence="20"/>
+
+        <menuitem id="menu_bulk_price_update"
+                  name="Bulk Price Update"
+                  parent="menu_price_management_section"
+                  sequence="30"/>
+
+        <menuitem id="menu_price_analysis_section"
+                  name="Price Analysis"
+                  parent="menu_sales_price_update_root"
+                  sequence="10"/>
+
+        <menuitem id="menu_price_comparison"
+                  name="Price Comparison"
+                  parent="menu_price_analysis_section"
+                  sequence="10"/>
+
+        <menuitem id="menu_margin_analysis"
+                  name="Margin Analysis"
+                  parent="menu_price_analysis_section"
+                  sequence="20"
+                  action="action_foreign_transit_process"
+                  />
+                    
+
+        <menuitem id="menu_price_history_section"
+                  name="Price History"
+                  parent="menu_sales_price_update_root"
+                  sequence="15"/>
+
+        <menuitem id="menu_price_change_log"
+                  name="Price Change Log"
+                  parent="menu_price_history_section"
+                  sequence="10"/>
+
+     
+        <menuitem id="menu_sales_price_reports"
+                  name="Reports"
+                  parent="menu_sales_price_update_root"
+                  sequence="20"/> -->
+
+    </data>
+</odoo>

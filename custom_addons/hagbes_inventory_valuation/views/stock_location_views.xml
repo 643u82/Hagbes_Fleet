@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_location_form_inherit_stock_valuation" model="ir.ui.view">
+        <field name="name">stock.location.form.inherit.stock.valuation</field>
+        <field name="model">stock.location</field>
+        <field name="inherit_id" ref="stock.view_location_form"/>
+        <field name="arch" type="xml">
+           
+            <xpath expr="//group[@name='additional_info']" position="after">
+
+                <group string="ACCOUNTING INFORMATION" name="accounting_info_section">
+    <field name="use_custom_accounts"/>
+    <field name="valuation_in_account_id" string="Stock Valuation Account (Incoming)"/>
+    <field name="valuation_out_account_id" string="Stock Valuation Account (Outgoing)"/>
+</group>
+
+<!--                <group string="ACCOUNTING INFORMATION" name="accounting_info_section"-->
+<!--                       attrs="{'invisible': [('usage', '!=', 'inventory')]}">-->
+<!--                    <field name="use_custom_accounts" invisible="1"/>-->
+<!--                    <field name="valuation_in_account_id" -->
+<!--                           string="Stock Valuation Account (Incoming)"/>-->
+<!--                    <field name="valuation_out_account_id" -->
+<!--                           string="Stock Valuation Account (Outgoing)"/>-->
+<!--                </group>-->
+            </xpath>
+            
+        </field>
+    </record>
+</odoo>

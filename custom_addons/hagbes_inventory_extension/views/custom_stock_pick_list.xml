@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+  <data>
+
+      <record id="your_custom_view_id" model="ir.ui.view">
+            <field name="name">Your View</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="stock.vpicktree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//list" position="attributes">
+                    <attribute name="create">false</attribute>
+                </xpath>
+            </field>
+      </record>
+
+    <record id="custom_stock_picking_tree" model="ir.ui.view">
+      <field name="name">stock.picking.tree.confirm_buttons</field>
+      <field name="model">stock.picking</field>
+      <field name="inherit_id" ref="stock.vpicktree"/>
+      <field name="arch" type="xml">
+         <xpath expr="//list/field[@name='state']" position="after">
+            <button name="button_validate" type="object" class="oe_inline oe_highlight"
+                        string="Confirm Receive"
+                        invisible="picking_type_code != 'incoming' or state != 'assigned'"/>
+            <button name="button_validate" type="object" class="oe_inline oe_highlight"
+                string="Confirm Delivery"
+                invisible="picking_type_code != 'outgoing' or state != 'assigned'"/>
+              <button name="button_validate" type="object" class="oe_inline oe_highlight"
+                string="Return" invisible="picking_type_code != 'exhibition_receive' or exhibition_issue"/>
+        </xpath>
+<!--          <xpath expr="//list/field[@name='state']" position="before">-->
+<!--                <field name="remark"/>-->
+<!--        </xpath>-->
+      </field>
+    </record>
+
+  </data>
+</odoo>
+

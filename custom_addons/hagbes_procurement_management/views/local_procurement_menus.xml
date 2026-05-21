@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Local Procurement Menus and Actions -->
+
+        <!-- Action: Local Purchase Requests (purchase.request filtered by request_type='local') -->
+        <record id="action_local_purchase_request" model="ir.actions.act_window">
+            <field name="name">Local Purchase Requests</field>
+            <field name="res_model">purchase.request</field>
+            <field name="view_mode">list,form</field>
+            <field name="domain">[("request_type","=","local")]</field>
+            <field name="context">{'search_default_my_requests': 0, 'default_request_type': 'local'}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create your first local purchase request!
+                </p>
+                <p>
+                    Purchase requests for local procurement processes.
+                </p>
+            </field>
+            <field name="groups_id" eval="[(6,0,[ref('base.group_user')])]"/>
+        </record>
+
+        <!-- Local Procurement Root -->
+        <menuitem id="menu_local_procurement_root"
+                  name="Local Procurement"
+                  parent="purchase.menu_purchase_root"
+                  sequence="60"
+                  groups="base.group_user"/>
+
+        <!-- Local Dashboard -->
+        <menuitem id="menu_local_procurement_dashboard"
+                  name="Dashboard"
+                  parent="menu_local_procurement_root"
+                  sequence="1"/>
+
+        <!-- Local Procurement Section -->
+        <menuitem id="menu_local_procurement_section"
+                  name="Procurement"
+                  parent="menu_local_procurement_root"
+                  sequence="5"/>
+
+        <!-- Local Purchase Requests (links to action_local_purchase_request) -->
+        <menuitem id="menu_local_purchase_requests"
+              name="Purchase Requests"
+              parent="menu_local_procurement_section"
+              action="action_local_purchase_request_main"
+              sequence="5"
+              groups="base.group_user"/>
+
+        <!-- Local RFQ and Purchase Orders are defined elsewhere in the module (action_local_rfq, action_local_purchase_orders).
+             The menus below use existing actions if present; if your module already defines these, they will be linked. -->
+
+        <menuitem id="menu_local_rfq"
+                  name="RFQ (Request for Quotation)"
+                  parent="menu_local_procurement_section"
+                  action="action_local_rfq"
+                  sequence="10"
+                  groups="base.group_user"/>
+
+        <menuitem id="menu_local_purchase_orders"
+                  name="Purchase Orders"
+                  parent="menu_local_procurement_section"
+                  action="action_local_purchase_orders"
+                  sequence="20"
+                  groups="base.group_user"/>
+
+        <!-- Optional: Local Delivery & Receiving and Reports -->
+        <menuitem id="menu_local_delivery"
+                  name="Delivery and Receiving"
+                  parent="menu_local_procurement_root"
+                  sequence="20"
+                  groups="base.group_user"/>
+
+        <menuitem id="menu_local_reports"
+                  name="Reports"
+                  parent="menu_local_procurement_root"
+                  sequence="30"
+                  groups="base.group_user"/>
+
+    </data>
+</odoo>

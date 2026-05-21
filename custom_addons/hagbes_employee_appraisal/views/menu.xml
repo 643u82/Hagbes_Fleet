@@ -1,0 +1,6 @@
+<odoo>
+    <!-- Root menu under HR -->
+    <menuitem id="menu_employee_appraisal_root"
+              name="Employee Appraisal"
+              parent="hr.menu_hr_root"/>
+</odoo>

@@ -1,0 +1,16 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_product_interchange,access.product.interchange,model_product_interchange,base.group_user,1,1,1,1
+access_interstock_transfer_user,access.interstock.transfer.user,model_interstock_transfer,base.group_user,1,1,1,1
+access_stock_quant_stock_user,stock.quant user,stock.model_stock_quant,hagbes_inventory_extension.group_custom_stock_user,1,1,0,0
+access_stock_quant_stock_approve,stock.quant approve,stock.model_stock_quant,hagbes_inventory_extension.group_custom_approve_adjustment,1,1,1,1
+access_stock_quant_user,stock.quant user (customized),stock.model_stock_quant,stock.group_stock_user,0,0,0,0
+access_stock_quant_all,stock.quant all users (customized),stock.model_stock_quant,base.group_user,0,0,0,0
+access_requested_items,access.requested.items,model_request_items,base.group_user,1,1,1,1
+access_issue_requests,access.issue.requests,model_issue_requests,base.group_user,1,1,1,1
+access_issue_requests_items,access.issue.items.requests,model_issue_requests_items,base.group_user,1,1,1,1
+access_exhibition_requests,access.exhibition.requests,model_exhibition_requests,base.group_user,1,1,1,1
+access_exhibition_requests_items,access.exhibition.items.requests,model_exhibition_requests_items,base.group_user,1,1,1,1
+access_exhibition_modal,access.exhibition.modal,model_exhibition_return_modal,base.group_user,1,1,1,1
+access_exhibition_modal_return_items,access.exhibition.modal.return.items,model_exhibition_return_modal_items,base.group_user,1,1,1,1
+access_modal_adjust_stock,access.adjust.stock,model_stock_adjust_wizard,base.group_user,1,1,1,1
+access_backorder_modal,access.backorder.modal,model_backorder_remark_wizard,base.group_user,1,1,1,1

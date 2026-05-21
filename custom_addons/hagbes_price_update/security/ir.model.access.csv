@@ -1,0 +1,9 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_product_price_history_user,product.price.history.user,model_product_price_history,base.group_user,1,0,0,0
+access_product_price_history_sales_user,product.price.history.sales.user,model_product_price_history,sales_team.group_sale_salesman,1,1,1,0
+access_product_price_history_sales_manager,product.price.history.sales.manager,model_product_price_history,sales_team.group_sale_manager,1,1,1,1
+access_product_price_update_wizard_user,product.price.update.wizard.user,model_product_price_update_wizard,base.group_user,1,1,1,1
+access_product_price_update_preview_user,product.price.update.preview.user,model_product_price_update_preview,base.group_user,1,1,1,1
+access_product_group_user,product.group.user,model_product_group,base.group_user,1,0,0,0
+access_product_group_sales_user,product.group.sales.user,model_product_group,sales_team.group_sale_salesman,1,1,1,0
+access_product_group_sales_manager,product.group.sales.manager,model_product_group,sales_team.group_sale_manager,1,1,1,1

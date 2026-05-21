@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Sequence for Fleet Requisition -->
+        <record id="seq_fleet_requisition" model="ir.sequence">
+            <field name="name">Fleet Requisition</field>
+            <field name="code">fleet.requisition</field>
+            <field name="prefix">REQ/%(year)s/</field>
+            <field name="padding">4</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <!-- Sequence for Fleet Trip -->
+        <record id="seq_fleet_trip" model="ir.sequence">
+            <field name="name">Fleet Trip</field>
+            <field name="code">fleet.trip</field>
+            <field name="prefix">TRP/%(year)s/</field>
+            <field name="padding">4</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <!-- Sequence for Fleet Allocation -->
+        <record id="seq_fleet_allocation" model="ir.sequence">
+            <field name="name">Fleet Allocation</field>
+            <field name="code">hagbes.fleet.allocation</field>
+            <field name="prefix">ALLOC/%(year)s/</field>
+            <field name="padding">4</field>
+            <field name="company_id" eval="False"/>
+        </record>
+    </data>
+</odoo>

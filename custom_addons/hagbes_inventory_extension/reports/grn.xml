@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Report Action -->
+    <record id="grn_report" model="ir.actions.report">
+        <field name="name">Good Receiving Note</field>
+        <field name="model">stock.picking</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">hagbes_inventory_extension.report_custom_picking</field>
+        <!-- report_file is not needed in Odoo 18 -->
+    </record>
+
+    <!-- Report Template -->
+    <template id="report_custom_picking">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+            <t t-set="company" t-value="company"/>
+            <t t-call="web.external_layout">
+
+                    <div class="page">
+                        <!-- Header Section -->
+                        <div style="text-align: center; margin: 30px 0;">
+                            <h3 style="margin: 0;"><u>Good Receiving Note</u></h3>
+                        </div>
+
+                        <!-- Supplier / Order Info -->
+                        <div style="margin: 30px;">
+                            <div class="row">
+                                <div class="col-8">
+                                    <strong>Supplier Name: </strong>
+                                    <span t-field="o.partner_id"></span>
+                                </div>
+                                <div class="col-4">
+                                    <strong>Supplier Invoice Number:</strong>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-8">
+                                    <strong>Purchase Order Number:</strong>
+                                    <span t-field="o.origin"></span>
+                                </div>
+                                <div class="col-4">
+                                    <strong>Date Of Delivery:</strong>
+                                    <span t-esc="o.date_done"></span>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-8">
+                                    <strong>Purchase Requisition Number:</strong>
+                                </div>
+                                <div class="col-4">
+                                    <strong>Terms Of Payment:</strong>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Product Lines Table -->
+                        <div style="margin: 30px;">
+                            <table class="table table-sm table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Item No</th>
+                                        <th>Part No</th>
+                                        <th>Description</th>
+                                        <th>Unit Of M</th>
+                                        <th>Qty</th>
+                                        <th>Remark</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr t-foreach="o.move_ids_without_package" t-as="items" t-foreach-index="i">
+                                        <td><span t-esc="o_index + 1"/></td>
+                                        <td><span t-field="items.product_id.default_code"></span></td>
+                                        <td><span t-field="items.product_id.display_name"></span></td>
+                                        <td><span t-field="items.product_uom.name"></span></td>
+                                        <td><span t-field="items.product_uom_qty"></span></td>
+                                        <td><span t-field="items.remark"></span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Signatures -->
+                        <div class="row" style="margin: 30px 0;">
+                            <div class="col-4">
+                                <strong>Prepared By:</strong>
+                                <u><span t-esc="o.write_uid.name or 'N/A'"></span></u>
+                            </div>
+                            <div class="col-4">
+                                <strong>Checked By: ______________________________</strong>
+                            </div>
+                            <div class="col-4">
+                                <strong>Import Representative: ____________________</strong>
+                            </div>
+                        </div>
+
+                        <!-- Distribution Info -->
+                        <div style="margin-top: 30px; margin-left: 30px;">
+                            <strong>Distribution</strong>
+                            <div class="ms-3">
+                                <span>Original <b>Accountant</b> | 1st copy <b>Purchase</b> | 2nd copy <b>Store</b></span>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

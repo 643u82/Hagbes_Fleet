@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- 1️⃣ Form View: restrict partner_id to companies -->
+    <record id="view_crm_lead_form_company_only" model="ir.ui.view">
+        <field name="name">crm.lead.form.company.only</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_lead_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//group[@name='opportunity_partner']/field[@name='partner_id']" position="attributes">
+                <attribute name="domain">[('is_company','=',True)]</attribute>
+                <attribute name="context">{'default_is_company': True}</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- 2️⃣ Kanban View: for display -->
+    <record id="view_crm_lead_kanban_partner_company_only" model="ir.ui.view">
+        <field name="name">crm.lead.kanban.partner.company.only</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_case_kanban_view_leads"/>
+        <field name="arch" type="xml">
+            <!-- partner_id displayed on kanban card -->
+            <field name="partner_id" position="attributes">
+                <attribute name="domain">[('is_company','=',True)]</attribute>
+                <attribute name="context">{'default_is_company': True}</attribute>
+            </field>
+        </field>
+    </record>
+
+    <!-- 3️⃣ Quick Create Pop-up: restrict partner_id -->
+    <record id="view_crm_lead_quick_create_company_only" model="ir.ui.view">
+        <field name="name">crm.lead.quick.create.partner.company.only</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.quick_create_opportunity_form"/>
+        <field name="arch" type="xml">
+            <field name="partner_id" position="attributes">
+                <attribute name="domain">[('is_company','=',True)]</attribute>
+                <attribute name="context">{'default_is_company': True}</attribute>
+            </field>
+        </field>
+    </record>
+</odoo>

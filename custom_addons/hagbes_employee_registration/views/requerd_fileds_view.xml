@@ -1,0 +1,80 @@
+<odoo>
+  <record id="view_employee_form_inherit_required_fields" model="ir.ui.view"> 
+    <field name="name">hr.employee.form.required.fields</field>
+    <field name="model">hr.employee</field>
+    <field name="inherit_id" ref="hr.view_employee_form"/>
+    <field name="arch" type="xml">
+       
+        <field name="parent_id" position="attributes">
+            <attribute name="readonly">1</attribute>
+        </field> 
+      <!-- Add required work_email -->
+        <field name="work_email" position="attributes">
+            <attribute name="required">1</attribute>
+        </field>
+        <field name="department_id" position="attributes">
+            <attribute name="required">1</attribute>
+        </field>
+        <field name="work_phone" position="attributes">
+            <attribute name="required">1</attribute>
+        </field>
+        <field name="branch_id" position="attributes">
+            <attribute name="required">1</attribute>
+        </field>
+        <field name="company_id" position="attributes">
+            <attribute name="required">1</attribute>
+        </field>
+        <field name="job_id" position="attributes">
+            <attribute name="required">1</attribute>
+        </field>
+        <!-- <field name="employment_type" position="attributes"> -->
+            <!-- <attribute name="required">1</attribute> -->
+        <!-- </field> -->
+        <!-- <field name="hired_date" position="attributes"> -->
+            <!-- <attribute name="required">1</attribute> -->
+        <!-- </field> -->
+
+
+
+      <!-- Add required identification_id -->
+        <field name="identification_id" position="attributes">
+           <!-- <attribute name="required">1</attribute> -->
+        </field>
+
+      <!-- Add required resident_id -->
+        <field name="resident_id" position="attributes">
+           <!-- <attribute name="required">1</attribute> -->
+        </field>
+
+        <field name="birthday" position="attributes">
+            <attribute name="required">1</attribute>
+        </field>
+
+        <field name="place_of_birth" position="attributes">
+           <!-- <attribute name="required">1</attribute> -->
+        </field>
+
+        <field name="country_of_birth" position="attributes">
+           <!-- <attribute name="required">1</attribute> -->
+        </field>
+
+          <field name="certificate" position="attributes">
+           <!-- <attribute name="required">1</attribute> -->
+        </field>
+
+          <field name="study_field" position="attributes">
+           <!-- <attribute name="required">1</attribute> -->
+        </field>
+
+          <field name="study_school" position="attributes">
+           <!-- <attribute name="required">1</attribute> -->
+        </field>
+                    <!-- Add TIN and Pension ID below Passport ID -->
+            <xpath expr="//field[@name='passport_id']" position="after">
+                <field name="tin_no"/>
+                <field name="pension_id"/>
+            </xpath>
+
+    </field>
+  </record>
+</odoo>

@@ -1,0 +1,30 @@
+<odoo>
+    <!-- Root menu -->
+    <menuitem id="menu_bank_reco_root" name="Bank Reconciliation"/>
+
+    <!-- Ledger action -->
+    <record id="action_bank_reco_ledger" model="ir.actions.act_window">
+        <field name="name">Agresso Ledger</field>
+        <field name="res_model">bank_reco.ledger</field>
+        <field name="view_mode">list</field>
+    </record>
+
+    <!-- Ledger menu -->
+    <menuitem id="menu_bank_reco_ledger"
+              name="Agresso Ledger"
+              parent="menu_bank_reco_root"
+              action="action_bank_reco_ledger" groups="base.group_system"/>
+
+    <!-- Reconciliation action -->
+    <record id="action_bank_reco_header" model="ir.actions.act_window">
+        <field name="name">Bank Reconciliations</field>
+        <field name="res_model">bank_reco.header</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- Reconciliation menu -->
+    <menuitem id="menu_bank_reco_header"
+              name="Reconciliations"
+              parent="menu_bank_reco_root"
+              action="action_bank_reco_header"/>
+</odoo>

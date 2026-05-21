@@ -1,0 +1,12 @@
+.o_account_reports_body {
+    background-color: white;
+    padding: 20px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+    min-height: 100%;
+}
+
+.o_account_reports_body h2 {
+    color: #212529;
+    font-weight: 600;
+    margin-bottom: 10px;
+}

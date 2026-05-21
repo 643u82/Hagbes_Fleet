@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Allocation Tree View -->
+    <record id="view_fleet_allocation_tree" model="ir.ui.view">
+        <field name="name">hagbes.fleet.allocation.tree</field>
+        <field name="model">hagbes.fleet.allocation</field>
+        <field name="arch" type="xml">
+            <list string="Allocations">
+                <field name="name"/>
+                <field name="request_id"/>
+                <field name="vehicle_id"/>
+                <field name="driver_id"/>
+                <field name="allocation_date"/>
+                <field name="return_date"/>
+                <field name="planned_distance"/>
+                <field name="state" decoration-success="state == 'returned'" decoration-info="state == 'assigned'"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Allocation Form View -->
+    <record id="view_fleet_allocation_form" model="ir.ui.view">
+        <field name="name">hagbes.fleet.allocation.form</field>
+        <field name="model">hagbes.fleet.allocation</field>
+        <field name="arch" type="xml">
+            <form string="Fleet Allocation">
+                <header>
+                    <button name="action_assign_vehicle"
+                            type="object"
+                            string="Confirm Assignment"
+                            class="btn-primary"
+                            invisible="state != 'draft'"
+                            groups="hagbes_fleet.group_fmo,hagbes_fleet.group_fleet_admin"/>
+                    <button name="action_dispatch_vehicle"
+                            type="object"
+                            string="Dispatch Vehicle"
+                            class="btn-primary"
+                            invisible="state != 'assigned'"
+                            groups="hagbes_fleet.group_fmo,hagbes_fleet.group_fleet_admin"/>
+                    <button name="action_return_vehicle"
+                            type="object"
+                            string="Return Vehicle"
+                            class="btn-primary"
+                            invisible="state != 'in_progress'"
+                            groups="hagbes_fleet.group_fmo,hagbes_fleet.group_fleet_admin"/>
+                    <button name="action_complete_allocation"
+                            type="object"
+                            string="Complete"
+                            class="btn-success"
+                            invisible="state != 'returned'"
+                            groups="hagbes_fleet.group_fmo,hagbes_fleet.group_fleet_admin"/>
+                    <button name="action_reset_to_assigned"
+                            type="object"
+                            string="Reset to Assigned"
+                            class="btn-warning"
+                            invisible="state != 'returned'"
+                            groups="hagbes_fleet.group_fleet_admin"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,assigned,dispatched,in_progress,returned,completed"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="Allocation Details">
+                            <field name="request_id" readonly="state != 'draft'"/>
+                            <field name="vehicle_id" readonly="state != 'draft'"/>
+                            <field name="driver_id" readonly="state != 'draft'" domain="[('job_id.name', 'ilike', 'driver')]"/>
+                            <field name="allocation_date" readonly="state != 'draft'"/>
+                            <field name="return_date" readonly="1"/>
+                        </group>
+                        <group string="Trip Planning">
+                            <field name="assigned_odometer" readonly="state != 'draft'"/>
+                            <field name="planned_distance" readonly="state != 'draft'"/>
+                            <field name="fuel_estimate" readonly="state != 'draft'"/>
+                            <field name="trip_id" invisible="not trip_id"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Trip Logs" name="trip_logs">
+                            <field name="trip_log_ids">
+                                <list string="Trip Logs" editable="bottom">
+                                    <field name="start_time"/>
+                                    <field name="end_time"/>
+                                    <field name="start_odometer"/>
+                                    <field name="end_odometer"/>
+                                    <field name="actual_distance"/>
+                                    <field name="fuel_used"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Append Requests" name="append_requests">
+                            <field name="append_request_ids">
+                                <list string="Append Requests" editable="bottom">
+                                    <field name="additional_destination"/>
+                                    <field name="additional_distance"/>
+                                    <field name="reason"/>
+                                    <field name="create_date" string="Request Date"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Allocation Search View -->
+    <record id="view_fleet_allocation_search" model="ir.ui.view">
+        <field name="name">hagbes.fleet.allocation.search</field>
+        <field name="model">hagbes.fleet.allocation</field>
+        <field name="arch" type="xml">
+            <search string="Search Allocations">
+                <field name="name"/>
+                <field name="request_id"/>
+                <field name="vehicle_id"/>
+                <field name="driver_id"/>
+                <filter string="Assigned" name="filter_assigned" domain="[('state', '=', 'assigned')]"/>
+                <filter string="Returned" name="filter_returned" domain="[('state', '=', 'returned')]"/>
+                <separator/>
+                <filter string="This Month" name="filter_this_month" 
+                        domain="[('allocation_date', '&gt;=', (context_today() - relativedelta(day=1)).strftime('%Y-%m-%d')),
+                                 ('allocation_date', '&lt;=', (context_today() + relativedelta(day=31)).strftime('%Y-%m-%d'))]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Vehicle" name="group_vehicle" context="{'group_by': 'vehicle_id'}"/>
+                    <filter string="Driver" name="group_driver" context="{'group_by': 'driver_id'}"/>
+                    <filter string="State" name="group_state" context="{'group_by': 'state'}"/>
+                    <filter string="Allocation Date" name="group_allocation_date" context="{'group_by': 'allocation_date'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Allocation Calendar View -->
+    <record id="view_fleet_allocation_calendar" model="ir.ui.view">
+        <field name="name">hagbes.fleet.allocation.calendar</field>
+        <field name="model">hagbes.fleet.allocation</field>
+        <field name="arch" type="xml">
+            <calendar string="Allocations" 
+                      date_start="allocation_date" 
+                      date_stop="return_date" 
+                      color="vehicle_id" 
+                      mode="month" 
+                      quick_create="False">
+                <field name="name"/>
+                <field name="vehicle_id" filters="1"/>
+                <field name="driver_id" domain="[('job_id.name', 'ilike', 'driver')]" filters="1"/>
+                <field name="state" filters="1"/>
+            </calendar>
+        </field>
+    </record>
+
+    <!-- Allocation Action -->
+    <record id="action_fleet_allocation" model="ir.actions.act_window">
+        <field name="name">Allocations</field>
+        <field name="res_model">hagbes.fleet.allocation</field>
+        <field name="view_mode">list,calendar,form</field>
+        <field name="context">{'search_default_filter_assigned': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new allocation
+            </p>
+            <p>
+                Allocations formally link approved requisitions to specific vehicles and drivers.
+            </p>
+        </field>
+    </record>
+</odoo>

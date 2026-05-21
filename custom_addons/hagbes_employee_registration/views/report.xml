@@ -1,0 +1,18 @@
+<!-- hagbes_employee_registration/views/report.xml -->
+<odoo>
+    <record id="hr_employee_form_inherit_report_button" model="ir.ui.view">
+        <field name="name">hr.employee.form.inherit.report.button</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                      <button name="%(print_private_report)d"
+                            type="action"
+                            string="Print Report"
+                            class="btn-info"
+                           />
+            </xpath>
+            
+        </field>
+    </record>
+</odoo>

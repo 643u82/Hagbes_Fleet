@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+       <menuitem id="menu_sales_price_update_root"
+          name="Sales Price Update"
+          parent="purchase.menu_purchase_root"
+          sequence="70"
+          groups="hagbes_price_update.group_price_update_manager"/>
+ 
+        <!-- <menuitem id="menu_sales_price_update_root"
+                  name="Sales Price Update"
+                  parent="purchase.menu_purchase_root"
+                  sequence="70"
+                  groups="base.group_user"/> -->
+
+        <!-- Sales Price Dashboard -->
+        <menuitem id="menu_sales_price_dashboard"
+                  name="Dashboard"
+                  parent="menu_sales_price_update_root"
+                  sequence="1"/>
+
+        <!-- Product Groups Management -->
+        <!-- <menuitem id="menu_product_groups_section"
+                  name="Product Groups"
+                  parent="menu_sales_price_update_root"
+                  sequence="3"/>
+
+        <menuitem id="menu_product_groups"
+                  name="Product Groups"
+                  parent="menu_product_groups_section"
+                  sequence="10"
+                  action="action_product_group"/> -->
+
+        <!-- Price Management -->
+        <menuitem id="menu_price_management_section"
+                  name="Price Management"
+                  parent="menu_sales_price_update_root"
+                  sequence="5"/>
+<!-- 
+        <menuitem id="menu_price_lists"
+                  name="Price Lists"
+                  parent="menu_price_management_section"
+                  sequence="10"
+                  action="product.product_pricelist_action2"/> -->
+
+        <menuitem id="hagbes_price_update.menu_price_update_needed"
+                  name="Waiting for Price Update"
+                  parent="menu_price_management_section"
+                  sequence="15"
+                  action="hagbes_price_update.action_product_template_price_update_needed"/>
+
+        <menuitem id="menu_price_updates"
+                  name="Price Updates"
+                  parent="menu_price_management_section"
+                  sequence="20"
+                  action="action_product_price_update_wizard"/>
+
+        <!-- <menuitem id="menu_bulk_price_update"
+                  name="Bulk Price Update"
+                  parent="menu_price_management_section"
+                  sequence="30"
+                  action="action_product_price_update_wizard"/> -->
+
+        <!-- Price Analysis -->
+        <menuitem id="menu_price_analysis_section"
+                  name="Price Analysis"
+                  parent="menu_sales_price_update_root"
+                  sequence="10"/>
+
+        <!-- <menuitem id="menu_price_comparison"
+                  name="Price Comparison"
+                  parent="menu_price_analysis_section"
+                  sequence="10"
+                  action="product.product_template_action"/> -->
+
+        <menuitem id="menu_margin_analysis"
+                  name="Margin Analysis"
+                  parent="menu_price_analysis_section"
+                  sequence="20"
+                  action="product.product_template_action"/>
+
+        <!-- Price History -->
+        <menuitem id="menu_price_history_section"
+                  name="Price History"
+                  parent="menu_sales_price_update_root"
+                  sequence="15"/>
+
+        <menuitem id="menu_price_change_log"
+                  name="Price Change Log"
+                  parent="menu_price_history_section"
+                  sequence="10"
+                  action="action_product_price_history"/>
+
+        <!-- Reports -->
+        <menuitem id="menu_sales_price_reports"
+                  name="Reports"
+                  parent="menu_sales_price_update_root"
+                  sequence="20"/>
+
+        <!-- Additional Actions for Product Views -->
+ 
+        <record id="action_bulk_price_update_from_products" model="ir.actions.server">
+            <field name="name">Update Prices</field>
+            <field name="model_id" ref="product.model_product_product"/>
+            <field name="binding_model_id" ref="product.model_product_product"/>
+            <field name="binding_view_types">list</field>
+            <field name="state">code</field>
+            <field name="code">
+                if records:
+                    action = {
+                        'type': 'ir.actions.act_window',
+                        'res_model': 'product.price.update.wizard',
+                        'view_mode': 'form',
+                        'target': 'new',
+                        'context': {
+                            'default_product_ids': [(6, 0, records.ids)],
+                        }
+                    }
+            </field>
+        </record>
+
+     
+        <record id="action_bulk_price_update_from_templates" model="ir.actions.server">
+            <field name="name">Update Prices</field>
+            <field name="model_id" ref="product.model_product_template"/>
+            <field name="binding_model_id" ref="product.model_product_template"/>
+            <field name="binding_view_types">list</field>
+            <field name="state">code</field>
+            <field name="code">
+                if records:
+                    action = {
+                        'type': 'ir.actions.act_window',
+                        'res_model': 'product.price.update.wizard',
+                        'view_mode': 'form',
+                        'target': 'new',
+                        'context': {
+                            'default_product_template_ids': [(6, 0, records.ids)],
+                            'default_apply_to_variants': True,
+                        }
+                    }
+            </field>
+        </record>
+
+        <!-- Server Action for Bulk Price Update from Product Groups -->
+        <record id="action_bulk_price_update_from_groups" model="ir.actions.server">
+            <field name="name">Update Group Prices</field>
+            <field name="model_id" ref="model_product_group"/>
+            <field name="binding_model_id" ref="model_product_group"/>
+            <field name="binding_view_types">list</field>
+            <field name="state">code</field>
+            <field name="code">
+                if records:
+                    action = {
+                        'type': 'ir.actions.act_window',
+                        'res_model': 'product.price.update.wizard',
+                        'view_mode': 'form',
+                        'target': 'new',
+                        'context': {
+                            'default_product_group_ids': [(6, 0, records.ids)],
+                        }
+                    }
+            </field>
+        </record>
+
+        <!-- Dashboard Action (placeholder for future dashboard) -->
+        <record id="action_price_update_dashboard" model="ir.actions.act_window">
+            <field name="name">Price Update Dashboard</field>
+            <field name="res_model">product.price.history</field>
+            <field name="view_mode">graph,pivot,list</field>
+            <field name="context">{
+                'search_default_this_month': 1,
+                'group_by': ['update_date:day']
+            }</field>
+        </record>
+
+    
+        <record id="menu_sales_price_dashboard" model="ir.ui.menu">
+            <field name="action" ref="action_price_update_dashboard"/>
+        </record>
+
+        <!-- Price Analysis Actions -->
+        <record id="action_price_analysis_products" model="ir.actions.act_window">
+            <field name="name">Price Analysis</field>
+            <field name="res_model">product.template</field>
+            <field name="view_mode">list,form</field>
+            <field name="domain">[]</field>
+            <field name="context">{
+                'search_default_filter_to_sell': 1,
+            }</field>
+        </record>
+
+        <!-- Update Price Comparison menu -->
+        <!-- <record id="menu_price_comparison" model="ir.ui.menu">
+            <field name="action" ref="action_price_analysis_products"/>
+        </record> -->
+
+        <!-- Update Margin Analysis menu -->
+        <record id="menu_margin_analysis" model="ir.ui.menu">
+            <field name="action" ref="action_price_analysis_products"/>
+        </record>
+ 
+        <record id="action_price_reports" model="ir.actions.act_window">
+            <field name="name">Price Reports</field>
+            <field name="res_model">product.price.history</field>
+            <field name="view_mode">pivot,graph,list</field>
+            <field name="context">{
+                'group_by': ['product_id', 'update_date:month']
+            }</field>
+        </record>
+
+        <!-- Update Reports menu -->
+        <record id="menu_sales_price_reports" model="ir.ui.menu">
+            <field name="action" ref="action_price_reports"/>
+        </record>
+
+    </data>
+</odoo>

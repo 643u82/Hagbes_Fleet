@@ -1,0 +1,39 @@
+<odoo>
+
+    <record id="view_move_form_inherit_print_to_pos" model="ir.ui.view">
+        <field name="name">account.move.form.inherit.print.to.pos</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button name="print_to_pos"
+                        string="Print to POS"
+                        type="object"
+                        class="btn btn-primary"
+                        invisible="state != 'waiting_pos_print'"
+                        />
+               <button name="get_fs_number"
+                        string="Get FS Number"
+                        type="object"
+                        class="oe_highlight"
+                        invisible="state != 'waiting_fs_number' "
+                        />
+            </xpath>
+            <xpath expr="//group[@id='header_left_group']" position="inside">
+               
+                    <field name="manual_invoice"/>
+                    <field name="ref" readonly='not manual_invoice'/>
+                
+            </xpath>
+            <xpath expr="//group[@id='other_tab_group']" position= "inside">
+                <group string='FS Info' name='fs_info'>
+                    <field name='ref' string='FS Number'/>
+                    <field name='ej_number'/>
+                    <field name='machine_id'/>
+                </group>
+            </xpath>
+            
+        </field>
+    </record>
+    
+</odoo>

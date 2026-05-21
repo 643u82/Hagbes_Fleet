@@ -1,0 +1,14 @@
+<odoo>
+    <!-- Custom group for approving time off -->
+    <record id="group_timeoff_approver" model="res.groups">
+        <field name="name">Time Off Approver</field>
+        <field name="category_id" ref="base.module_category_human_resources_time_off"/>
+    </record>
+    <!-- HR Head Office Access Group -->
+    <record id="group_backdate_requester" model="res.groups">
+        <field name="name">Backdate requester</field>
+        <field name="category_id" ref="base.module_category_human_resources_time_off"/>
+    </record>
+
+
+</odoo>

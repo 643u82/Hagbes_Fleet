@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="rule_hr_employee_public_own_only" model="ir.rule">
+        <field name="name">Public Employee - See Own Record</field>
+        <field name="model_id" ref="hr.model_hr_employee_public"/>
+        <field name="domain_force">[('user_id', '=', user.id)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+    <record id="rule_hr_employee_public_read_others_record" model="ir.rule">
+        <field name="name">Public Employee - See others Record</field>
+        <field name="model_id" ref="hr.model_hr_employee_public"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+        <field name="groups" eval="[
+           (4, ref('custom_org_chart_extension.group_org_chart_view_only')),
+          (4, ref('hr.group_hr_user'))
+          ]"/>
+
+    </record>
+    <!-- access -->
+    <!-- <record id="employee_resignation_own_rule" model="ir.rule">
+        <field name="name">See Own Resignations</field>
+        <field name="model_id" ref="model_employee_resignation"/>
+        <field name="domain_force">[('employee_id.user_id.id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record> -->
+    <!-- <record id="rule_resignation_hr" model="ir.rule">
+        <field name="name">HR: See All Resignations</field>
+        <field name="model_id" ref="model_employee_resignation"/>
+        <field name="domain_force">[(1,'=',1)]</field> 
+        <field name="groups" eval="[(4, ref('hr.group_hr_user'))]"/>
+    </record> -->
+    <!-- discipline -->
+    <!-- <record id="rule_resignation_hr" model="ir.rule">
+        <field name="name">HR: See All Resignations</field>
+        <field name="model_id" ref="model_employee_discipline"/>
+        <field name="domain_force">[(1,'=',1)]</field> 
+        <field name="groups" eval="[(4, ref('hr.group_hr_user'))]"/>
+    </record> -->
+
+</odoo>

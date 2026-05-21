@@ -1,0 +1,46 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+# Business Layer - Requisitions
+access_fleet_requisition_requester,fleet.requisition.requester,model_fleet_requisition,hagbes_fleet.group_fleet_requester,1,1,1,0
+access_fleet_requisition_dept_manager,fleet.requisition.dept.manager,model_fleet_requisition,hagbes_fleet.group_dept_manager,1,1,1,0
+access_fleet_requisition_operator,fleet.requisition.operator,model_fleet_requisition,hagbes_fleet.group_fleet_operator,1,0,0,0
+access_fleet_requisition_driver,fleet.requisition.driver,model_fleet_requisition,hagbes_fleet.group_driver,1,0,0,0
+access_fleet_requisition_manager,fleet.requisition.manager,model_fleet_requisition,hagbes_fleet.group_fleet_manager,1,1,1,0
+access_fleet_requisition_admin,fleet.requisition.admin,model_fleet_requisition,hagbes_fleet.group_fleet_admin,1,1,1,1
+
+# Execution Layer - Trips
+access_fleet_trip_driver,fleet.trip.driver,model_fleet_trip,hagbes_fleet.group_driver,1,1,0,0
+access_fleet_trip_operator,fleet.trip.operator,model_fleet_trip,hagbes_fleet.group_fleet_operator,1,1,1,0
+access_fleet_trip_manager,fleet.trip.manager,model_fleet_trip,hagbes_fleet.group_fleet_manager,1,1,1,0
+access_fleet_trip_requester,fleet.trip.requester,model_fleet_trip,hagbes_fleet.group_fleet_requester,1,0,0,0
+access_fleet_trip_dept_manager,fleet.trip.dept.manager,model_fleet_trip,hagbes_fleet.group_dept_manager,1,0,0,0
+access_fleet_trip_admin,fleet.trip.admin,model_fleet_trip,hagbes_fleet.group_fleet_admin,1,1,1,1
+
+# Asset Layer - Vehicles (extend core)
+access_fleet_vehicle_requester,fleet.vehicle.requester,model_fleet_vehicle,hagbes_fleet.group_fleet_requester,1,0,0,0
+access_fleet_vehicle_dept_manager,fleet.vehicle.dept.manager,model_fleet_vehicle,hagbes_fleet.group_dept_manager,1,0,0,0
+access_fleet_vehicle_operator,fleet.vehicle.operator,model_fleet_vehicle,hagbes_fleet.group_fleet_operator,1,1,0,0
+access_fleet_vehicle_driver,fleet.vehicle.driver,model_fleet_vehicle,hagbes_fleet.group_driver,1,0,0,0
+access_fleet_vehicle_manager,fleet.vehicle.manager,model_fleet_vehicle,hagbes_fleet.group_fleet_manager,1,1,1,0
+access_fleet_vehicle_maintenance,fleet.vehicle.maintenance,model_fleet_vehicle,hagbes_fleet.group_maintenance_staff,1,1,0,0
+access_fleet_vehicle_admin,fleet.vehicle.admin,model_fleet_vehicle,hagbes_fleet.group_fleet_admin,1,1,1,1
+
+# Supporting Models
+access_fleet_maintenance_staff,fleet.maintenance.staff,model_fleet_maintenance,hagbes_fleet.group_maintenance_staff,1,1,1,0
+access_fleet_maintenance_operator,fleet.maintenance.operator,model_fleet_maintenance,hagbes_fleet.group_fleet_operator,1,1,1,0
+access_fleet_maintenance_manager,fleet.maintenance.manager,model_fleet_maintenance,hagbes_fleet.group_fleet_manager,1,1,1,0
+access_fleet_maintenance_admin,fleet.maintenance.admin,model_fleet_maintenance,hagbes_fleet.group_fleet_admin,1,1,1,1
+
+access_fleet_trip_log_all,fleet.trip.log.all,model_fleet_trip_log,base.group_user,1,0,0,0
+access_fleet_trip_log_operator,fleet.trip.log.operator,model_fleet_trip_log,hagbes_fleet.group_fleet_operator,1,1,1,0
+access_fleet_trip_log_admin,fleet.trip.log.admin,model_fleet_trip_log,hagbes_fleet.group_fleet_admin,1,1,1,1
+
+# Rejection Wizard
+access_fleet_requisition_reject_wizard_requester,fleet.requisition.reject.wizard.requester,model_fleet_requisition_reject_wizard,hagbes_fleet.group_dept_manager,1,1,1,0
+access_fleet_requisition_reject_wizard_admin,fleet.requisition.reject.wizard.admin,model_fleet_requisition_reject_wizard,hagbes_fleet.group_fleet_admin,1,1,1,1
+
+# Configuration and Reports
+access_fleet_config_settings_user,fleet.config.settings.user,model_fleet_config_settings,hagbes_fleet.group_fleet_manager,1,1,1,0
+access_fleet_config_settings_admin,fleet.config.settings.admin,model_fleet_config_settings,hagbes_fleet.group_fleet_admin,1,1,1,1
+
+access_fleet_reports_user,fleet.reports.user,model_fleet_reports,hagbes_fleet.group_fleet_manager,1,0,0,0
+access_fleet_reports_admin,fleet.reports.admin,model_fleet_reports,hagbes_fleet.group_fleet_admin,1,1,1,1

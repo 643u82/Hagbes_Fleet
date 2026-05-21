@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_aged_payable">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <div class="page">
+                    <h2 class="text-center">Aged Payable</h2>
+                    <div class="row mt32 mb32">
+                        <div class="col-12">
+                            <strong>Aged As Of:</strong> <span t-esc="data.get('date_at')"/>
+                        </div>
+                    </div>
+
+                    <table class="table table-sm table-striped mt-4">
+                        <thead>
+                            <tr>
+                                <th>Partner</th>
+                                <th class="text-right">0-30 Days</th>
+                                <th class="text-right">30-60 Days</th>
+                                <th class="text-right">60-90 Days</th>
+                                <th class="text-right">90+ Days</th>
+                                <th class="text-right">Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="data['lines']" t-as="line">
+                                <td><span t-esc="line['name']"/></td>
+                                <td class="text-right"><span t-esc="line['0-30']" t-options="{'widget': 'monetary', 'display_currency': res_company.currency_id}"/></td>
+                                <td class="text-right"><span t-esc="line['30-60']" t-options="{'widget': 'monetary', 'display_currency': res_company.currency_id}"/></td>
+                                <td class="text-right"><span t-esc="line['60-90']" t-options="{'widget': 'monetary', 'display_currency': res_company.currency_id}"/></td>
+                                <td class="text-right"><span t-esc="line['90+']" t-options="{'widget': 'monetary', 'display_currency': res_company.currency_id}"/></td>
+                                <td class="text-right"><strong><span t-esc="line['total']" t-options="{'widget': 'monetary', 'display_currency': res_company.currency_id}"/></strong></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </t>
+        </t>
+    </template>
+
+    <record id="action_report_aged_payable" model="ir.actions.report">
+        <field name="name">Aged Payable</field>
+        <field name="model">report.custom_financial_reports.report_aged_payable</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">custom_financial_reports.report_aged_payable</field>
+        <field name="report_file">custom_financial_reports.report_aged_payable</field>
+    </record>
+</odoo>

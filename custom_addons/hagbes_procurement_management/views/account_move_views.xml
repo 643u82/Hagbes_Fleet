@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Inherit Account Move Form View -->
+    <record id="view_account_move_form_inherit" model="ir.ui.view">
+        <field name="name">account.move.form.inherit</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form"/>
+        <field name="arch" type="xml">
+            
+            <!-- Add buttons to button box -->
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_view_foreign_payment_request" type="object" 
+                        class="oe_stat_button" icon="fa-money" 
+                        invisible="not foreign_payment_request_id">
+                    <div class="o_field_widget o_stat_info">
+                        <span class="o_stat_text">Payment Request</span>
+                    </div>
+                </button>
+                <button name="action_view_lc" type="object" 
+                        class="oe_stat_button" icon="fa-bank" 
+                        invisible="not lc_id">
+                    <div class="o_field_widget o_stat_info">
+                        <span class="o_stat_text">Letter of Credit</span>
+                    </div>
+                </button>
+                <button name="action_view_bank_process" type="object" 
+                        class="oe_stat_button" icon="fa-exchange" 
+                        invisible="not foreign_bank_process_id">
+                    <div class="o_field_widget o_stat_info">
+                        <span class="o_stat_text">Bank Process</span>
+                    </div>
+                </button>
+            </xpath>
+
+            <!-- Add foreign procurement fields -->
+            <xpath expr="//field[@name='ref']" position="after">
+                <field name="is_foreign_procurement" invisible="1"/>
+                <field name="foreign_payment_request_id" options="{'no_create': True}" 
+                       invisible="not is_foreign_procurement"/>
+                <field name="lc_id" options="{'no_create': True}" 
+                       invisible="not is_foreign_procurement"/>
+                <field name="foreign_bank_process_id" options="{'no_create': True}" 
+                       invisible="not is_foreign_procurement"/>
+            </xpath>
+
+            <!-- Add exchange rate information -->
+            <xpath expr="//field[@name='currency_id']" position="after">
+                <field name="foreign_exchange_rate" 
+                       invisible="not is_foreign_procurement or currency_id == company_currency_id"/>
+                <field name="foreign_exchange_difference" widget="monetary" 
+                       invisible="not is_foreign_procurement or currency_id == company_currency_id"/>
+            </xpath>
+
+
+
+
+    <!-- Make analytic_distribution readonly for saved in_invoice -->
+             <xpath expr="//field[@name='analytic_distribution']" position="attributes">
+                <attribute name="attrs">{'readonly': [('id', '!=', False), ('move_type', '=', 'in_invoice')]}</attribute>
+                <attribute name="force_save">1</attribute>
+            </xpath>
+
+
+
+
+        </field>
+    </record>
+
+</odoo>

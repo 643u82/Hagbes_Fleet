@@ -1,0 +1,385 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Trip Summary Report Template -->
+        <template id="report_fleet_trip_summary">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="o">
+                    <t t-call="web.external_layout">
+                        <div class="page">
+                            <!-- Header Section -->
+                            <div class="header">
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <div>
+                                        <h1>Trip Summary Report</h1>
+                                        <p style="color: #666;">Hagbes Fleet Management System</p>
+                                    </div>
+                                    <div style="text-align: right;">
+                                        <h3>Trip Reference: <span t-field="o.name"/></h3>
+                                        <p>Allocation Date: <span t-field="o.allocation_date" t-options="{'widget': 'datetime', 'format': 'dd/MM/yyyy HH:mm', 'tz': 'Africa/Addis_Ababa'}"/> (EAT)</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Vehicle and Driver Information -->
+                            <div class="section" style="margin-top: 20px;">
+                                <h2>Vehicle and Driver Information</h2>
+                                <table style="width: 100%; border-collapse: collapse; border: 1px solid #ddd;">
+                                    <tbody>
+                                        <tr style="border-bottom: 1px solid #ddd;">
+                                            <th style="width: 30%; padding: 8px; text-align: left; background-color: #f5f5f5;">Vehicle Name</th>
+                                            <td style="padding: 8px;"><span t-field="o.vehicle_id.name"/></td>
+                                        </tr>
+                                        <tr style="border-bottom: 1px solid #ddd;">
+                                            <th style="padding: 8px; text-align: left; background-color: #f5f5f5;">Plate Number</th>
+                                            <td style="padding: 8px;"><span t-field="o.plate_number"/></td>
+                                        </tr>
+                                        <tr style="border-bottom: 1px solid #ddd;">
+                                            <th style="padding: 8px; text-align: left; background-color: #f5f5f5;">Driver</th>
+                                            <td style="padding: 8px;"><span t-field="o.driver_name"/></td>
+                                        </tr>
+                                        <tr style="border-bottom: 1px solid #ddd;">
+                                            <th style="padding: 8px; text-align: left; background-color: #f5f5f5;">Allocated By</th>
+                                            <td style="padding: 8px;"><span t-field="o.allocated_by.name"/></td>
+                                        </tr>
+                                        <tr>
+                                            <th style="padding: 8px; text-align: left; background-color: #f5f5f5;">Trip Status</th>
+                                            <td style="padding: 8px;">
+                                                <span t-field="o.state" t-options="{'widget': 'selection'}"/>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            
+                            <!-- Planned vs Actual Distance Comparison -->
+                            <div class="section" style="margin-top: 20px;">
+                                <h2>Distance Comparison</h2>
+                                <table style="width: 100%; border-collapse: collapse; border: 1px solid #ddd;">
+                                    <tbody>
+                                        <tr style="border-bottom: 1px solid #ddd;">
+                                            <th style="width: 30%; padding: 8px; text-align: left; background-color: #f5f5f5;">Planned Route Distance</th>
+                                            <td style="padding: 8px;"><span t-field="o.planned_route_distance"/> KM</td>
+                                        </tr>
+                                        <tr style="border-bottom: 1px solid #ddd;">
+                                            <th style="padding: 8px; text-align: left; background-color: #f5f5f5;">Actual Distance (Odometer)</th>
+                                            <td style="padding: 8px;"><span t-field="o.actual_distance"/> KM</td>
+                                        </tr>
+                                        <tr style="border-bottom: 1px solid #ddd;">
+                                            <th style="padding: 8px; text-align: left; background-color: #f5f5f5;">Distance Difference</th>
+                                            <td style="padding: 8px;">
+                                                <span t-field="o.distance_difference"/> KM
+                                                <t t-if="o.distance_difference &gt; 0">
+                                                    <span style="color: #d9534f;">(Overrun)</span>
+                                                </t>
+                                                <t t-elif="o.distance_difference &lt; 0">
+                                                    <span style="color: #5bc0de;">(Underrun)</span>
+                                                </t>
+                                                <t t-else="">
+                                                    <span style="color: #5cb85c;">(On Target)</span>
+                                                </t>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th style="padding: 8px; text-align: left; background-color: #f5f5f5;">Difference Percentage</th>
+                                            <td style="padding: 8px;">
+                                                <span t-field="o.distance_difference_pct"/>%
+                                                <t t-if="o.distance_difference_pct &gt; 10">
+                                                    <span style="color: #d9534f; font-weight: bold;">(Significant Variance)</span>
+                                                </t>
+                                                <t t-elif="o.distance_difference_pct &gt; 5">
+                                                    <span style="color: #f0ad4e; font-weight: bold;">(Moderate Variance)</span>
+                                                </t>
+                                                <t t-else="">
+                                                    <span style="color: #5cb85c;">(Acceptable)</span>
+                                                </t>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            
+                            <!-- Fuel Information -->
+                            <div class="section" style="margin-top: 20px;">
+                                <h2>Fuel Information</h2>
+                                <table style="width: 100%; border-collapse: collapse; border: 1px solid #ddd;">
+                                    <tbody>
+                                        <tr style="border-bottom: 1px solid #ddd;">
+                                            <th style="width: 30%; padding: 8px; text-align: left; background-color: #f5f5f5;">Fuel at Start</th>
+                                            <td style="padding: 8px;"><span t-field="o.fuel_at_start"/> L</td>
+                                        </tr>
+                                        <tr style="border-bottom: 1px solid #ddd;">
+                                            <th style="padding: 8px; text-align: left; background-color: #f5f5f5;">Estimated Fuel Required</th>
+                                            <td style="padding: 8px;"><span t-field="o.fuel_for_route"/> L</td>
+                                        </tr>
+                                        <tr style="border-bottom: 1px solid #ddd;">
+                                            <th style="padding: 8px; text-align: left; background-color: #f5f5f5;">Consumption Rate</th>
+                                            <td style="padding: 8px;"><span t-field="o.km_per_liter"/> KM/L</td>
+                                        </tr>
+                                        <tr>
+                                            <th style="padding: 8px; text-align: left; background-color: #f5f5f5;">GPS Fuel Consumed</th>
+                                            <td style="padding: 8px;">
+                                                <t t-if="o.gps_fuel_consumed">
+                                                    <span t-field="o.gps_fuel_consumed"/> L
+                                                </t>
+                                                <t t-else="">
+                                                    <span style="color: #666;">Not available</span>
+                                                </t>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            
+                            <!-- GPS and Odometer Information -->
+                            <div class="section" style="margin-top: 20px;">
+                                <h2>GPS and Odometer Information</h2>
+                                <table style="width: 100%; border-collapse: collapse; border: 1px solid #ddd;">
+                                    <tbody>
+                                        <tr style="border-bottom: 1px solid #ddd;">
+                                            <th style="width: 30%; padding: 8px; text-align: left; background-color: #f5f5f5;">GPS Distance</th>
+                                            <td style="padding: 8px;">
+                                                <t t-if="o.gps_distance">
+                                                    <span t-field="o.gps_distance"/> KM
+                                                </t>
+                                                <t t-else="">
+                                                    <span style="color: #666;">Not available</span>
+                                                </t>
+                                            </td>
+                                        </tr>
+                                        <tr style="border-bottom: 1px solid #ddd;">
+                                            <th style="padding: 8px; text-align: left; background-color: #f5f5f5;">KM at Start (GPS/Odo)</th>
+                                            <td style="padding: 8px;"><span t-field="o.km_at_start"/> KM</td>
+                                        </tr>
+                                        <tr style="border-bottom: 1px solid #ddd;">
+                                            <th style="padding: 8px; text-align: left; background-color: #f5f5f5;">KM at Start (Actual Odo.)</th>
+                                            <td style="padding: 8px;"><span t-field="o.km_at_start_actual"/> KM</td>
+                                        </tr>
+                                        <tr style="border-bottom: 1px solid #ddd;">
+                                            <th style="padding: 8px; text-align: left; background-color: #f5f5f5;">KM at End (Actual Odo.)</th>
+                                            <td style="padding: 8px;"><span t-field="o.km_at_end_actual"/> KM</td>
+                                        </tr>
+                                        <tr>
+                                            <th style="padding: 8px; text-align: left; background-color: #f5f5f5;">GPS KM at End</th>
+                                            <td style="padding: 8px;">
+                                                <t t-if="o.gps_km_at_end">
+                                                    <span t-field="o.gps_km_at_end"/> KM
+                                                </t>
+                                                <t t-else="">
+                                                    <span style="color: #666;">Not available</span>
+                                                </t>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            
+                            <!-- Odometer Gap Analysis -->
+                            <div class="section" style="margin-top: 20px;">
+                                <h2>Odometer Gap Analysis</h2>
+                                <table style="width: 100%; border-collapse: collapse; border: 1px solid #ddd;">
+                                    <tbody>
+                                        <tr style="border-bottom: 1px solid #ddd;">
+                                            <th style="width: 30%; padding: 8px; text-align: left; background-color: #f5f5f5;">Previous Trip End KM</th>
+                                            <td style="padding: 8px;"><span t-field="o.prev_trip_km_end"/> KM</td>
+                                        </tr>
+                                        <tr style="border-bottom: 1px solid #ddd;">
+                                            <th style="padding: 8px; text-align: left; background-color: #f5f5f5;">Transport KM</th>
+                                            <td style="padding: 8px;"><span t-field="o.transport_km"/> KM</td>
+                                        </tr>
+                                        <tr style="border-bottom: 1px solid #ddd;">
+                                            <th style="padding: 8px; text-align: left; background-color: #f5f5f5;">Expected Start KM</th>
+                                            <td style="padding: 8px;">
+                                                <t t-set="expected_start" t-value="o.prev_trip_km_end + o.transport_km"/>
+                                                <span t-esc="expected_start"/> KM
+                                            </td>
+                                        </tr>
+                                        <tr style="border-bottom: 1px solid #ddd;">
+                                            <th style="padding: 8px; text-align: left; background-color: #f5f5f5;">Actual Start KM</th>
+                                            <td style="padding: 8px;"><span t-field="o.km_at_start_actual"/> KM</td>
+                                        </tr>
+                                        <tr>
+                                            <th style="padding: 8px; text-align: left; background-color: #f5f5f5;">Odometer Gap</th>
+                                            <td style="padding: 8px;">
+                                                <t t-if="o.odometer_gap_flag">
+                                                    <span style="color: #d9534f; font-weight: bold;"><span t-field="o.odometer_gap"/> KM</span>
+                                                    <br/>
+                                                    <span style="color: #d9534f; font-size: 0.9em;">⚠️ FLAGGED: Gap exceeds 1 KM threshold</span>
+                                                </t>
+                                                <t t-else="">
+                                                    <span style="color: #5cb85c;"><span t-field="o.odometer_gap"/> KM</span>
+                                                    <br/>
+                                                    <span style="color: #5cb85c; font-size: 0.9em;">✓ Within acceptable range</span>
+                                                </t>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            
+                            <!-- Discrepancy Information -->
+                            <div class="section" style="margin-top: 20px;">
+                                <h2>Discrepancy Information</h2>
+                                <table style="width: 100%; border-collapse: collapse; border: 1px solid #ddd;">
+                                    <tbody>
+                                        <tr style="border-bottom: 1px solid #ddd;">
+                                            <th style="width: 30%; padding: 8px; text-align: left; background-color: #f5f5f5;">Discrepancy Status</th>
+                                            <td style="padding: 8px;">
+                                                <t t-if="o.discrepancy_status == 'flagged'">
+                                                    <span style="color: #d9534f; font-weight: bold;">FLAGGED</span>
+                                                </t>
+                                                <t t-elif="o.discrepancy_status == 'resolved'">
+                                                    <span style="color: #5cb85c; font-weight: bold;">RESOLVED</span>
+                                                </t>
+                                                <t t-else="">
+                                                    <span style="color: #666;">NONE</span>
+                                                </t>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th style="padding: 8px; text-align: left; background-color: #f5f5f5;">Discrepancy Reason</th>
+                                            <td style="padding: 8px;">
+                                                <t t-if="o.discrepancy_reason">
+                                                    <span t-field="o.discrepancy_reason"/>
+                                                </t>
+                                                <t t-else="">
+                                                    <span style="color: #666;">No discrepancy reason provided</span>
+                                                </t>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            
+                            <!-- Linked Requisitions -->
+                            <div class="section" style="margin-top: 20px;">
+                                <h2>Linked Requisitions</h2>
+                                <t t-if="o.requisition_count &gt; 0">
+                                    <table style="width: 100%; border-collapse: collapse; border: 1px solid #ddd;">
+                                        <thead>
+                                            <tr style="background-color: #f5f5f5;">
+                                                <th style="padding: 8px; text-align: left;">Reference</th>
+                                                <th style="padding: 8px; text-align: left;">Requester</th>
+                                                <th style="padding: 8px; text-align: left;">Department</th>
+                                                <th style="padding: 8px; text-align: left;">Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <t t-foreach="o.requisition_ids" t-as="req">
+                                                <tr style="border-bottom: 1px solid #ddd;">
+                                                    <td style="padding: 8px;"><span t-field="req.name"/></td>
+                                                    <td style="padding: 8px;"><span t-field="req.request_by.name"/></td>
+                                                    <td style="padding: 8px;"><span t-field="req.department_id.name"/></td>
+                                                    <td style="padding: 8px;">
+                                                        <span t-field="req.state" t-options="{'widget': 'selection'}"/>
+                                                    </td>
+                                                </tr>
+                                            </t>
+                                        </tbody>
+                                    </table>
+                                </t>
+                                <t t-else="">
+                                    <p style="color: #666; padding: 8px;">No requisitions linked to this trip.</p>
+                                </t>
+                            </div>
+                            
+                            <!-- Route Information -->
+                            <div class="section" style="margin-top: 20px;">
+                                <h2>Route Information</h2>
+                                <table style="width: 100%; border-collapse: collapse; border: 1px solid #ddd;">
+                                    <tbody>
+                                        <tr style="border-bottom: 1px solid #ddd;">
+                                            <th style="width: 30%; padding: 8px; text-align: left; background-color: #f5f5f5;">Starting Location</th>
+                                            <td style="padding: 8px;"><span t-field="o.start_location"/></td>
+                                        </tr>
+                                        <tr style="border-bottom: 1px solid #ddd;">
+                                            <th style="padding: 8px; text-align: left; background-color: #f5f5f5;">Actual Starting Place</th>
+                                            <td style="padding: 8px;">
+                                                <t t-if="o.actual_start_place">
+                                                    <span t-field="o.actual_start_place"/>
+                                                </t>
+                                                <t t-else="">
+                                                    <span style="color: #666;">Not recorded</span>
+                                                </t>
+                                            </td>
+                                        </tr>
+                                        <tr style="border-bottom: 1px solid #ddd;">
+                                            <th style="padding: 8px; text-align: left; background-color: #f5f5f5;">Actual Destination</th>
+                                            <td style="padding: 8px;">
+                                                <t t-if="o.actual_destination">
+                                                    <span t-field="o.actual_destination"/>
+                                                </t>
+                                                <t t-else="">
+                                                    <span style="color: #666;">Not recorded</span>
+                                                </t>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th style="padding: 8px; text-align: left; background-color: #f5f5f5;">Return Date</th>
+                                            <td style="padding: 8px;">
+                                                <t t-if="o.return_date">
+                                                    <span t-field="o.return_date" t-options="{'widget': 'date', 'format': 'dd/MM/yyyy'}"/>
+                                                </t>
+                                                <t t-else="">
+                                                    <span style="color: #666;">Not returned</span>
+                                                </t>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            
+                            <!-- Combined Trip Information (for Append Assignments) -->
+                            <t t-if="o.combined_purpose or o.combined_destination or o.combined_travellers">
+                                <div class="section" style="margin-top: 20px;">
+                                    <h2>Combined Trip Information (Append Assignments)</h2>
+                                    <table style="width: 100%; border-collapse: collapse; border: 1px solid #ddd;">
+                                        <tbody>
+                                            <t t-if="o.combined_purpose">
+                                                <tr style="border-bottom: 1px solid #ddd;">
+                                                    <th style="width: 30%; padding: 8px; text-align: left; background-color: #f5f5f5;">Combined Purpose</th>
+                                                    <td style="padding: 8px;"><span t-field="o.combined_purpose"/></td>
+                                                </tr>
+                                            </t>
+                                            <t t-if="o.combined_destination">
+                                                <tr style="border-bottom: 1px solid #ddd;">
+                                                    <th style="padding: 8px; text-align: left; background-color: #f5f5f5;">Combined Destination</th>
+                                                    <td style="padding: 8px;"><span t-field="o.combined_destination"/></td>
+                                                </tr>
+                                            </t>
+                                            <t t-if="o.combined_travellers">
+                                                <tr>
+                                                    <th style="padding: 8px; text-align: left; background-color: #f5f5f5;">Combined Travellers</th>
+                                                    <td style="padding: 8px;"><span t-field="o.combined_travellers"/></td>
+                                                </tr>
+                                            </t>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </t>
+                            
+                            <!-- Report Footer -->
+                            <div style="text-align: center; margin-top: 40px; color: #666;">
+                                <p>Generated on <span t-esc="datetime.datetime.now().strftime('%d/%m/%Y %H:%M')"/> (EAT)</p>
+                                <p>Hagbes Fleet Management System - Confidential</p>
+                            </div>
+                        </div>
+                    </t>
+                </t>
+            </t>
+        </template>
+        
+        <!-- Report Action -->
+        <record id="action_report_fleet_trip_summary" model="ir.actions.report">
+            <field name="name">Trip Summary</field>
+            <field name="model">fleet.trip</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">hagbes_fleet.report_fleet_trip_summary</field>
+            <field name="print_report_name">'Trip Summary - %s' % (object.name)</field>
+            <field name="paperformat_id" ref="base.paperformat_euro"/>
+            <field name="binding_model_id" ref="model_fleet_trip"/>
+            <field name="binding_type">report</field>
+            <field name="groups_id" eval="[(6, 0, [ref('hagbes_fleet.group_fmo'), ref('hagbes_fleet.group_fleet_manager'), ref('hagbes_fleet.group_fleet_admin')])]"/>
+        </record>
+    </data>
+</odoo>

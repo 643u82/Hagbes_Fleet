@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="res_config_settings_view_form" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.accountant</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="account.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//block[@id='accounting_reports']" position="inside">
+                <!-- Temporarily removed fields causing OWL crash in Odoo 18 -->
+                <!--
+                <setting id="fiscalyear_hagbes" string="Fiscal Year" help="Define the fiscal year of your company">
+                    <div class="content-group">
+                        <div class="row mt16">
+                            <label for="fiscalyear_last_month" string="Last Day" class="col-lg-3 o_light_label"/>
+                            <field name="fiscalyear_last_month" style="width: 100px; margin-right: 8px;"/>
+                            <field name="fiscalyear_last_day" class="oe_inline"/>
+                        </div>
+                    </div>
+                </setting>
+                -->
+                <setting id="group_fiscal_year_hagbes" string="Fiscal Years" help="Define fiscal years of more or less than one year">
+                    <field name="group_fiscal_year"/>
+                    <div class="mt16" invisible="not group_fiscal_year">
+                        <button name="%(hagbes_fiscal_year.actions_account_fiscal_year)d" icon="fa-arrow-right"
+                                type="action" string="Fiscal Years" class="btn-link"/>
+                    </div>
+                </setting>
+                <!--
+                <setting id="fiscal_period_closing_hagbes" string="Fiscal Period Closing" help="Lock your fiscal period">
+                    <div class="content-group">
+                        <div class="row mt16">
+                            <label for="fiscalyear_lock_date" class="col-md-5 o_light_label"/>
+                            <field name="fiscalyear_lock_date"/>
+                            <label for="sale_lock_date" string="Sales Lock Date" class="col-md-5 o_light_label"/>
+                            <field name="sale_lock_date"/>
+                            <label for="purchase_lock_date" string="Purchase Lock Date" class="col-md-5 o_light_label"/>
+                            <field name="purchase_lock_date"/>
+                            <label for="hard_lock_date" class="col-md-5 o_light_label"/>
+                            <field name="hard_lock_date"/>
+                            <label for="tax_lock_date" string="Tax Return Lock Date" class="col-md-5 o_light_label"/>
+                            <field name="tax_lock_date"/>
+                        </div>
+                    </div>
+                </setting>
+                -->
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

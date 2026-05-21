@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <template id="external_layout_folder_company_branch_top"
+              inherit_id="web.external_layout_folder">
+        <!-- ✅ Move the company info block up slightly -->
+        <xpath expr="//div[contains(@class, 'o_folder_company_info')]" position="attributes">
+            <attribute name="style">margin-top: -10px;</attribute>
+        </xpath>
+        <!-- ✅ Company + Branch at TOP of company details (RIGHT SIDE, inline) -->
+        <xpath expr="//ul[@name='company_address_list']" position="before">
+            <span class="company-branch-top">
+                <!-- Primary case: Sale Order with branch -->
+                <t t-if="company and o and o._name == 'sale.order' and o.branch_id.name">
+                    <t t-esc="company.name or ''"/> - <t t-esc="o.branch_id.name"/>
+                </t>
+
+                <!-- Fallback: company only -->
+                <t t-elif="company">
+                    <t t-esc="company.name or ''"/>
+                </t>
+
+                <!-- Edge case fallback -->
+                <t t-else="">
+                    <t t-esc="o.branch_id.name if o and hasattr(o, 'branch_id.name') and o.branch_id.name else 'Company'"/>
+                </t>
+            </span>
+        </xpath>
+
+        <!-- ✅ Clean company details ONLY for Sale Orders with branch -->
+        <xpath expr="//span[@t-field='company.company_details']" position="replace">
+            <t t-if="company and company.company_details and o and o._name == 'sale.order' and o.branch_id.name">
+                <span>
+                    <t t-foreach="company.company_details.split('\n')" t-as="line" t-index="line_index">
+                        <t t-if="line_index &gt; 0 and line.strip()">
+                            <div t-esc="line.strip()"/>
+                        </t>
+                    </t>
+                </span>
+            </t>
+            <t t-else="">
+                <span t-field="company.company_details"/>
+            </t>
+        </xpath>
+              <!-- ✅ Remove original VAT/Tax ID lines (last two <li> in company_address_list) -->
+        <xpath expr="//ul[@name='company_address_list']/li[last()]" position="replace"/>
+        <xpath expr="//ul[@name='company_address_list']/li[last()]" position="replace"/>
+
+        <!-- ✅ Insert custom VAT + TIN -->
+    <xpath expr="//ul[@name='company_address_list']" position="inside">
+            <li t-if="company.vat or company.tin_number">
+                <t t-if="company.vat">VAT: <span t-field="company.vat"/></t>
+                <t t-if="company.tin_number">
+                <t t-if="company.vat"><br/></t>
+                TIN: <span t-field="company.tin_number"/>
+            </t>
+        </li>
+    </xpath>
+
+
+
+      
+    </template>
+</odoo>

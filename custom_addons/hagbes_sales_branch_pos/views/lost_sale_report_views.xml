@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- 🔍 Search View -->
+    <record id="view_report_lost_sale_search" model="ir.ui.view">
+        <field name="name">report.lost.sale.search</field>
+        <field name="model">report.lost.sale</field>
+        <field name="arch" type="xml">
+            <search string="Lost Sales">
+                <field name="product_id" filter_domain="[('product_id','ilike',self)]"/>
+                <field name="customer_id"/>
+                <field name="branch_id"/>
+                <field name="warehouse_id"/>
+                <field name="product_category_id"/>
+                <field name="reason"/>
+                <field name="date_date"/>
+
+                <!-- ✅ Filters: < and > properly escaped -->
+                <filter string="Today" name="today" domain="[('date_date','=', 'today')]"/>
+                <filter string="This Week" name="this_week" domain="[('date_date','>=', 'this_week'), ('date_date','<=', 'this_week')]"/>
+                <filter string="This Month" name="this_month" domain="[('date_date','>=', 'this_month'), ('date_date','<=', 'this_month')]"/>
+                <filter string="This Year" name="this_year" domain="[('date_date','>=', 'this_year'), ('date_date','<=', 'this_year')]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Reason" name="group_reason" context="{'group_by':'reason'}"/>
+                    <filter string="Branch" name="group_branch" context="{'group_by':'branch_id'}"/>
+                    <filter string="Warehouse" name="group_warehouse" context="{'group_by':'warehouse_id'}"/>
+                    <filter string="Customer" name="group_customer" context="{'group_by':'customer_id'}"/>
+                    <filter string="Product" name="group_product" context="{'group_by':'product_id'}"/>
+                    <filter string="Category" name="group_category" context="{'group_by':'product_category_id'}"/>
+                    <filter string="Day" name="group_day" context="{'group_by':'date_date'}"/>
+                    <filter string="Month" name="group_month" context="{'group_by':'date_date:month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- 📈 Graph View -->
+    <record id="view_report_lost_sale_graph" model="ir.ui.view">
+        <field name="name">report.lost.sale.graph</field>
+        <field name="model">report.lost.sale</field>
+        <field name="arch" type="xml">
+            <graph string="Lost Sales" type="bar">
+                <field name="reason" type="row"/>
+                <field name="quantity_lost" type="measure"/>
+                <field name="branch_id" type="col"/>
+            </graph>
+        </field>
+    </record>
+
+    <!-- 🧮 Pivot View -->
+    <record id="view_report_lost_sale_pivot" model="ir.ui.view">
+        <field name="name">report.lost.sale.pivot</field>
+        <field name="model">report.lost.sale</field>
+        <field name="arch" type="xml">
+            <pivot string="Lost Sales Analysis" display_quantity="true">
+                <field name="reason" type="row"/>
+                <field name="branch_id" type="col"/>
+                <field name="quantity_lost" type="measure"/>
+                <field name="quantity_requested" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <!-- 📊 Spreadsheet View (Odoo 18) -->
+    <record id="view_report_lost_sale_spreadsheet" model="ir.ui.view">
+        <field name="name">report.lost.sale.spreadsheet</field>
+        <field name="model">report.lost.sale</field>
+        <field name="arch" type="xml">
+            <spreadsheet>
+                <table>
+                    <field name="date_date"/>
+                    <field name="customer_id"/>
+                    <field name="product_id"/>
+                    <field name="quantity_requested"/>
+                    <field name="quantity_lost"/>
+                    <field name="reason"/>
+                </table>
+            </spreadsheet>
+        </field>
+    </record>
+
+    <!-- 🚀 Action -->
+    <record id="action_report_lost_sale" model="ir.actions.act_window">
+        <field name="name">Lost Sales Report</field>
+        <field name="res_model">report.lost.sale</field>
+        <field name="view_mode">pivot,graph,spreadsheet</field>
+        <field name="search_view_id" ref="view_report_lost_sale_search"/>
+        <field name="context">{}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No lost sales recorded yet.
+            </p>
+        </field>
+    </record>
+
+    <!-- 📂 Menu -->
+    <menuitem id="menu_reporting_lost_sale"
+              name="Lost Sales"
+              parent="sale.menu_sale_report"
+              action="action_report_lost_sale"
+              sequence="60"/>
+
+</odoo>

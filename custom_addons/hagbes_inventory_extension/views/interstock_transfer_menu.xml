@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Main Menu -->
+    <!--              name="Transfer Requests"-->
+    <!--              name="Inter-Store Transfers"-->
+    <menuitem id="menu_interstock_transfer_root"
+              name="Internal Transfers"
+              parent="stock.menu_stock_root"
+              sequence="11"
+              groups="base.group_system,hagbes_inventory_extension.group_custom_stock_user,hagbes_inventory_extension.group_custom_warehouse_manager,hagbes_inventory_extension.group_custom_approve_adjustment"/>
+
+    <!-- Sub Menu -->
+    <menuitem id="menu_interstock_transfer_request"
+              name="Inter-Store Requests"
+              parent="menu_interstock_transfer_root"
+              action="action_interstock_transfer"
+              sequence="1"/>
+<!--    <menuitem id="menu_commition_service"-->
+<!--              name="Commition Service"-->
+<!--              parent="stock.menu_stock_root"-->
+<!--              action="action_interstock_transfer"-->
+<!--              sequence="1"/>-->
+
+</odoo>

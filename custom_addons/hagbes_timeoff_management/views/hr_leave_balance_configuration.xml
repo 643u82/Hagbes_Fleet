@@ -1,0 +1,20 @@
+<odoo>
+    <!-- Editable List View -->
+    <record id="view_hr_leave_balance_list" model="ir.ui.view">
+    <field name="name">hr.leave.balance.list</field>
+    <field name="model">hr.leave.allocation</field>
+    <field name="arch" type="xml">
+        <list string="Editable Leave Balances" editable="bottom" create="false" import="true">
+            <field name="employee_id" readonly="1"/>
+            <field name="holiday_status_id" readonly="1"/>
+            <field name="employee_company_id" readonly="1"/>
+            <field name="branch_id" readonly="1"/>
+            <field name="year_2_balance"/>
+            <field name="year_1_balance"/>
+            <field name="current_year_balance"/>
+            <field name="number_of_days"/>
+        </list>
+    </field>
+</record>
+
+</odoo>

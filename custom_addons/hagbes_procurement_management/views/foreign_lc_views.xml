@@ -1,0 +1,343 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- LC Tree View -->
+  <record id="view_foreign_lc_tree" model="ir.ui.view">
+  <field name="name">foreign.lc.list</field>
+  <field name="model">foreign.lc</field>
+  <field name="arch" type="xml">
+    <list string="Letters of Credit" 
+          decoration-info="state=='draft'"
+          decoration-warning="state in ['submitted','issued']"
+          decoration-success="state in ['documents_received','payment_made','closed']"
+          decoration-danger="state=='cancelled'">
+      <field name="name"/>
+      <field name="purchase_order_id"/>
+      <field name="supplier_id"/>
+      <field name="lc_type"/>
+      <field name="lc_amount" widget="monetary"/>
+      <field name="currency_id" invisible="1"/>
+      <field name="lc_date"/>
+      <field name="expiry_date"/>
+      <field name="days_to_expiry"/>
+      <field name="issuing_bank_id"/>
+      <field name="state" widget="badge"
+             decoration-info="state=='draft'"
+             decoration-warning="state in ['submitted','issued']"
+             decoration-success="state in ['documents_received','payment_made','closed']"
+             decoration-danger="state=='cancelled'"/>
+    </list>
+  </field>
+</record>
+
+
+    <!-- LC Form View -->
+    <record id="view_foreign_lc_form" model="ir.ui.view">
+        <field name="name">foreign.lc.form</field>
+        <field name="model">foreign.lc</field>
+        <field name="arch" type="xml">
+            <form string="Letter of Credit">
+                <header>
+                    <button name="action_submit_to_bank" string="Submit to Bank" type="object" 
+                            class="oe_highlight" invisible="state != 'draft'"/>
+                    <button name="action_mark_issued" string="Mark as Issued" type="object" 
+                            class="oe_highlight" invisible="state != 'submitted'"/>
+                    <button name="action_create_amendment" string="Create Amendment" type="object" 
+                            invisible="state not in ['issued','documents_received']"/>
+                    <button name="action_documents_received" string="Documents Received" type="object" 
+                            invisible="state != 'issued'"/>
+                    <button name="action_payment_made" string="Payment Made" type="object" 
+                            invisible="state != 'documents_received'"/>
+                    <button name="action_close" string="Close LC" type="object" 
+                            invisible="state != 'payment_made'"/>
+                    <button name="action_cancel" string="Cancel" type="object" 
+                            invisible="state in ['payment_made','closed']"/>
+                    <field name="state" widget="statusbar" 
+                           statusbar_visible="draft,submitted,issued,documents_received,payment_made,closed"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_amendments" type="object" 
+                                class="oe_stat_button" icon="fa-edit">
+                            <field name="amendment_count" widget="statinfo" string="Amendments"/>
+                        </button>
+                        <button name="action_view_documents" type="object" 
+                                class="oe_stat_button" icon="fa-files-o">
+                            <div class="o_field_widget o_stat_info">
+                                <span class="o_stat_text">Documents</span>
+                            </div>
+                        </button>
+                    </div>
+                    
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    
+                    <group>
+                        <group>
+                            <field name="purchase_order_id" options="{'no_create': True}"/>
+                            <field name="supplier_id" readonly="1"/>
+                            <field name="lc_type"/>
+                            <field name="lc_amount" widget="monetary"/>
+                            <field name="currency_id" options="{'no_create': True}"/>
+                        </group>
+                        <group>
+                            <field name="lc_date"/>
+                            <field name="expiry_date"/>
+                            <field name="days_to_expiry" 
+                                   decoration-danger="days_to_expiry &lt; 30 and days_to_expiry &gt; 0"
+                                   decoration-warning="days_to_expiry &lt; 60 and days_to_expiry &gt;= 30"/>
+                        </group>
+                    </group>
+                    
+                    <notebook>
+                        <page string="Bank Details">
+                            <group>
+                                <group string="Banks">
+                                    <field name="issuing_bank_id"/>
+                                    <field name="advising_bank_id"/>
+                                </group>
+                                <group string="Charges">
+                                    <field name="lc_charges" widget="monetary"/>
+                                    <field name="amendment_charges" widget="monetary"/>
+                                    <field name="company_currency_id" invisible="1"/>
+                                </group>
+                            </group>
+                        </page>
+                        
+                        <page string="Terms &amp; Conditions">
+                            <group>
+                                <group>
+                                    <field name="payment_terms"/>
+                                    <field name="partial_shipment"/>
+                                    <field name="transhipment"/>
+                                </group>
+                                <group>
+                                    <field name="port_of_loading"/>
+                                    <field name="port_of_discharge"/>
+                                </group>
+                            </group>
+                            <group string="Document Requirements">
+                                <field name="document_requirements" nolabel="1"/>
+                            </group>
+                        </page>
+                        
+                        <page string="Amendments">
+                            <field name="amendment_ids" nolabel="1"/>
+                        </page>
+                        
+                        <page string="Additional Information">
+                            <group>
+                                <field name="special_instructions" nolabel="1" 
+                                       placeholder="Special instructions for the LC..."/>
+                            </group>
+                            <group>
+                                <field name="notes" nolabel="1" 
+                                       placeholder="Internal notes..."/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <!-- <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div> -->
+            </form>
+        </field>
+    </record>
+
+    <!-- LC Amendment Tree View -->
+  <record id="view_foreign_lc_amendment_tree" model="ir.ui.view">
+    <field name="name">foreign.lc.amendment.tree</field>
+    <field name="model">foreign.lc.amendment</field>
+    <field name="arch" type="xml">
+        <list string="LC Amendments" decoration-info="state=='draft'">
+            <field name="name"/>
+            <field name="lc_id"/>
+            <field name="amendment_date"/>
+            <field name="amendment_type"/>
+            <field name="amendment_charges" widget="monetary"/>
+            <field name="currency_id" invisible="1"/>
+            <field name="state" widget="badge"/>
+        </list>
+    </field>
+</record>
+
+    <!-- LC Amendment Form View -->
+    <record id="view_foreign_lc_amendment_form" model="ir.ui.view">
+        <field name="name">foreign.lc.amendment.form</field>
+        <field name="model">foreign.lc.amendment</field>
+        <field name="arch" type="xml">
+            <form string="LC Amendment">
+                <header>
+                    <button name="action_submit" string="Submit" type="object" 
+                            class="oe_highlight" invisible="state != 'draft'"/>
+                    <button name="action_confirm" string="Confirm" type="object" 
+                            class="oe_highlight" invisible="state != 'submitted'"/>
+                    <button name="action_cancel" string="Cancel" type="object" 
+                            invisible="state in ['confirmed','cancelled']"/>
+                    <field name="state" widget="statusbar" 
+                           statusbar_visible="draft,submitted,confirmed"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    
+                    <group>
+                        <group>
+                            <field name="lc_id" readonly="1"/>
+                            <field name="amendment_date"/>
+                            <field name="amendment_type"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                        <group>
+                            <field name="amendment_charges" widget="monetary"/>
+                        </group>
+                    </group>
+                    
+                    <group string="Amendment Details" invisible="amendment_type not in ['increase_amount','decrease_amount']">
+                        <group>
+                            <field name="old_amount" widget="monetary" readonly="1"/>
+                            <field name="new_amount" widget="monetary"/>
+                        </group>
+                    </group>
+                    
+                    <group string="Date Amendment" invisible="amendment_type != 'extend_expiry'">
+                        <group>
+                            <field name="old_expiry_date" readonly="1"/>
+                            <field name="new_expiry_date"/>
+                        </group>
+                    </group>
+                    
+                    <group>
+                        <field name="reason" nolabel="1" placeholder="Reason for amendment..."/>
+                    </group>
+                    
+                    <group>
+                        <field name="notes" nolabel="1" placeholder="Additional notes..."/>
+                    </group>
+                </sheet>
+                <!-- <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div> -->
+            </form>
+        </field>
+    </record>
+
+    <!-- LC Kanban View -->
+    <record id="view_foreign_lc_kanban" model="ir.ui.view">
+        <field name="name">foreign.lc.kanban</field>
+        <field name="model">foreign.lc</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="state">
+                <field name="name"/>
+                <field name="supplier_id"/>
+                <field name="lc_amount"/>
+                <field name="currency_id"/>
+                <field name="expiry_date"/>
+                <field name="days_to_expiry"/>
+                <field name="is_expired"/>
+                <field name="state"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div t-attf-class="oe_kanban_card oe_kanban_global_click #{record.is_expired.raw_value ? 'oe_kanban_color_2' : ''}">
+                            <div class="o_kanban_record_top">
+                                <div class="o_kanban_record_headings">
+                                    <strong class="o_kanban_record_title">
+                                        <field name="name"/>
+                                    </strong>
+                                </div>
+                                <div class="o_kanban_record_top_right">
+                                    <span t-if="record.is_expired.raw_value" 
+                                          class="badge badge-danger">Expired</span>
+                                    <span t-elif="record.days_to_expiry.raw_value &lt; 30 and record.days_to_expiry.raw_value &gt; 0" 
+                                          class="badge badge-warning">
+                                        <t t-esc="record.days_to_expiry.value"/> days left
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="o_kanban_record_body">
+                                <div class="o_kanban_record_subtitle">
+                                    <field name="supplier_id"/>
+                                </div>
+                                <div class="oe_kanban_bottom_left">
+                                    <field name="lc_amount" widget="monetary"/>
+                                </div>
+                                <div class="oe_kanban_bottom_right">
+                                    <field name="expiry_date"/>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- LC Search View -->
+    <record id="view_foreign_lc_search" model="ir.ui.view">
+        <field name="name">foreign.lc.search</field>
+        <field name="model">foreign.lc</field>
+        <field name="arch" type="xml">
+            <search string="Letters of Credit">
+                <field name="name"/>
+                <field name="supplier_id"/>
+                <field name="purchase_order_id"/>
+                <field name="issuing_bank_id"/>
+                <separator/>
+                <filter name="active_lcs" string="Active LCs" 
+                        domain="[('state', 'not in', ['closed', 'cancelled'])]"/>
+                <filter name="expiring_soon" string="Expiring Soon" 
+                        domain="[('days_to_expiry', '&lt;', 30), ('days_to_expiry', '&gt;', 0)]"/>
+                <filter name="expired" string="Expired" 
+                        domain="[('is_expired', '=', True)]"/>
+                <separator/>
+                <group expand="0" string="Group By">
+                    <filter name="group_by_state" string="Status" context="{'group_by': 'state'}"/>
+                    <filter name="group_by_supplier" string="Supplier" context="{'group_by': 'supplier_id'}"/>
+                    <filter name="group_by_bank" string="Issuing Bank" context="{'group_by': 'issuing_bank_id'}"/>
+                    <filter name="group_by_type" string="LC Type" context="{'group_by': 'lc_type'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- LC Actions -->
+    <record id="action_foreign_lc" model="ir.actions.act_window">
+        <field name="name">Letters of Credit</field>
+        <field name="res_model">foreign.lc</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="search_view_id" ref="view_foreign_lc_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first Letter of Credit!
+            </p>
+            <p>
+                Letters of Credit help you manage payment guarantees for foreign purchases.
+            </p>
+        </field>
+    </record>
+
+    <!-- LC Amendment Action -->
+    <record id="action_foreign_lc_amendment" model="ir.actions.act_window">
+        <field name="name">LC Amendments</field>
+        <field name="res_model">foreign.lc.amendment</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('lc_id', '=', active_id)]</field>
+        <field name="context">{'default_lc_id': active_id}</field>
+    </record>
+
+    <!-- All LC Amendments Action -->
+    <record id="action_foreign_lc_amendment_all" model="ir.actions.act_window">
+        <field name="name">All LC Amendments</field>
+        <field name="res_model">foreign.lc.amendment</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

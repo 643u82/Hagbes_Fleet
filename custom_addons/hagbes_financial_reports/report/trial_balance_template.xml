@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="report_trial_balance">
+        <t t-call="web.html_container">
+            <t t-call="web.basic_layout">
+
+                <!-- ================= HEADER ================= -->
+                <div class="mb-4">
+                    <div class="row align-items-start">
+                        <div class="col-6">
+
+                            <img t-if="company.logo"
+                                 t-att-src="image_data_uri(company.logo)"
+                                 class="mb-2"
+                                 style="max-height:60px;"/>
+
+                            <div class="small" style="line-height:1.6;">
+                                <div class="fw-bold" t-esc="company.name"/>
+                                <div t-if="company.country_id"
+                                     t-esc="company.country_id.name"/>
+                                <div t-if="company.vat">
+                                    Tax ID: <span t-esc="company.vat"/>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-6 text-end">
+                            <h2 class="fw-bold" style="font-size:28px;">
+                                Trial Balance
+                            </h2>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ================= PAGE ================= -->
+                <div class="page">
+
+<div class="row">
+    
+    <!-- LEFT SIDE (Account column area spacing) -->
+    <div class="col-5">
+        <!-- empty on purpose to push financial columns right -->
+    </div>
+
+    <!-- RIGHT SIDE (Financial columns block) -->
+    <div class="col-7">
+
+        <!-- Group Header -->
+        <div style="background:#dfe3e8;
+                    padding:8px 0;
+                    font-size:12px;
+                    font-weight:600;
+                    text-align:center;
+                    margin-bottom:2px;">
+
+            <div class="row">
+                <div class="col-3">Initial<br/>Balance</div>
+                <div class="col-4">
+                    <span t-esc="data['date_to']"
+                          t-options="{'widget': 'date', 'format': 'MMM yyyy'}"/>
+                </div>
+                <div class="col-3">End<br/>Balance</div>
+            </div>
+        </div>
+
+        <!-- Column Headers -->
+        <div class="row"
+             style="font-size:12px;
+                    font-weight:600;
+                    border-bottom:1px solid #bbb;
+                    padding-bottom:4px;">
+
+            <div class="col-3 text-end">Balance</div>
+            <div class="col-2 text-end">Debit</div>
+            <div class="col-2 text-end">Credit</div>
+            <div class="col-3 text-end">Balance</div>
+        </div>
+
+    </div>
+</div>
+
+
+<table style="width:100%;
+              border-collapse:collapse;
+              font-size:12px;
+              margin-top:10px;
+              border:none;">
+
+    <tbody>
+
+        <t t-set="total_initial" t-value="0"/>
+        <t t-set="total_debit" t-value="0"/>
+        <t t-set="total_credit" t-value="0"/>
+        <t t-set="total_ending" t-value="0"/>
+
+        <!-- ACCOUNT LINES -->
+        <tr t-foreach="data['lines']" t-as="line"
+            style="border:none;
+                   border-bottom:1px solid #e6e6e6;">
+
+            <t t-set="total_initial"
+               t-value="total_initial + line['initial_balance']"/>
+            <t t-set="total_debit"
+               t-value="total_debit + line['debit']"/>
+            <t t-set="total_credit"
+               t-value="total_credit + line['credit']"/>
+            <t t-set="total_ending"
+               t-value="total_ending + line['ending_balance']"/>
+
+            <td style="padding:10px 8px; border:none;">
+                <span style="font-weight:500;"
+                      t-esc="line['code']"/>
+                <span style="margin-left:8px;"
+                      t-esc="line['name']"/>
+            </td>
+
+            <td style="text-align:right;
+                       padding:10px 8px;
+                       color:#9ca3af;
+                       border:none;">
+                <span t-esc="line['initial_balance']"
+                      t-options="{'widget': 'monetary',
+                                  'display_currency': company.currency_id}"/>
+            </td>
+
+            <td style="text-align:right; padding:10px 8px; border:none;">
+                <span t-esc="line['debit']"
+                      t-options="{'widget': 'monetary',
+                                  'display_currency': company.currency_id}"/>
+            </td>
+
+            <td style="text-align:right; padding:10px 8px; border:none;">
+                <span t-esc="line['credit']"
+                      t-options="{'widget': 'monetary',
+                                  'display_currency': company.currency_id}"/>
+            </td>
+
+            <td style="text-align:right;
+                       padding:10px 8px;
+                       font-weight:600;
+                       border:none;">
+                <span t-esc="line['ending_balance']"
+                      t-options="{'widget': 'monetary',
+                                  'display_currency': company.currency_id}"/>
+            </td>
+        </tr>
+
+        <!-- TOTAL ROW -->
+        <tr style="border:none;
+                   border-top:1px solid #d0d0d0;
+                   font-weight:bold;">
+
+            <td style="padding:12px 8px; border:none;">
+                Total
+            </td>
+
+            <td style="text-align:right; padding:12px 8px; border:none;">
+                <span t-esc="total_initial"
+                      t-options="{'widget': 'monetary',
+                                  'display_currency': company.currency_id}"/>
+            </td>
+
+            <td style="text-align:right; padding:12px 8px; border:none;">
+                <span t-esc="total_debit"
+                      t-options="{'widget': 'monetary',
+                                  'display_currency': company.currency_id}"/>
+            </td>
+
+            <td style="text-align:right; padding:12px 8px; border:none;">
+                <span t-esc="total_credit"
+                      t-options="{'widget': 'monetary',
+                                  'display_currency': company.currency_id}"/>
+            </td>
+
+            <td style="text-align:right; padding:12px 8px; border:none;">
+                <span t-esc="total_ending"
+                      t-options="{'widget': 'monetary',
+                                  'display_currency': company.currency_id}"/>
+            </td>
+        </tr>
+
+    </tbody>
+</table>
+
+
+
+
+
+
+                </div>
+
+                <!-- ================= FOOTER ================= -->
+                <div class="footer">
+                    <div class="text-center text-muted small"
+                         style="border-top:1px solid #eee; padding-top:6px;">
+                        Page <span class="page"/> of <span class="topage"/>
+                    </div>
+                </div>
+
+            </t>
+        </t>
+    </template>
+<!-- REPORT ACTION -->
+<record id="action_report_trial_balance" model="ir.actions.report">
+    <field name="name">Trial Balance</field>
+    <field name="model">report.custom_financial_reports.report_trial_balance</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">custom_financial_reports.report_trial_balance</field>
+    <field name="print_report_name">
+    "'Trial Balance% (data.get('date_from',''), data.get('date_to',''))"
+</field>
+
+    <field name="report_file">custom_financial_reports.report_trial_balance</field>
+    <field name="binding_model_id" eval="False"/>
+</record>
+
+</odoo>

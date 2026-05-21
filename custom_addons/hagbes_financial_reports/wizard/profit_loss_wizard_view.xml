@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_custom_profit_loss_wizard_form" model="ir.ui.view">
+        <field name="name">custom.profit.loss.wizard.form</field>
+        <field name="model">custom.profit.loss.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Profit and Loss">
+                <group>
+                    <group>
+                        <field name="date_from"/>
+                    </group>
+                    <group>
+                        <field name="date_to"/>
+                    </group>
+                </group>
+                <footer>
+                    <button name="action_print_report" string="Print" type="object" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_custom_profit_loss_wizard" model="ir.actions.act_window">
+        <field name="name">Profit and Loss</field>
+        <field name="res_model">custom.profit.loss.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id="menu_custom_profit_loss"
+              name="Profit and Loss"
+              parent="account.menu_finance_reports"
+              action="action_custom_profit_loss_wizard"
+              sequence="2"/>
+</odoo>

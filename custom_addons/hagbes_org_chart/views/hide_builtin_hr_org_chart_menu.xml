@@ -1,0 +1,17 @@
+<odoo>
+  <data>
+    <record id="hr_org_chart.menu_hr_employee_org_chart" model="ir.ui.menu">
+      <field name="active" eval="False"/>
+    </record>
+  </data>
+</odoo>
+
+
+
+
+
+
+
+
+
+

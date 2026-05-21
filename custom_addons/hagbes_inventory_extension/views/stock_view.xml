@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+  <record id="product_product_stock_list_inherit_part_number" model="ir.ui.view">
+    <field name="name">stock.view.stock.product.tree.inherit.part.number</field>
+    <field name="model">stock.quant</field>
+    <field name="inherit_id" ref="stock.view_stock_quant_tree_editable"/>
+    <field name="arch" type="xml">
+      <xpath expr="//field[@name='product_id']" position="after">
+        <field name="product_default_code" string="Part Number" />
+      </xpath>
+      <xpath expr="//field[@name='product_default_code']" position="after">
+        <field name="interchable_number" string="interchangeble_number" readonly="1" widget="many2many_tags"/>
+      </xpath>
+      <xpath expr="//field[@name='product_id']" position="replace">
+        <field name="product_name_only" string="Product" />
+      </xpath>
+    </field>
+  </record>
+</odoo>

@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_profit_loss">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <div class="page">
+                    <div class="text-center">
+                        <h3><span t-esc="company.name"/></h3>
+                        <h4>Statement of Profit or Loss and Other Comprehensive Income</h4>
+                        <h5>For the year ended <span t-esc="data['date_to']" t-options='{"widget": "date", "format": "d MMMM y"}'/></h5>
+                    </div>
+
+                    <table class="table table-sm table-borderless mt-4">
+                        <thead>
+                            <tr>
+                                <th style="width: 40%;">Description</th>
+                                <th style="width: 10%;" class="text-center">Notes</th>
+                                <th style="width: 25%;" class="text-end"><span t-esc="data['date_to']" t-options='{"widget": "date", "format": "d MMMM y"}'/> (ETB)</th>
+                                <th style="width: 25%;" class="text-end"><span t-esc="data['date_to_cmp']" t-options='{"widget": "date", "format": "d MMMM y"}'/> (ETB)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Sales Income</td>
+                                <td class="text-center">18</td>
+                                <td class="text-end"><span t-esc="current.get('sales_income', 0)" t-options='{"widget": "monetary", "display_currency": company.currency_id}'/></td>
+                                <td class="text-end"><span t-esc="prev.get('sales_income', 0)" t-options='{"widget": "monetary", "display_currency": company.currency_id}'/></td>
+                            </tr>
+                            <tr>
+                                <td>Cost of sales</td>
+                                <td class="text-center">19</td>
+                                <td class="text-end text-danger">(<span t-esc="current.get('cost_of_sales', 0)" t-options='{"widget": "monetary", "display_currency": company.currency_id}'/>)</td>
+                                <td class="text-end text-danger">(<span t-esc="prev.get('cost_of_sales', 0)" t-options='{"widget": "monetary", "display_currency": company.currency_id}'/>)</td>
+                            </tr>
+                            <tr class="fw-bold border-top">
+                                <td>Gross profit</td>
+                                <td class="text-center"></td>
+                                <td class="text-end"><span t-esc="current.get('gross_profit', 0)" t-options='{"widget": "monetary", "display_currency": company.currency_id}'/></td>
+                                <td class="text-end"><span t-esc="prev.get('gross_profit', 0)" t-options='{"widget": "monetary", "display_currency": company.currency_id}'/></td>
+                            </tr>
+                            <tr>
+                                <td>Other income</td>
+                                <td class="text-center">20</td>
+                                <td class="text-end"><span t-esc="current.get('other_income', 0)" t-options='{"widget": "monetary", "display_currency": company.currency_id}'/></td>
+                                <td class="text-end"><span t-esc="prev.get('other_income', 0)" t-options='{"widget": "monetary", "display_currency": company.currency_id}'/></td>
+                            </tr>
+                            <tr>
+                                <td>Selling &amp; Distribution expenses</td>
+                                <td class="text-center">21</td>
+                                <td class="text-end text-danger">(<span t-esc="current.get('selling_expenses', 0)" t-options='{"widget": "monetary", "display_currency": company.currency_id}'/>)</td>
+                                <td class="text-end text-danger">(<span t-esc="prev.get('selling_expenses', 0)" t-options='{"widget": "monetary", "display_currency": company.currency_id}'/>)</td>
+                            </tr>
+                            <tr>
+                                <td>General and administrative expenses</td>
+                                <td class="text-center">22</td>
+                                <td class="text-end text-danger">(<span t-esc="current.get('ga_expenses', 0)" t-options='{"widget": "monetary", "display_currency": company.currency_id}'/>)</td>
+                                <td class="text-end text-danger">(<span t-esc="prev.get('ga_expenses', 0)" t-options='{"widget": "monetary", "display_currency": company.currency_id}'/>)</td>
+                            </tr>
+                            <tr class="fw-bold border-top">
+                                <td>Operating profit</td>
+                                <td class="text-center"></td>
+                                <td class="text-end"><span t-esc="current.get('operating_profit', 0)" t-options='{"widget": "monetary", "display_currency": company.currency_id}'/></td>
+                                <td class="text-end"><span t-esc="prev.get('operating_profit', 0)" t-options='{"widget": "monetary", "display_currency": company.currency_id}'/></td>
+                            </tr>
+                            <tr>
+                                <td>Finance Income</td>
+                                <td class="text-center"></td>
+                                <td class="text-end"><span t-esc="current.get('finance_income', 0)" t-options='{"widget": "monetary", "display_currency": company.currency_id}'/></td>
+                                <td class="text-end"><span t-esc="prev.get('finance_income', 0)" t-options='{"widget": "monetary", "display_currency": company.currency_id}'/></td>
+                            </tr>
+                            <tr>
+                                <td>Finance costs</td>
+                                <td class="text-center">23</td>
+                                <td class="text-end text-danger">(<span t-esc="current.get('finance_costs', 0)" t-options='{"widget": "monetary", "display_currency": company.currency_id}'/>)</td>
+                                <td class="text-end text-danger">(<span t-esc="prev.get('finance_costs', 0)" t-options='{"widget": "monetary", "display_currency": company.currency_id}'/>)</td>
+                            </tr>
+                            <tr class="fw-bold border-top">
+                                <td>Profit before business income tax</td>
+                                <td class="text-center"></td>
+                                <td class="text-end"><span t-esc="current.get('profit_before_tax', 0)" t-options='{"widget": "monetary", "display_currency": company.currency_id}'/></td>
+                                <td class="text-end"><span t-esc="prev.get('profit_before_tax', 0)" t-options='{"widget": "monetary", "display_currency": company.currency_id}'/></td>
+                            </tr>
+                            <tr>
+                                <td>Business income tax expense</td>
+                                <td class="text-center">24.3</td>
+                                <td class="text-end text-danger">(<span t-esc="current.get('income_tax_expense', 0)" t-options='{"widget": "monetary", "display_currency": company.currency_id}'/>)</td>
+                                <td class="text-end text-danger">(<span t-esc="prev.get('income_tax_expense', 0)" t-options='{"widget": "monetary", "display_currency": company.currency_id}'/>)</td>
+                            </tr>
+                            <tr class="fw-bold border-top border-bottom">
+                                <td>Profit for the year</td>
+                                <td class="text-center"></td>
+                                <td class="text-end"><span t-esc="current.get('profit_for_year', 0)" t-options='{"widget": "monetary", "display_currency": company.currency_id}'/></td>
+                                <td class="text-end"><span t-esc="prev.get('profit_for_year', 0)" t-options='{"widget": "monetary", "display_currency": company.currency_id}'/></td>
+                            </tr>
+                            <tr>
+                                <td>Other comprehensive income</td>
+                                <td class="text-center"></td>
+                                <td class="text-end">0.00</td>
+                                <td class="text-end">0.00</td>
+                            </tr>
+                            <tr class="fw-bold border-top border-dark border-2">
+                                <td>Total comprehensive (loss) income for the year</td>
+                                <td class="text-center"></td>
+                                <td class="text-end"><span t-esc="current.get('profit_for_year', 0)" t-options='{"widget": "monetary", "display_currency": company.currency_id}'/></td>
+                                <td class="text-end"><span t-esc="prev.get('profit_for_year', 0)" t-options='{"widget": "monetary", "display_currency": company.currency_id}'/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </t>
+        </t>
+    </template>
+
+    <record id="action_report_profit_loss" model="ir.actions.report">
+        <field name="name">Profit and Loss</field>
+        <field name="model">custom.profit.loss.wizard</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">custom_financial_reports.report_profit_loss</field>
+        <field name="report_file">custom_financial_reports.report_profit_loss</field>
+        <field name="binding_model_id" ref="model_custom_profit_loss_wizard"/>
+        <field name="binding_type">report</field>
+    </record>
+</odoo>

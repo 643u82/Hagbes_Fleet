@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="action_product_template_price_update_needed" model="ir.actions.act_window">
+        <field name="name">Waiting for Price Update</field>
+        <field name="res_model">product.template</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('needs_price_update', '=', True)]</field>
+        <field name="context">{'search_default_needs_price_update': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No products are currently waiting for a price update.
+            </p>
+            <p>
+                Products will appear here after their cost has been updated through a landed cost entry.
+            </p>
+        </field>
+    </record>
+
+    <record id="product_template_search_view_price_update" model="ir.ui.view">
+        <field name="name">product.template.search.price_update</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_search_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//filter[@name='filter_to_sell']" position="after">
+                <filter string="Needs Price Update" name="needs_price_update" domain="[('needs_price_update', '=', True)]"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="product_template_tree_view_price_update" model="ir.ui.view">
+        <field name="name">product.template.tree.price_update</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_tree_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='list_price']" position="after">
+                <field name="needs_price_update" optional="show"/>
+            </xpath>
+        </field>
+    </record>
+
+    <menuitem
+        id="menu_price_update_needed"
+        name="Waiting for Price Update"
+        action="action_product_template_price_update_needed"
+        parent="stock.menu_stock_inventory_control"
+        sequence="99"/>
+
+</odoo>

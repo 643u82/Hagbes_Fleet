@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Add group to CRM root -->
+    <record id="crm.crm_menu_root" model="ir.ui.menu">
+        <field name="groups_id" eval="[(4, ref('hagbes_crm_team_restriction.group_crm_sales_team_leader'))]"/>
+    </record>
+    <!-- Pipeline -->
+    <record id="crm.menu_crm_opportunities" model="ir.ui.menu">
+        <field name="groups_id" eval="[(4, ref('hagbes_crm_team_restriction.group_crm_sales_team_leader'))]"/>
+    </record>
+
+    <!-- Leads -->
+    <record id="crm.crm_menu_leads" model="ir.ui.menu">
+        <field name="groups_id" eval="[(4, ref('hagbes_crm_team_restriction.group_crm_sales_team_leader'))]"/>
+    </record>
+
+    <!-- Reporting -->
+    <record id="crm.crm_menu_reporting" model="ir.ui.menu">
+        <field name="groups_id" eval="[(4, ref('hagbes_crm_team_restriction.group_crm_sales_team_leader'))]"/>
+    </record>
+
+    
+</odoo>
+

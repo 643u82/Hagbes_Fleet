@@ -1,0 +1,60 @@
+<odoo>
+    <!-- HR Pending Approvals List View -->
+    <record id="view_onduty_hr_tree" model="ir.ui.view">
+        <field name="name">onduty.approval.list</field>
+        <field name="model">onduty.approval</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="employee_id"/>
+                <field name="department_id"/>
+                <field name="branch_id"/>
+                <field name="sister_company"/>
+                <field name="other_company"/>
+                <field name="start_date"/>
+                <field name="end_date"/>
+                <field name="duty"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- HR Approval Form View -->
+    <record id="view_onduty_hr_form" model="ir.ui.view">
+        <field name="name">onduty.approval.form</field>
+        <field name="model">onduty.approval</field>
+        <field name="arch" type="xml">
+            <form string="OnDuty Approval - HR">
+                <sheet>
+                    <group>
+                        <field name="employee_id" readonly="1"/>
+                        <field name="company_id" readonly="1"/>
+                        <field name="department_id" readonly="1"/>
+                        <field name="job_id" readonly="1"/>
+                        <field name="branch_id"/>
+                        <field name="sister_company"/>
+                        <field name="other_company"/>
+                        <field name="start_date"/>
+                        <field name="end_date"/>
+                        <field name="duty"/>
+                        <field name="remark"/>
+                        <field name="attachment"/>
+                        <field name="state" readonly="1"/>
+                    </group>
+                    <footer>
+                        <button string="Approve"
+                                type="object"
+                                name="action_approve_hr"
+                                class="btn-primary"
+                                modifiers="{'invisible': [('state', '!=', 'pending_hr')]}"/>
+                        <button string="Reject"
+                                type="object"
+                                name="action_reject_hr"
+                                class="btn-danger"
+                                modifiers="{'invisible': [('state', '!=', 'pending_hr')]}"/>
+                        <button string="Close" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>

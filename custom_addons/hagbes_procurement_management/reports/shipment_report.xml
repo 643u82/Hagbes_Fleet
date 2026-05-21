@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Shipment Report Template -->
+    <template id="report_foreign_shipment">
+        <t t-call="web.external_layout">
+            <t t-foreach="docs" t-as="doc">
+                <div class="page">
+                    <div class="text-center">
+                        <h2><strong><span t-field="doc.company_id.name"/></strong></h2>
+                        <h4>SHIPMENT TRACKING REPORT</h4>
+                    </div>
+
+                    <div class="row mt32">
+                        <div class="col-6">
+                            <table class="table table-sm table-borderless">
+                                <tr>
+                                    <td><strong>Shipment Ref:</strong></td>
+                                    <td><span t-field="doc.name"/></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Purchase Order:</strong></td>
+                                    <td><span t-field="doc.purchase_order_id.name"/></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Supplier:</strong></td>
+                                    <td><span t-field="doc.supplier_id.name"/></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Shipment Mode:</strong></td>
+                                    <td><span t-field="doc.shipment_mode"/></td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="col-6">
+                            <table class="table table-sm table-borderless">
+                                <tr>
+                                    <td><strong>Vessel/Flight:</strong></td>
+                                    <td><span t-field="doc.vessel_name"/></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Voyage/Flight No:</strong></td>
+                                    <td><span t-field="doc.voyage_number"/></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>B/L Number:</strong></td>
+                                    <td><span t-field="doc.bl_number"/></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Status:</strong></td>
+                                    <td><span t-field="doc.state"/></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="row mt16">
+                        <div class="col-6">
+                            <h5>Port of Loading</h5>
+                            <p><span t-field="doc.port_of_loading"/></p>
+                        </div>
+                        <div class="col-6">
+                            <h5>Port of Discharge</h5>
+                            <p><span t-field="doc.port_of_discharge"/></p>
+                        </div>
+                    </div>
+
+                    <div class="row mt16">
+                        <div class="col-6">
+                            <table class="table table-sm table-borderless">
+                                <tr>
+                                    <td><strong>ETD:</strong></td>
+                                    <td><span t-field="doc.etd"/></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>ATD:</strong></td>
+                                    <td><span t-field="doc.atd"/></td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="col-6">
+                            <table class="table table-sm table-borderless">
+                                <tr>
+                                    <td><strong>ETA:</strong></td>
+                                    <td><span t-field="doc.eta"/></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>ATA:</strong></td>
+                                    <td><span t-field="doc.ata"/></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="row mt16">
+                        <div class="col-12">
+                            <h5>Cargo Details</h5>
+                            <table class="table table-bordered">
+                                <tr>
+                                    <td><strong>Total Packages:</strong></td>
+                                    <td><span t-field="doc.total_packages"/></td>
+                                    <td><strong>Total Weight:</strong></td>
+                                    <td><span t-field="doc.total_weight"/> KG</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Total Volume:</strong></td>
+                                    <td><span t-field="doc.total_volume"/> CBM</td>
+                                    <td><strong>Container Numbers:</strong></td>
+                                    <td><span t-field="doc.container_numbers"/></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="row mt16">
+                        <div class="col-12">
+                            <h5>Tracking Events</h5>
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Event</th>
+                                        <th>Location</th>
+                                        <th>Description</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-foreach="doc.tracking_event_ids" t-as="event">
+                                        <tr>
+                                            <td><span t-field="event.event_date"/></td>
+                                            <td><span t-field="event.event_type"/></td>
+                                            <td><span t-field="event.location"/></td>
+                                            <td><span t-field="event.description"/></td>
+                                        </tr>
+                                    </t>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="row mt16">
+                        <div class="col-12">
+                            <h5>Cost Summary</h5>
+                            <table class="table table-bordered">
+                                <tr>
+                                    <td><strong>Freight Cost:</strong></td>
+                                    <td class="text-right">
+                                        <span t-field="doc.freight_cost" t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Insurance Cost:</strong></td>
+                                    <td class="text-right">
+                                        <span t-field="doc.insurance_cost" t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Other Charges:</strong></td>
+                                    <td class="text-right">
+                                        <span t-field="doc.other_charges" t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>
+                                    </td>
+                                </tr>
+                                <tr class="border-top">
+                                    <td><strong>Total Shipping Cost:</strong></td>
+                                    <td class="text-right">
+                                        <strong>
+                                            <span t-field="doc.total_shipping_cost" t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>
+                                        </strong>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </t>
+    </template>
+
+</odoo>

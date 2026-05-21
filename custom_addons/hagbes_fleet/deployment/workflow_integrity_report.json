@@ -1,0 +1,10 @@
+{
+  "approval_states_valid": true,
+  "approval_buttons_valid": true,
+  "security_groups_valid": true,
+  "state_transitions_valid": true,
+  "workflow_configuration_valid": true,
+  "critical_issues": [],
+  "warnings": [],
+  "integrity_protected": true
+}

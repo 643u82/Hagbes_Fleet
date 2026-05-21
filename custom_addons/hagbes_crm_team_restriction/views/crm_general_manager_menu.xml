@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <!-- Give Sales Manager access to all main CRM menus -->
+    <record id="crm.crm_menu_root" model="ir.ui.menu">
+        <field name="groups_id" eval="[(4, ref('hagbes_crm_team_restriction.group_crm_sales_general_manager'))]"/>
+    </record>
+
+    <!-- Sales Teams submenu: keep visible -->
+    <record id="crm.crm_menu_config" model="ir.ui.menu">
+        <field name="groups_id" eval="[(4, ref('hagbes_crm_team_restriction.group_crm_sales_general_manager'))]"/>
+        <field name="groups_id" eval="[(4, ref('base.group_system'))]"/>
+    </record>
+
+  <!-- Restrict Pipeline to Sales Users only -->
+    <record model="ir.ui.menu" id="crm.menu_crm_opportunities">
+        <field name="groups_id" eval="[(4, ref('hagbes_crm_team_restriction.group_crm_sales_general_manager'))]"/>
+        
+    </record>
+
+    <!--Restrict sales to Sales users only-->
+     <record model="ir.ui.menu" id="crm.crm_menu_sales">
+        <field name="groups_id" eval="[(4, ref('hagbes_crm_team_restriction.group_crm_sales_general_manager'))]"/>
+    </record>
+    <!-- Restrict Leads -->
+    <record model="ir.ui.menu" id="crm.crm_menu_leads">
+        <field name="groups_id" eval="[(4, ref('hagbes_crm_team_restriction.group_crm_sales_general_manager'))]"/>
+    </record>
+
+    <!-- Restrict Customers -->
+    <record model="ir.ui.menu" id="crm.res_partner_menu_customer">
+        <field name="groups_id" eval="[(4, ref('hagbes_crm_team_restriction.group_crm_sales_general_manager'))]"/>
+    </record>
+
+    <!-- Restrict Teams -->
+    <record model="ir.ui.menu" id="crm.sales_team_menu_team_pipeline">
+        <field name="groups_id" eval="[(4, ref('hagbes_crm_team_restriction.group_crm_sales_general_manager'))]"/>
+    </record>
+
+    <!-- Restrict Configuration -->
+    <record model="ir.ui.menu" id="crm.crm_menu_config">
+        <field name="groups_id" eval="[(4, ref('hagbes_crm_team_restriction.group_crm_sales_general_manager'))]"/>
+    </record>
+
+   <!-- Reporting allowed for general managers -->
+    <record model="ir.ui.menu" id="crm.crm_menu_report">
+        <field name="groups_id" eval="[(4, ref('hagbes_crm_team_restriction.group_crm_sales_general_manager'))]"/>
+    </record>
+  
+ 
+
+</odoo>

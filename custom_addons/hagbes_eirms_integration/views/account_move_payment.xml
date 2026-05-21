@@ -1,0 +1,31 @@
+<odoo>
+    <data>
+
+        <record id="view_account_payment_form_mor_info" model="ir.ui.view">
+            <field name="name">account.payment.form.mor.info</field>
+            <field name="model">account.payment</field>
+            <field name="inherit_id" ref="account.view_account_payment_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//notebook" position="inside">
+                    <page string="MOR Receipt" invisible="not mor_receipt_id">
+                        <group>
+                            <field name="mor_receipt_id"/>
+                            <field name="mor_receipt_status"/>
+                            <field name="mor_rrn"/>
+                        </group>
+
+                        <group>
+                            <field name="mor_qr" widget="image"/>
+                        </group>
+
+                        <group>
+                            <field name="mor_raw_response" widget="text"/>
+                        </group>
+                    </page>
+
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</odoo>

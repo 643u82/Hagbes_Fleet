@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+  <data>
+
+  <record id="view_warehouse_form_inherit_branch" model="ir.ui.view">
+    <field name="name">stock.warehouse.form.inherit.branch</field>
+    <field name="model">stock.warehouse</field>
+    <field name="inherit_id" ref="stock.view_warehouse"/>
+    <field name="arch" type="xml">
+      <xpath expr="//field[@name='partner_id']" position="after">
+        <field name="branch_id"/>
+      </xpath>
+    </field>
+  </record>
+
+
+  <record id="view_warehouse_tree_inherit_branch" model="ir.ui.view">
+    <field name="name">stock.warehouse.tree.inherit.branch</field>
+    <field name="model">stock.warehouse</field>
+    <field name="inherit_id" ref="stock.view_warehouse_tree"/>
+    <field name="arch" type="xml">
+      <!-- Insert branch_id after the company_id column -->
+      <xpath expr="//list/field[@name='company_id']" position="after">
+        <field name="branch_id"/>
+      </xpath>
+    </field>
+  </record>
+
+  </data>
+</odoo>

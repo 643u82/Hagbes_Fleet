@@ -1,0 +1,17 @@
+<odoo>
+    <record id="view_backorder_remark_wizard_form" model="ir.ui.view">
+        <field name="name">backorder.remark.wizard.form</field>
+        <field name="model">backorder.remark.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Backorder Remark">
+                <group>
+                    <field name="remark"/>
+                </group>
+                <footer>
+                    <button string="Confirm" type="object" name="action_confirm_remark" class="btn-primary"/>
+                    <button string="Cancel" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

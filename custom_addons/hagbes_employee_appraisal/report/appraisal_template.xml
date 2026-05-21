@@ -1,0 +1,23 @@
+<odoo>
+    <template id="report_appraisal_template">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <h2>Employee Appraisal</h2>
+                <p><strong>Employee:</strong> <t t-esc="o.employee_id.name"/></p>
+                <p><strong>Period:</strong> <t t-esc="o.evaluation_period"/></p>
+                <table class="table table-sm">
+                    <tr><th>Criteria</th><th>Score</th><th>Note</th></tr>
+                    <t t-foreach="o.criteria_line_ids" t-as="line">
+                        <tr>
+                            <td><t t-esc="line.criteria_id.name"/></td>
+                            <td><t t-esc="line.score"/></td>
+                            <td><t t-esc="line.note"/></td>
+                        </tr>
+                    </t>
+                </table>
+                <p><strong>Remarks:</strong> <t t-esc="o.remarks"/></p>
+                <p><strong>Employee Feedback:</strong> <t t-esc="o.employee_feedback"/></p>
+            </t>
+        </t>
+    </template>
+</odoo>

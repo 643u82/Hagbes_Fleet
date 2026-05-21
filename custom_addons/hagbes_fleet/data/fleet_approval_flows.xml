@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="approval_flow_fleet_assignment" model="approval.flow">
+        <field name="name">Fleet Assignment</field>
+        <field name="request_type">fleet_assignment</field>
+        <field name="request_model_id" ref="hagbes_fleet.model_hagbes_fleet_vehicle_assign"/>
+        <field name="active">True</field>
+    </record>
+
+    <record id="approval_step_fleet_assignment_initiator" model="approval.step">
+        <field name="flow_id" ref="approval_flow_fleet_assignment"/>
+        <field name="name">Assignment Submission</field>
+        <field name="sequence">1</field>
+        <field name="is_initiator">True</field>
+    </record>
+
+    <record id="approval_step_fleet_assignment_manager" model="approval.step">
+        <field name="flow_id" ref="approval_flow_fleet_assignment"/>
+        <field name="name">Fleet Manager Review</field>
+        <field name="sequence">10</field>
+        <field name="role_id" ref="hagbes_fleet.group_property_manager"/>
+    </record>
+
+    <record id="approval_step_fleet_assignment_final" model="approval.step">
+        <field name="flow_id" ref="approval_flow_fleet_assignment"/>
+        <field name="name">Assignment Approved</field>
+        <field name="sequence">20</field>
+        <field name="is_final">True</field>
+    </record>
+
+    <record id="approval_step_action_fleet_assignment_initiator" model="approval.step.action">
+        <field name="step_id" ref="approval_step_fleet_assignment_initiator"/>
+        <field name="action_id" search="[('code', '=', 'auto_initiate')]"/>
+        <field name="next_step_id" ref="approval_step_fleet_assignment_manager"/>
+    </record>
+
+    <record id="approval_step_action_fleet_assignment_approve" model="approval.step.action">
+        <field name="step_id" ref="approval_step_fleet_assignment_manager"/>
+        <field name="action_id" search="[('code', '=', 'approve')]"/>
+        <field name="next_step_id" ref="approval_step_fleet_assignment_final"/>
+    </record>
+
+    <record id="approval_step_action_fleet_assignment_reject" model="approval.step.action">
+        <field name="step_id" ref="approval_step_fleet_assignment_manager"/>
+        <field name="action_id" search="[('code', '=', 'reject')]"/>
+    </record>
+
+    <record id="approval_flow_fleet_maintenance" model="approval.flow">
+        <field name="name">Fleet Maintenance</field>
+        <field name="request_type">fleet_maintenance</field>
+        <field name="request_model_id" ref="hagbes_fleet.model_hagbes_fleet_maintenance"/>
+        <field name="active">True</field>
+    </record>
+
+    <record id="approval_step_fleet_maintenance_initiator" model="approval.step">
+        <field name="flow_id" ref="approval_flow_fleet_maintenance"/>
+        <field name="name">Maintenance Submission</field>
+        <field name="sequence">1</field>
+        <field name="is_initiator">True</field>
+    </record>
+
+    <record id="approval_step_fleet_maintenance_manager" model="approval.step">
+        <field name="flow_id" ref="approval_flow_fleet_maintenance"/>
+        <field name="name">Fleet Manager Review</field>
+        <field name="sequence">10</field>
+        <field name="role_id" ref="hagbes_fleet.group_property_manager"/>
+    </record>
+
+    <record id="approval_step_fleet_maintenance_final" model="approval.step">
+        <field name="flow_id" ref="approval_flow_fleet_maintenance"/>
+        <field name="name">Maintenance Approved</field>
+        <field name="sequence">20</field>
+        <field name="is_final">True</field>
+    </record>
+
+    <record id="approval_step_action_fleet_maintenance_initiator" model="approval.step.action">
+        <field name="step_id" ref="approval_step_fleet_maintenance_initiator"/>
+        <field name="action_id" search="[('code', '=', 'auto_initiate')]"/>
+        <field name="next_step_id" ref="approval_step_fleet_maintenance_manager"/>
+    </record>
+
+    <record id="approval_step_action_fleet_maintenance_approve" model="approval.step.action">
+        <field name="step_id" ref="approval_step_fleet_maintenance_manager"/>
+        <field name="action_id" search="[('code', '=', 'approve')]"/>
+        <field name="next_step_id" ref="approval_step_fleet_maintenance_final"/>
+    </record>
+
+    <record id="approval_step_action_fleet_maintenance_reject" model="approval.step.action">
+        <field name="step_id" ref="approval_step_fleet_maintenance_manager"/>
+        <field name="action_id" search="[('code', '=', 'reject')]"/>
+    </record>
+
+    <record id="approval_flow_fleet_disposal" model="approval.flow">
+        <field name="name">Fleet Disposal</field>
+        <field name="request_type">fleet_disposal</field>
+        <field name="request_model_id" ref="hagbes_fleet.model_hagbes_fleet_vehicle"/>
+        <field name="active">True</field>
+    </record>
+
+    <record id="approval_step_fleet_disposal_initiator" model="approval.step">
+        <field name="flow_id" ref="approval_flow_fleet_disposal"/>
+        <field name="name">Disposal Submission</field>
+        <field name="sequence">1</field>
+        <field name="is_initiator">True</field>
+    </record>
+
+    <record id="approval_step_fleet_disposal_manager" model="approval.step">
+        <field name="flow_id" ref="approval_flow_fleet_disposal"/>
+        <field name="name">Fleet Manager Review</field>
+        <field name="sequence">10</field>
+        <field name="role_id" ref="hagbes_fleet.group_property_manager"/>
+    </record>
+
+    <record id="approval_step_fleet_disposal_final" model="approval.step">
+        <field name="flow_id" ref="approval_flow_fleet_disposal"/>
+        <field name="name">Disposal Approved</field>
+        <field name="sequence">20</field>
+        <field name="is_final">True</field>
+    </record>
+
+    <record id="approval_step_action_fleet_disposal_initiator" model="approval.step.action">
+        <field name="step_id" ref="approval_step_fleet_disposal_initiator"/>
+        <field name="action_id" search="[('code', '=', 'auto_initiate')]"/>
+        <field name="next_step_id" ref="approval_step_fleet_disposal_manager"/>
+    </record>
+
+    <record id="approval_step_action_fleet_disposal_approve" model="approval.step.action">
+        <field name="step_id" ref="approval_step_fleet_disposal_manager"/>
+        <field name="action_id" search="[('code', '=', 'approve')]"/>
+        <field name="next_step_id" ref="approval_step_fleet_disposal_final"/>
+    </record>
+
+    <record id="approval_step_action_fleet_disposal_reject" model="approval.step.action">
+        <field name="step_id" ref="approval_step_fleet_disposal_manager"/>
+        <field name="action_id" search="[('code', '=', 'reject')]"/>
+    </record>
+
+    <!-- Fleet Requisition Three-Step Approval Flow -->
+    <record id="approval_flow_fleet_requisition" model="approval.flow">
+        <field name="name">Fleet Requisition</field>
+        <field name="request_type">fleet_requisition</field>
+        <field name="request_model_id" ref="hagbes_fleet.model_fleet_requisition"/>
+        <field name="active">True</field>
+    </record>
+
+    <!-- Transparent Initiator Step -->
+    <record id="approval_step_fleet_requisition_initiator" model="approval.step">
+        <field name="flow_id" ref="approval_flow_fleet_requisition"/>
+        <field name="name">Requisition Submission</field>
+        <field name="sequence">0</field>
+        <field name="is_initiator">True</field>
+    </record>
+
+    <!-- Step 1: Department Manager -->
+    <record id="approval_step_fleet_requisition_dept_manager" model="approval.step">
+        <field name="flow_id" ref="approval_flow_fleet_requisition"/>
+        <field name="name">Department Manager Review</field>
+        <field name="sequence">10</field>
+        <field name="role_id" ref="hagbes_fleet.group_dept_manager"/>
+    </record>
+
+    <!-- Step 2: FMO Officer -->
+    <record id="approval_step_fleet_requisition_fmo_officer" model="approval.step">
+        <field name="flow_id" ref="approval_flow_fleet_requisition"/>
+        <field name="name">FMO Officer Review</field>
+        <field name="sequence">20</field>
+        <field name="role_id" ref="hagbes_fleet.group_fmo"/>
+    </record>
+
+
+
+    <!-- Final Step -->
+    <record id="approval_step_fleet_requisition_final" model="approval.step">
+        <field name="flow_id" ref="approval_flow_fleet_requisition"/>
+        <field name="name">Final Approval</field>
+        <field name="sequence">40</field>
+        <field name="is_final">True</field>
+    </record>
+
+    <!-- Step Actions for Fleet Requisition -->
+    <record id="approval_step_action_fleet_requisition_initiator" model="approval.step.action">
+        <field name="step_id" ref="approval_step_fleet_requisition_initiator"/>
+        <field name="action_id" search="[('code', '=', 'auto_initiate')]"/>
+        <field name="next_step_id" ref="approval_step_fleet_requisition_dept_manager"/>
+    </record>
+
+    <!-- Department Manager Actions -->
+    <record id="approval_step_action_fleet_requisition_dept_approve" model="approval.step.action">
+        <field name="step_id" ref="approval_step_fleet_requisition_dept_manager"/>
+        <field name="action_id" search="[('code', '=', 'approve')]"/>
+        <field name="next_step_id" ref="approval_step_fleet_requisition_fmo_officer"/>
+    </record>
+
+
+    <record id="approval_step_action_fleet_requisition_dept_reject" model="approval.step.action">
+        <field name="step_id" ref="approval_step_fleet_requisition_dept_manager"/>
+        <field name="action_id" search="[('code', '=', 'reject')]"/>
+    </record>
+
+
+
+    <!-- FMO Officer Actions -->
+    <record id="approval_step_action_fleet_requisition_fmo_approve" model="approval.step.action">
+        <field name="step_id" ref="approval_step_fleet_requisition_fmo_officer"/>
+        <field name="action_id" search="[('code', '=', 'approve')]"/>
+        <field name="next_step_id" ref="approval_step_fleet_requisition_final"/>
+    </record>
+
+    <record id="approval_step_action_fleet_requisition_fmo_reject" model="approval.step.action">
+        <field name="step_id" ref="approval_step_fleet_requisition_fmo_officer"/>
+        <field name="action_id" search="[('code', '=', 'reject')]"/>
+    </record>
+</odoo>

@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="GeneralLedgerTemp">
+        <div class="o_action account_report h-100 d-flex flex-column overflow-hidden">
+            <!-- CONTROL PANEL -->
+            <div class="o_control_panel d-flex flex-column gap-3 px-3 pt-2 pb-3 border-bottom">
+                <div class="o_control_panel_main d-flex flex-wrap flex-lg-nowrap justify-content-between align-items-lg-start gap-2 gap-lg-3 flex-grow-1">
+                    
+                    <!-- Breadcrumbs -->
+                    <div class="o_control_panel_breadcrumbs d-flex align-items-center gap-1 order-0 h-lg-100">
+                        <div class="o_control_panel_main_buttons d-flex gap-1 d-empty-none d-print-none">
+                            <button class="btn text-nowrap btn-primary" t-on-click="printPdf">PDF</button>
+                            <button class="btn text-nowrap btn-secondary" t-on-click="exportXlsx">XLSX</button>
+                        </div>
+                        <div class="o_breadcrumb d-flex gap-1 text-truncate">
+                            <div class="o_last_breadcrumb_item active d-flex fs-4 min-w-0 align-items-center">
+                                <span class="min-w-0 text-truncate">General Ledger</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Filters -->
+                    <div class="o_control_panel_actions d-empty-none d-flex align-items-center justify-content-start justify-content-lg-around order-2 order-lg-1 w-100 mw-100 w-lg-auto">
+                        <div class="d-flex gap-1">
+                            <!-- Search -->
+                            <div class="o_searchview form-control d-print-contents d-flex align-items-center py-1 w-auto">
+                                <i class="o_searchview_icon d-print-none fa fa-search me-2"/>
+                                <input type="text" class="o_searchview_input o_input d-print-none flex-grow-1 w-auto border-0" 
+                                       placeholder="Search..." t-on-input="onSearchChanged"/>
+                            </div>
+
+                            <!-- Date Filter -->
+                            <Dropdown>
+                                <button class="btn btn-secondary o-dropdown dropdown-toggle">
+                                    <i class="fa fa-calendar me-1"/>
+                                    <t t-if="state.filter_type === 'custom'">
+                                        From <t t-esc="state.options.date_from.toFormat('dd/MM/yyyy')"/> to <t t-esc="state.options.date_to.toFormat('dd/MM/yyyy')"/>
+                                    </t>
+                                    <t t-else=""><t t-esc="getPeriodName()"/></t>
+                                </button>
+                                <t t-set-slot="content">
+                                    <DropdownItem onSelected="() => this.onFilterTypeChanged('month')" class="state.filter_type === 'month' ? 'selected' : ''">Month</DropdownItem>
+                                    <DropdownItem onSelected="() => this.onFilterTypeChanged('quarter')" class="state.filter_type === 'quarter' ? 'selected' : ''">Quarter</DropdownItem>
+                                    <DropdownItem onSelected="() => this.onFilterTypeChanged('year')" class="state.filter_type === 'year' ? 'selected' : ''">Year</DropdownItem>
+                                    <DropdownItem onSelected="() => this.onFilterTypeChanged('custom')" class="state.filter_type === 'custom' ? 'selected' : ''">Custom</DropdownItem>
+                                    
+                                    <div class="p-2" t-if="state.filter_type === 'custom'">
+                                        <div class="mb-2">
+                                            <label class="small text-muted">From:</label>
+                                            <DateTimePicker value="state.options.date_from" onSelect="(d) => this.onCustomDateFromChanged(d)"/>
+                                        </div>
+                                        <div>
+                                            <label class="small text-muted">To:</label>
+                                            <DateTimePicker value="state.options.date_to" onSelect="(d) => this.onCustomDateToChanged(d)"/>
+                                        </div>
+                                    </div>
+                                </t>
+                            </Dropdown>
+
+                            <!-- Journals Filter -->
+                            <Dropdown>
+                                <button class="btn btn-secondary o-dropdown dropdown-toggle">
+                                    <i class="fa fa-book me-1"/>
+                                    <t t-if="state.options.journal_ids.length === 0">All Journals</t>
+                                    <t t-else="">Journals (<t t-esc="state.options.journal_ids.length"/>)</t>
+                                </button>
+                                <t t-set-slot="content">
+                                    <t t-foreach="state.journals" t-as="journal" t-key="journal.id">
+                                        <DropdownItem onSelected="() => this.onJournalChanged(journal.id)">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" t-att-checked="state.options.journal_ids.includes(journal.id)"/>
+                                                <label class="form-check-label"><t t-esc="journal.code"/> - <t t-esc="journal.name"/></label>
+                                            </div>
+                                        </DropdownItem>
+                                    </t>
+                                </t>
+                            </Dropdown>
+
+                            <!-- Options Filter -->
+                            <Dropdown>
+                                <button class="btn btn-secondary o-dropdown dropdown-toggle">
+                                    <i class="fa fa-sliders me-1"/> Options
+                                </button>
+                                <t t-set-slot="content">
+                                    <DropdownItem onSelected="() => this.onTargetMoveChanged(state.options.target_move !== 'posted')">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" t-att-checked="state.options.target_move === 'posted'"/>
+                                            <label class="form-check-label">Posted Entries Only</label>
+                                        </div>
+                                    </DropdownItem>
+                                </t>
+                            </Dropdown>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- REPORT CONTENT -->
+            <div class="o_content flex-grow-1 overflow-auto bg-light">
+                <div class="p-4 d-flex justify-content-center">
+                    <div class="bg-white shadow-sm border p-4 w-100" style="max-width: 1140px;" t-if="state.data">
+                        <div class="text-center mb-4">
+                            <h2 class="m-0 fw-bold">General Ledger</h2>
+                            <div class="text-muted">
+                                From <t t-esc="formatDate(state.data.date_from)"/> to <t t-esc="formatDate(state.data.date_to)"/>
+                            </div>
+                        </div>
+                        <table class="table table-sm table-hover table-borderless">
+                            <thead class="border-bottom">
+                                <tr>
+                                    <th style="width: 40%;">Account</th>
+                                    <th class="text-start">Date</th>
+                                    <th class="text-start">Partner</th>
+                                    <th class="text-end">Debit</th>
+                                    <th class="text-end">Credit</th>
+                                    <th class="text-end">Balance</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="filteredAccounts" t-as="account" t-key="account.id">
+                                    <!-- Account Row (Level 2) -->
+                                    <tr class="line_level_2" t-att-class="isExpanded(account.id) ? 'unfolded' : ''" t-on-click="() => this.toggleAccount(account.id)" style="cursor: pointer;">
+                                        <td class="line_name text unfoldable">
+                                            <div class="wrapper d-flex align-items-center">
+                                                <button class="btn btn-sm btn_foldable me-2 p-0">
+                                                    <i t-att-class="isExpanded(account.id) ? 'fa fa-caret-down' : 'fa fa-caret-right'"/>
+                                                </button>
+                                                <div class="content d-flex align-items-center gap-2">
+                                                    <div class="name fw-bold"><t t-esc="account.code"/> <t t-esc="account.name"/></div>
+                                                    <!-- Optional Journal Items button -->
+                                                    <!-- <button class="btn btn-sm btn-outline-secondary py-0" style="font-size: 0.7rem;">Journal Items</button> -->
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td></td>
+                                        <td></td>
+                                        <td class="text-end fw-bold"><t t-esc="formatCurrency(account.debit)"/></td>
+                                        <td class="text-end fw-bold"><t t-esc="formatCurrency(account.credit)"/></td>
+                                        <td class="text-end fw-bold"><t t-esc="formatCurrency(account.ending_balance)"/></td>
+                                    </tr>
+
+                                    <!-- Expanded Lines -->
+                                    <t t-if="isExpanded(account.id)">
+                                        <!-- Initial Balance Line -->
+                                        <tr class="line_level_4 text-muted fst-italic" t-if="account.initial_balance != 0">
+                                            <td class="ps-5">Initial Balance</td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td class="text-end"><t t-esc="formatCurrency(account.initial_balance)"/></td>
+                                        </tr>
+
+                                        <!-- Move Lines (Level 4) -->
+                                        <tr t-foreach="account.lines" t-as="line" t-key="line.id" class="line_level_4">
+                                            <td class="line_name ps-5">
+                                                <div class="wrapper">
+                                                    <div class="content">
+                                                        <div class="name"><t t-esc="line.move_name"/> <span class="text-muted ms-2" t-esc="line.name"/></div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td class="date"><t t-esc="formatDate(line.date)"/></td>
+                                            <td class="text"><t t-esc="line.partner_name"/></td>
+                                            <td class="text-end"><t t-esc="formatCurrency(line.debit)"/></td>
+                                            <td class="text-end"><t t-esc="formatCurrency(line.credit)"/></td>
+                                            <td class="text-end"><t t-esc="formatCurrency(line.balance)"/></td>
+                                        </tr>
+                                        
+                                        <!-- Account Total Line (Optional, as header has totals) -->
+                                        <tr class="line_level_2 total bg-light fw-bold">
+                                            <td class="ps-5">Total <t t-esc="account.code"/></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td class="text-end"><t t-esc="formatCurrency(account.debit)"/></td>
+                                            <td class="text-end"><t t-esc="formatCurrency(account.credit)"/></td>
+                                            <td class="text-end"><t t-esc="formatCurrency(account.ending_balance)"/></td>
+                                        </tr>
+                                    </t>
+                                </t>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </t>
+</templates>

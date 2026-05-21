@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_cash_book">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <div class="page">
+                    <h2 class="text-center">Cash Book</h2>
+                    <div class="row mt32 mb32">
+                        <div class="col-4">
+                            <strong>Date From:</strong> <span t-esc="data.get('date_from')"/>
+                        </div>
+                        <div class="col-4">
+                            <strong>Date To:</strong> <span t-esc="data.get('date_to')"/>
+                        </div>
+                        <div class="col-4">
+                            <strong>Target Moves:</strong> <span t-esc="data.get('target_move')"/>
+                        </div>
+                    </div>
+
+                    <t t-foreach="data['accounts']" t-as="account">
+                        <div class="mt-4 mb-2 p-2 bg-light border">
+                            <strong t-esc="account['code']"/> - <strong t-esc="account['name']"/>
+                            <span class="float-right">
+                                <strong>Initial Balance:</strong> 
+                                <span t-esc="account['initial_balance']" t-options="{'widget': 'monetary', 'display_currency': res_company.currency_id}"/>
+                            </span>
+                        </div>
+                        <table class="table table-sm table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>JRNL</th>
+                                    <th>Partner</th>
+                                    <th>Ref</th>
+                                    <th>Move</th>
+                                    <th>Label</th>
+                                    <th class="text-right">Debit</th>
+                                    <th class="text-right">Credit</th>
+                                    <th class="text-right">Balance</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="account['lines']" t-as="line">
+                                    <td><span t-esc="line['date']"/></td>
+                                    <td><span t-esc="line['journal_code']"/></td>
+                                    <td><span t-esc="line['partner_name']"/></td>
+                                    <td><span t-esc="line['ref']"/></td>
+                                    <td><span t-esc="line['move_name']"/></td>
+                                    <td><span t-esc="line['name']"/></td>
+                                    <td class="text-right"><span t-esc="line['debit']" t-options="{'widget': 'monetary', 'display_currency': res_company.currency_id}"/></td>
+                                    <td class="text-right"><span t-esc="line['credit']" t-options="{'widget': 'monetary', 'display_currency': res_company.currency_id}"/></td>
+                                    <td class="text-right"><span t-esc="line['balance']" t-options="{'widget': 'monetary', 'display_currency': res_company.currency_id}"/></td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="8" class="text-right"><strong>Ending Balance</strong></td>
+                                    <td class="text-right">
+                                        <strong t-esc="account['ending_balance']" t-options="{'widget': 'monetary', 'display_currency': res_company.currency_id}"/>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </t>
+                </div>
+            </t>
+        </t>
+    </template>
+
+    <record id="action_report_cash_book" model="ir.actions.report">
+        <field name="name">Cash Book</field>
+        <field name="model">report.custom_financial_reports.report_cash_book</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">custom_financial_reports.report_cash_book</field>
+        <field name="report_file">custom_financial_reports.report_cash_book</field>
+    </record>
+</odoo>

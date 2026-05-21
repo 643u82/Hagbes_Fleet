@@ -1,0 +1,7 @@
+<odoo>
+    <menuitem id="menu_dashboard_main" name="Dashboard" parent="account.menu_finance" sequence="10"/>
+    <menuitem id="menu_accounting_main" name="Accounting" parent="account.menu_finance" sequence="20"/>
+    <menuitem id="menu_transactions" name="Transactions" parent="menu_accounting_main"/>
+    <menuitem id="menu_assets_liability" name="Asset and Liability" parent="menu_accounting_main"/>
+    <menuitem id="menu_closing" name="Closing" parent="menu_accounting_main"/>
+</odoo>

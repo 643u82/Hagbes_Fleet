@@ -1,0 +1,125 @@
+<odoo>
+    <data>
+
+        <!-- ========================= -->
+        <!-- Manual Category List View -->
+        <!-- ========================= -->
+        <record id="user_manual_category_list" model="ir.ui.view">
+            <field name="name">user.manual.category.list</field>
+            <field name="model">user.manual.category</field>
+            <field name="arch" type="xml">
+                <list>
+                    <field name="name"/>
+                    <field name="group_ids" widget="many2many_tags"/>
+                    <field name="manual_filename"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- ========================= -->
+        <!-- Kanban View for Manual Categories -->
+        <!-- ========================= -->
+        <record id="user_manual_category_kanban" model="ir.ui.view">
+            <field name="name">user.manual.category.kanban</field>
+            <field name="model">user.manual.category</field>
+            <field name="arch" type="xml">
+                <kanban class="o_kanban_small_column">
+                    <field name="name"/>
+                    <field name="group_ids" widget="many2many_tags" groups="base.group_system"/>
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div class="oe_kanban_global_click o_kanban_card">
+                                <div class="o_kanban_record_top">
+                                    <field name="name" readonly="1"/>
+                                </div>
+                                <div class="o_kanban_content">
+                                    <field name="group_ids" widget="many2many_tags" groups="base.group_system"/>
+                                </div>
+                                <div class="o_kanban_bottom_right">
+                                    <button type="object"
+                                            name="action_download_manual"
+                                            class="btn btn-primary btn-sm">
+                                        Download
+                                    </button>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+
+        <!-- ========================= -->
+        <!-- Manual Category Form View -->
+        <!-- ========================= -->
+        <record id="user_manual_category_form" model="ir.ui.view">
+            <field name="name">user.manual.category.form</field>
+            <field name="model">user.manual.category</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+
+                        <!-- Basic Information -->
+                        <group>
+                            <group>
+                                <field name="name" readonly="1"/>
+                                <field name="group_ids" widget="many2many_tags" groups="base.group_system"/>
+                            </group>
+                            <group>
+                                <field name="manual_file" filename="manual_filename"/>
+                                <field name="manual_filename" invisible="1"/>
+                            </group>
+                        </group>
+
+                       
+
+                        <!-- Description -->
+                        <group>
+                            <field name="description"/>
+                        </group>
+
+                        <button name="action_preview_manual"
+                                type="object"
+                                string="Preview"
+                                class="btn btn-secondary"/>
+
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+
+        <!-- ========================= -->
+        <!-- Action Window -->
+        <!-- ========================= -->
+        <record id="action_user_manual_category" model="ir.actions.act_window">
+            <field name="name">Manual Categories</field>
+            <field name="res_model">user.manual.category</field>
+            <field name="view_mode">kanban,list,form</field>
+            <field name="help" type="html">
+                <p>Create manuals and assign them to security groups.</p>
+            </field>
+            <field name="groups_id" eval="[(4, ref('base.group_system'))]"/><!-- Admin only -->
+        </record>
+
+        <!-- ========================= -->
+        <!-- Menus -->
+        <!-- ========================= -->
+
+        <!-- Root menu visible to ALL -->
+        <menuitem id="menu_hagbes_employee_manual_root"
+                  name="Employee User Manual"
+                  parent="hr.menu_hr_root"
+                  sequence="50"/>
+
+        <!-- Only Admin sees category setup -->
+        <menuitem id="menu_user_manual_category"
+                  name="Manual Categories"
+                  parent="menu_hagbes_employee_manual_root"
+                  action="action_user_manual_category"
+                  groups="base.group_user"
+                  sequence="10"/>
+
+    </data>
+</odoo>

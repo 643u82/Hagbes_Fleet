@@ -1,0 +1,72 @@
+<odoo>
+    <record id="view_onduty_form" model="ir.ui.view">
+        <field name="name">onduty.report.form</field>
+        <field name="model">onduty.report</field>
+        <field name="arch" type="xml">
+            <form string="OnDuty Report">
+                <header>
+                    <!-- Approve button: only visible if can_approve=True and not approved/rejected -->
+                    <button string="Approve" name="action_approve" type="object"
+                            class="oe_highlight btn btn-success"
+                            confirm="Are you sure you want to approve this OnDuty?"
+                            invisible="can_approve == False"/>
+
+                    <!-- Reject button: only visible if can_approve=True and not approved/rejected -->
+                    <button string="Reject" name="action_reject" type="object"
+                            class="oe_highlight btn btn-danger"
+                            confirm="Are you sure you want to reject this OnDuty?"
+                            invisible="can_approve == False"/>
+                </header>
+                <sheet readonly="state in ['pending', 'rejected', 'approved']">
+                    <group string="Employee Info" colspan="2" readonly="state in ['pending','approved','rejected']">
+                        <group>
+                            <field name="employee_id" options="{'no_open': True}"/>
+                            <field name="department_id" options="{'no_open': True}"/>
+                            <field name="company_id" options="{'no_open': True}"/>
+                        </group>
+                        <group>
+                            <field name="job_id" options="{'no_open': True}"/>
+                            <field name="branch_id" options="{'no_open': True}"/>
+                        </group>
+                    </group>
+                     <group string="Duty Info" colspan="4">
+                        <group>
+                            <field name="branch_company" readonly="state in ['pending','approved','rejected']" options="{'no_create': True, 'no_open': True}"/>
+                            <field name="sister_company" readonly="state in ['pending','approved','rejected']" options="{'no_create': True, 'no_open': True}"/>
+                            <field name="other_company" readonly="state in ['pending','approved','rejected']"/>
+                        </group>
+                        <group>
+                            <field name="start_date" readonly="state in ['pending','approved','rejected']"/>
+                            <field name="end_date" readonly="state in ['pending','approved','rejected']"/>
+                        </group>
+                        <group>
+                            <field name="duty" readonly="state in ['pending','approved','rejected']"/>
+                        </group>
+                        <group>
+                            <field name="remark" readonly="state in ['pending','approved','rejected']"/>
+                        </group>
+                        <group>
+                            <field name="attachment" readonly="state in ['pending','approved','rejected']"/>
+                        </group>
+
+                     </group>
+                    <group>
+                             <div class="o_onduty_progress_bar_container">
+                                <field name="step_progress" widget="html" readonly="1"/>
+                            </div>
+                    </group>
+
+                    <footer>
+                        <button string="Submit" type="object" name="action_submit" class="btn-primary"/>
+                        <button string="Cancel" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </sheet>
+                <chatter>
+                    <field name="message_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_follower_ids"/>
+                </chatter>
+            </form>
+        </field>
+    </record>
+</odoo>

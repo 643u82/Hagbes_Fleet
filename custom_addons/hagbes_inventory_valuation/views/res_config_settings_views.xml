@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Create a simple menu item for our settings -->
+    <record id="stock_valuation_config_settings_action" model="ir.actions.act_window">
+        <field name="name">Stock Valuation Settings</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">res.config.settings</field>
+        <field name="view_mode">form</field>
+        <field name="target">inline</field>
+        <field name="context">{'module': 'hagbes_inventory_valuation'}</field>
+    </record>
+
+    <!-- Add menu item -->
+    <menuitem id="stock_valuation_config_menu"
+              name="Stock Valuation"
+              parent="stock.menu_stock_config_settings"
+              action="stock_valuation_config_settings_action"
+              sequence="10"/>
+
+    <!-- Simple form view for our settings -->
+    <record id="res_config_settings_view_form_stock_valuation" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.stock.valuation</field>
+        <field name="model">res.config.settings</field>
+        <field name="arch" type="xml">
+            <form string="Stock Valuation Settings" class="oe_form_configuration">
+                <header>
+                    <button string="Save" type="object" name="execute" class="oe_highlight"/>
+                    <button string="Cancel" type="object" name="cancel" class="oe_link"/>
+                </header>
+                <div class="o_setting_container">
+                    <div class="settings">
+                        <div class="app_settings_block" data-string="Stock Valuation" data-key="stock_valuation">
+                            <h2>Stock Valuation Configuration</h2>
+                            <div class="row mt16 o_settings_container">
+                                <div class="col-12 col-lg-6 o_setting_box">
+                                    <div class="o_setting_left_pane">
+                                        <field name="group_stock_valuation_automatic"/>
+                                    </div>
+                                    <div class="o_setting_right_pane">
+                                        <label for="group_stock_valuation_automatic"/>
+                                        <div class="text-muted">
+                                            Enable automatic accounting entries for stock movements
+                                        </div>
+                                        <div class="content-group" invisible="not group_stock_valuation_automatic">
+                                            <div class="mt16">
+                                                <field name="default_stock_valuation" widget="radio"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </field>
+    </record>
+</odoo>

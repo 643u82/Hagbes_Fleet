@@ -1,0 +1,20 @@
+{
+  "management_reports_protected": true,
+  "department_isolation_enforced": true,
+  "property_approvals_restricted": false,
+  "fmo_approvals_restricted": false,
+  "menu_visibility_correct": true,
+  "access_rules_complete": true,
+  "security_violations": [
+    {
+      "type": "unrestricted_property_approval",
+      "issue": "Property approval not restricted to fleet managers"
+    },
+    {
+      "type": "unrestricted_fmo_approval",
+      "issue": "FMO approval not restricted to FMO officers"
+    }
+  ],
+  "warnings": [],
+  "security_protected": false
+}

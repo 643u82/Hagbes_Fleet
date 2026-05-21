@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<templates xml:space="preserve">
+    <t t-name="hagbes_timeoff_management.TimeOffCard">
+        <div class="o_timeoff_card py-3 text-primary">
+            <strong class="o_timeoff_name"><t t-esc="props.name"/></strong>
+            <ul>
+                <li>Year 2: <t t-esc="props.data.year_2"/></li>
+                <li>Year 1: <t t-esc="props.data.year_1"/></li>
+                <li>Current Year: <t t-esc="props.data.current"/></li>
+                <li>Total: <t t-esc="props.data.total"/></li>
+            </ul>
+        </div>
+    </t>
+</templates>

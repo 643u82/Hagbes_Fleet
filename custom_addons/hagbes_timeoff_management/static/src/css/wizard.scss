@@ -1,0 +1,24 @@
+// Green color for yearly balances
+.o_green_group {
+    .o_form_field,
+    .o_field_widget {
+        color: #28a745; // Bootstrap green
+        font-weight: bold;
+    }
+
+    .o_form_label {
+        font-weight: bold;
+    }
+}
+.success_color {
+    color: green !important;
+    font-weight: bold;
+}
+
+/* Target only this specific popup via its model */
+.o_dialog_container .modal-dialog .success-message-wizard {
+    max-width: 350px !important;
+    width: 350px !important;
+}
+
+

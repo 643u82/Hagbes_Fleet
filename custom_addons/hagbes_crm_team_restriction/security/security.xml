@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+
+    <data noupdate='1'>
+        <record id='module_category_hagbes_crm_team_restriction' model='ir.module.category'>
+            <field name='name'>CRM custom groups</field>
+            <field name='description'>Access rights for crm</field>
+        </record>
+    </data>
+
+</odoo>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+  <data>
+   <record id="view_hr_job_form_inherit_expected_employees" model="ir.ui.view">
+     <field name="name">hr.job.form.inherit.expected.employees</field>
+     <field name="model">hr.job</field>
+     <field name="inherit_id" ref="hr.view_hr_job_form"/>
+     <field name="arch" type="xml">
+       <xpath expr="//page[@name='recruitment_page']/group/group[@name='recruitment2']" position="after">
+         <group name="expected_group">
+           <field name="parent_id" context="{'show_job_hierarchy_names': True}" domain="[('id', '!=', id)]"/>
+           <field name="temp_child_ids" context="{'show_job_hierarchy_names': True}" widget="many2many_tags" domain="[('id', '!=', id)]" options="{'no_create': True}" placeholder="Select child positions (used for org chart only)"/>
+           <field name="expected_employees"
+                 readonly="context.get('create', False) == False"
+                 placeholder="Set when creating job"/>
+           <field name="no_of_employee" readonly="1"/>
+           <field name="no_of_recruitment" readonly="1"/>
+           <field name="group_ids" widget="many2many_tags"/>
+         </group>
+         <group name="Email Settings">
+           <field name="analytic_account_id" string="Branch" groups="hr.group_hr_user"/>
+           <field name="email_type_choice" widget="selection"
+              options="{'no_open': True}"
+              modifiers='{}'/>
+           <field name="email_type_custom"
+             placeholder="Enter group or predefined email type here"
+             modifiers='{"invisible": [["email_type_choice", "!=", "group_predefined"]]}'/>
+
+          </group>
+       </xpath>
+     </field>
+   </record>
+  </data>
+</odoo>

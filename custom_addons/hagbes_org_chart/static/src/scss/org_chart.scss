@@ -1,0 +1,271 @@
+.org-chart-root {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 2rem;
+    min-width: 600px;
+    font-family: var(--font-family-base);
+    transform-origin: center top;
+    /* REMOVE position, top, left */
+}
+
+
+/* Wrapper for each node and its children */
+.org-node-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    padding: 1rem;
+    margin: 0 1rem;
+}
+
+/* Connector line from this node down to its children (only if children visible) */
+.org-node-wrapper.has-children::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    width: 2px;
+    height: 20px;
+    background-color: var(--border-light, #ccc);
+    transform: translateX(-50%);
+    z-index: -1;
+}
+
+/* Remove vertical line if no visible children */
+.org-node-wrapper:not(.has-children)::after {
+    display: none;
+}
+
+/* Each node card */
+.org-node {
+    background: white;
+    border: 1px solid var(--border-light, #ccc);
+    border-radius: 6px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+    width: 200px;
+    height: 140px;
+    padding: 0.75rem;
+    box-sizing: border-box;
+    cursor: pointer;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    text-align: center;
+    overflow: hidden;
+    z-index: 1;
+}
+
+.org-node:hover {
+    border-color: var(--primary);
+    box-shadow: 0 0 10px var(--primary);
+}
+
+/* Toggle button style */
+.org-node .toggle-children {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    width: 28px;
+    height: 28px;
+    border: none;
+    background-color: var(--primary);
+    color: white;
+    font-weight: bold;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 1.2rem;
+    line-height: 26px;
+    text-align: center;
+    user-select: none;
+    transition: background-color 0.3s ease;
+}
+
+.org-node .toggle-children:hover {
+    background-color: #512e5f;
+}
+
+.org-name {
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--text);
+    line-height: 1.1;
+}
+
+.org-job-title {
+    font-weight: 500;
+    font-size: 0.85rem;
+    color: var(--primary);
+    line-height: 1.1;
+}
+
+.org-dept-comp {
+    font-size: 0.50rem;
+    color: var(--text-secondary);
+    line-height: 1.1;
+}
+
+/* Children container with indentation and line */
+.org-children {
+    display: flex;
+    justify-content: center;
+    position: relative;
+    margin-top: 2rem;
+    padding-top: 20px;
+    z-index: 0;
+    margin-left: 2rem; /* added indentation */
+    transition: all 0.3s ease-in-out;
+}
+
+/* Horizontal line across children */
+.org-children::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background-color: var(--border-light, #ccc);
+    z-index: -1;
+}
+
+/* Vertical line from each child up to the horizontal line */
+.org-node-wrapper:not(.root)::before {
+    content: "";
+    position: absolute;
+    top: -20px;
+    left: 50%;
+    width: 2px;
+    height: 20px;
+    background-color: var(--border-light, #ccc);
+    transform: translateX(-50%);
+    z-index: -1;
+}
+
+.org-avatar {
+    width: 48px;
+    height: 48px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    margin-bottom: 0.25rem;
+    margin-right: 0.5rem;
+    object-fit: cover;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+
+
+    .org-job-title,
+    .org-dept-comp {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 140px; /* Adjust as needed */
+}
+.o_job_org_chart {
+    padding-top: 0.5rem; /* Optional: controls top spacing of whole chart */
+}
+
+.o_job_org_chart .new-job-btn {
+    margin: 0 0 2rem 0;  /* tight spacing: no margin on top, small margin below */
+}
+
+.toggle-children-count {
+  background-color: #6c3483; /* collapsed background */
+  color: white;              /* collapsed text color */
+  border: none;
+  border-radius: 6px;
+  padding: 4px 12px;
+  font-weight: 500;
+  font-size: 13px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+
+.org-chart-container:active {
+    cursor: grabbing;
+}
+
+.chart-container {
+    width: 100vw;
+    height: 100vh;
+    overflow: auto;
+    position: relative;
+    cursor: grab;
+    display: flex;
+}
+
+.org-chart-zoom-wrapper {
+    overflow: visible !important;
+    min-width: 2000px;      /* Very wide to allow horizontal drag */
+    min-height: 1000px;
+    max-width: 100%;
+    position: relative;
+    margin: auto;
+
+}
+
+.toggle-children-count.expanded {
+    background-color: white !important;
+    color: #6c3483 !important; /* purple text */
+    border-radius: 6px;
+    font-weight: bold;
+    border: 1px solid #6c3483;
+}
+.edit-icon {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  background: white;
+  border-radius: 50%;
+  padding: 2px;
+  box-shadow: 0 0 2px #888;
+}
+.edit-icon:hover {
+  color: #007bff;
+}
+body, html {
+    overflow: hidden;
+}
+.org-chart-layout {
+  display: flex;
+  align-items: flex-start;
+  width: 100%;
+  height: 100%;
+}
+
+.orphans-column {
+  flex: 0 0 210px;
+  padding: 9px;
+  border-right: 0.5px solid #e0e0e0;
+  background: #fafafa;
+}
+
+.orphan-list .org-node {
+  transform: scale(0.8);
+}
+
+.org-chart-inner-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    display: flex;
+    justify-content: center;  /* Centers horizontally */
+    align-items: center;      /* Centers vertically */
+}
+
+
+
+
+
+

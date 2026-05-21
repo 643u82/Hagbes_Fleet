@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ================================================================== -->
+    <!-- Fleet Allocation Append Views -->
+    <!-- ================================================================== -->
+
+    <!-- Tree View -->
+    <record id="view_fleet_allocation_append_tree" model="ir.ui.view">
+        <field name="name">hagbes.fleet.allocation.append.tree</field>
+        <field name="model">hagbes.fleet.allocation.append</field>
+        <field name="arch" type="xml">
+            <list string="Allocation Append Requests" create="true" edit="true" delete="true">
+                <field name="allocation_id" string="Allocation"/>
+                <field name="additional_destination" string="Additional Destination"/>
+                <field name="additional_distance" string="Distance (KM)" sum="Total Distance"/>
+                <field name="reason" string="Reason"/>
+                <field name="create_date" string="Request Date"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="view_fleet_allocation_append_form" model="ir.ui.view">
+        <field name="name">hagbes.fleet.allocation.append.form</field>
+        <field name="model">hagbes.fleet.allocation.append</field>
+        <field name="arch" type="xml">
+            <form string="Allocation Append Request">
+                <sheet>
+                    <group>
+                        <group name="allocation_info" string="Allocation Information">
+                            <field name="allocation_id" 
+                                   options="{'no_create': True, 'no_create_edit': True}"
+                                   domain="[('state', '=', 'assigned')]"/>
+                        </group>
+                        <group name="company_info" groups="base.group_multi_company">
+                            <field name="company_id"/>
+                        </group>
+                    </group>
+                    
+                    <group>
+                        <group name="append_details" string="Extension Details">
+                            <field name="additional_destination" placeholder="e.g., Regional Office, Client Site"/>
+                            <field name="additional_distance" 
+                                   widget="float" 
+                                   options="{'digits': [10, 2]}"/>
+                        </group>
+                    </group>
+                    
+                    <group name="justification" string="Justification">
+                        <field name="reason" 
+                               placeholder="Please provide a detailed reason for extending this allocation..."
+                               nolabel="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="view_fleet_allocation_append_search" model="ir.ui.view">
+        <field name="name">hagbes.fleet.allocation.append.search</field>
+        <field name="model">hagbes.fleet.allocation.append</field>
+        <field name="arch" type="xml">
+            <search string="Search Allocation Append Requests">
+                <field name="allocation_id" string="Allocation"/>
+                <field name="additional_destination" string="Destination"/>
+                <field name="reason" string="Reason"/>
+                
+                <filter name="filter_recent" 
+                        string="Recent Requests" 
+                        domain="[('create_date', '>=', (context_today() - datetime.timedelta(days=30)).strftime('%Y-%m-%d'))]"/>
+                
+                <separator/>
+                
+                <group expand="0" string="Group By">
+                    <filter name="group_by_allocation" 
+                            string="Allocation" 
+                            context="{'group_by': 'allocation_id'}"/>
+                    <filter name="group_by_destination" 
+                            string="Destination" 
+                            context="{'group_by': 'additional_destination'}"/>
+                    <filter name="group_by_date" 
+                            string="Request Date" 
+                            context="{'group_by': 'create_date:month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_fleet_allocation_append" model="ir.actions.act_window">
+        <field name="name">Allocation Append Requests</field>
+        <field name="res_model">hagbes.fleet.allocation.append</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="view_fleet_allocation_append_tree"/>
+        <field name="search_view_id" ref="view_fleet_allocation_append_search"/>
+        <field name="context">{}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create an allocation append request
+            </p>
+            <p>
+                Allocation append requests allow you to extend an existing vehicle allocation
+                with additional destinations and distance for multi-leg trips.
+            </p>
+        </field>
+    </record>
+
+</odoo>

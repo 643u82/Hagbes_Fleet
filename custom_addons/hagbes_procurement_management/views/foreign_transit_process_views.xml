@@ -1,0 +1,484 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Foreign Transit Container Tree View -->
+    <record id="view_foreign_transit_container_tree" model="ir.ui.view">
+        <field name="name">foreign.transit.container.tree</field>
+        <field name="model">foreign.transit.container</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="container_number"/>
+                <field name="container_type"/>
+                <field name="seal_number"/>
+                <field name="weight_gross"/>
+                <field name="weight_net"/>
+                <field name="status"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Foreign Transit Container Form View -->
+    <record id="view_foreign_transit_container_form" model="ir.ui.view">
+        <field name="name">foreign.transit.container.form</field>
+        <field name="model">foreign.transit.container</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="container_number"/>
+                            <field name="container_type"/>
+                            <field name="container_size"/>
+                            <field name="seal_number"/>
+                        </group>
+                        <group>
+                            <field name="weight_gross"/>
+                            <field name="weight_net"/>
+                            <field name="status"/>
+                        </group>
+                    </group>
+                    
+                   <group string="Transport &amp; Timing">
+
+                        <group>
+                            <field name="arrival_date"/>
+                            <field name="arrival_time"/>
+                            <field name="departure_date"/>
+                            <field name="departure_time"/>
+                        </group>
+                        <group>
+                            <field name="truck_plate_number"/>
+                            <field name="trailer_plate_number"/>
+                            <field name="transporter_name"/>
+                            <field name="driver_name"/>
+                            <field name="driver_mobile"/>
+                        </group>
+                    </group>
+                    
+                    <field name="transit_id" invisible="1"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+   
+    <record id="view_foreign_transit_customs_declaration_tree" model="ir.ui.view">
+        <field name="name">foreign.transit.customs.declaration.tree</field>
+        <field name="model">foreign.transit.customs.declaration</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="declaration_number"/>
+                <field name="declaration_type"/>
+                <field name="declaration_date"/>
+                <field name="quantity_declared"/>
+                <field name="quantity_cleared"/>
+                <field name="status"/>
+            </list>
+        </field>
+    </record>
+
+  
+    <record id="view_foreign_transit_document_tree" model="ir.ui.view">
+        <field name="name">foreign.transit.document.tree</field>
+        <field name="model">foreign.transit.document</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="document_type"/>
+                <field name="document_number"/>
+                <field name="document_date"/>
+                <field name="is_required"/>
+                <field name="is_received"/>
+                <field name="attachment_id"/>
+            </list>
+        </field>
+    </record>
+
+
+
+<record id="view_foreign_transit_process_kanban" model="ir.ui.view">
+    <field name="name">foreign.transit.process.kanban</field>
+    <field name="model">foreign.transit.process</field>
+    <field name="arch" type="xml">
+        <kanban default_group_by="state">
+            <field name="name"/>
+            <field name="state"/>
+            <field name="risk_level"/>
+            <templates>
+                <t t-name="kanban-box">
+                    <div>
+                        <strong><field name="name"/></strong>
+                        <div>Status: <field name="state"/></div>
+                        <div>Risk: <field name="risk_level"/></div>
+                    </div>
+                </t>
+            </templates>
+        </kanban>
+    </field>
+</record>
+
+
+   
+    <record id="view_foreign_transit_process_form" model="ir.ui.view">
+        <field name="name">foreign.transit.process.form</field>
+        <field name="model">foreign.transit.process</field>
+        <field name="arch" type="xml">
+            <form string="Foreign Transit Process">
+                <header>
+                    <!-- Tracking Buttons -->
+                    <button name="action_start_ais_tracking"
+                        type="object"
+                        string="Start Tracking"
+                        class="oe_highlight"
+                        invisible="ais_stream_enabled or not ship_mmsi or state not in ['departed_origin', 'in_transit']"/>
+                    <button name="action_stop_ais_tracking"
+                        type="object"
+                        string="Stop Tracking"
+                        invisible="not ais_stream_enabled"/>
+                    <button name="action_update_position"
+                        type="object"
+                        string="Update Position"
+                        invisible="not ais_stream_enabled"/>
+                    <button name="action_open_live_tracking"
+                        type="object"
+                        string="🗺️ Live Track"
+                        class="btn-primary"
+                       
+                        
+                        />
+                    
+                    <!-- State Buttons -->
+                   <button name="action_plan_transit" type="object" string="Plan Transit" class="oe_highlight" invisible="state != 'draft'"/>
+                    <button name="action_at_origin" type="object" string="At Origin" class="oe_highlight" invisible="state != 'planned'"/>
+                    <button name="action_depart_origin" type="object" string="Depart Origin" class="oe_highlight" invisible="state != 'in_origin'"/>
+                    <button name="action_in_transit" type="object" string="In Transit" class="oe_highlight" invisible="state != 'departed_origin'"/>
+                    <button name="action_arrive_destination" type="object" string="Arrived" class="oe_highlight" invisible="state != 'in_transit'"/>
+                    <button name="action_customs_clearance" type="object" string="Customs Clearance" class="oe_highlight" invisible="state != 'arrived_destination'"/>
+                    <button name="action_customs_cleared" type="object" string="Customs Cleared" class="oe_highlight" invisible="state != 'customs_destination'"/>
+                    <button name="action_final_delivery" type="object" string="Final Delivery" class="oe_highlight" invisible="state != 'customs_cleared'"/>
+                    <button name="action_complete" type="object" string="Complete" class="oe_highlight" invisible="state != 'final_delivery'"/>
+                    
+                    <button name="action_mark_delayed" type="object" string="Mark Delayed" invisible="state in ['completed', 'cancelled', 'delayed']"/>
+                    <button name="action_cancel" type="object" string="Cancel" invisible="state in ['completed', 'cancelled']"/>
+
+                        <button name="action_notify_missing_grn" type="object" string="Notify Missing GRN" 
+                                invisible="grn_received == True" class="oe_highlight"/>
+                        <field name="state" widget="statusbar"
+                               statusbar_visible="draft,planned,in_origin,departed_origin,in_transit,arrived_destination,customs_destination,customs_cleared,final_delivery,completed"/>
+                </header>
+                
+                <sheet>
+                    <!-- <div class="leaflet-tracking-widget">
+                        <t t-call="foreign_procurement.leaflet_tracking_widget"/>
+                    </div> -->
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_containers" type="object" 
+                                class="oe_stat_button" icon="fa-cube">
+                            <field name="container_count" widget="statinfo" string="Containers"/>
+                        </button>
+                        <button name="action_view_bank_process"
+                                type="object"
+                                class="oe_stat_button"
+                                icon="fa-university"
+                                invisible="not bank_process_id">
+                            <div class="o_field_widget o_stat_info" string="Bank Process"/>
+                        </button>
+                    </div>
+                    
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    
+                    <group>
+                        <group>
+                            <field name="purchase_order_id" options="{'no_create': True}"/>
+                            <field name="supplier_id"/>
+                            <field name="bank_process_id"/>
+                            <field name="shipment_id"/>
+                        </group>
+                        <group>
+                            <field name="port_of_entry"/>
+                            <field name="customs_office"/>
+                            <field name="transit_manager_id"/>
+                            <field name="risk_level" widget="badge"/>
+                        </group>
+                    </group>
+                     
+                    <notebook>
+                        
+                        <page string="1. Planning &amp; Timeline">
+                            <group>
+                                <group string="Ethiopian Calendar">
+                                    <field name="starting_in_ethiopian_date"/>
+                                    <field name="starting_date_gregorian"/>
+                                    <field name="days_to_add"/>
+                                    <field name="estimated_last_date"/>
+                                    <field name="remaining_days"/>
+                                </group>
+                                <group string="Bonded Warehouse">
+                                    <field name="bonded_warehouse_id"/>
+                                    <field name="bonded_entry_date"/>
+                                    <field name="bonded_exit_date"/>
+                                    <field name="bonded_days_remaining"/>
+                                </group>
+                            </group>
+                        </page>
+                        
+                        <!-- Step 2: Shipping & Transport -->
+                        <page string="2. Shipping &amp; Transport">
+                            <group>
+                                <group string="Shipping Details">
+                                    <field name="bill_of_lading_number"/>
+                                    <field name="port_of_loading"/>
+                                    <field name="port_eta"/>
+                                    <field name="port_ata"/>
+                                </group>
+                                <group string="Transport Details">
+                                    <field name="local_mode_of_transport"/>
+                                    <field name="shipped_by"/>
+                                    <field name="gross_weight"/>
+                                </group>
+                            </group>
+                            <group string="Vessel Information (from Shipment)">
+                                <group>
+                                    <field name="vessel_name"/>
+                                    <field name="imo_number"/>
+                                    <field name="mmsi_number"/>
+                                </group>
+                                <group>
+                                    <field name="flag_state"/>
+                                    <field name="eta_date"/>
+                                </group>
+                            </group>
+                            <group string="Live Tracking Information" invisible="not ais_stream_enabled">
+                                <group>
+                                    <field name="tracking_status" widget="badge"/>
+                                    <field name="ais_stream_enabled" invisible="1"/>
+                                    <field name="ship_mmsi" invisible="1"/>
+                                    <field name="current_latitude"/>
+                                    <field name="current_longitude"/>
+                                </group>
+                                <group>
+                                    <field name="last_position_update"/>
+                                    <field name="current_speed"/>
+                                    <field name="current_course"/>
+                                </group>
+                            </group>
+                            <div class="alert alert-info" role="alert" invisible="ais_stream_enabled or state not in ['departed_origin', 'in_transit']">
+                                Click <b>Start Tracking</b> in the header to enable live position updates for this transit.
+                                An MMSI number must be available from the linked shipment.
+                            </div>
+                        </page>
+                        
+                        <!-- Step 3: Containers -->
+                        <page string="3. Containers">
+                            <field name="container_ids" context="{'default_transit_id': id}">
+                                <list>
+                                    <field name="container_number"/>
+                                    <field name="container_type"/>
+                                    <field name="container_size"/>
+                                    <field name="arrival_date"/>
+                                    <field name="departure_date"/>
+                                    <field name="status"/>
+                                </list>
+                                <form>
+                                    <group>
+                                        <field name="container_number"/>
+                                        <field name="container_type"/>
+                                        <field name="container_size"/>
+                                        <field name="flat_rack"/>
+                                        <field name="seal_number"/>
+                                        <field name="weight_gross"/>
+                                        <field name="weight_net"/>
+                                        <field name="status"/>
+                                        <field name="return_date"/>
+                                        <field name="transit_id" invisible="1"/>
+                                    </group>
+                                </form>
+                            </field>
+                        </page>
+                        
+                        <!-- Step 4: Documents -->
+                        <page string="4. Documents">
+                            <field name="document_ids" context="{'default_transit_id': id}">
+                                <list>
+                                    <field name="document_type"/>
+                                    <field name="document_number"/>
+                                    <field name="document_date"/>
+                                    <field name="is_required"/>
+                                    <field name="is_received"/>
+                                    <field name="attachment_id"/>
+                                </list>
+                                <form>
+                                    <group>
+                                        <field name="document_type"/>
+                                        <field name="document_category"/>
+                                        <field name="is_first_document"/>
+                                        <field name="document_number"/>
+                                        <field name="document_date"/>
+                                        <field name="is_required"/>
+                                        <field name="is_received"/>
+                                        <field name="attachment_id"/>
+                                        <field name="transit_id" invisible="1"/>
+                                    </group>
+                                </form>
+                            </field>
+                        </page>
+                        
+                        <!-- Step 5: Customs Declarations (Multiple per PO) -->
+                        <page string="5. Customs Declarations">
+                            <field name="customs_declaration_ids" context="{'default_transit_id': id}">
+                                <list>
+                                    <field name="declaration_number"/>
+                                    <field name="declaration_type"/>
+                                    <field name="declaration_date"/>
+                                    <field name="hs_code"/>
+                                    <field name="quantity_declared"/>
+                                    <field name="quantity_cleared"/>
+                                    <field name="currency_id" column_invisible="1"/>
+                                    <field name="assessment_amount" widget="monetary"/>
+                                    <field name="penalties" widget="monetary"/>
+                                    <field name="status"/>
+                                </list>
+                                <form>
+                                    <group>
+                                        <group>
+                                            <field name="declaration_number"/>
+                                            <field name="declaration_type"/>
+                                            <field name="declaration_date"/>
+                                        </group>
+                                        <group>
+                                            <field name="quantity_declared"/>
+                                            <field name="quantity_cleared"/>
+                                            <field name="assessor_name"/>
+                                            <field name="status"/>
+                                        </group>
+                                        <field name="transit_id" invisible="1"/>
+                                    </group>
+                                </form>
+                            </field>
+                            
+                            <group string="Assessment Summary">
+                                <group>
+                                    <field name="customs_assessor"/>
+                                    <field name="expected_clearance_date"/>
+                                    <field name="actual_clearance_date"/>
+                                </group>
+                                <group>
+                                    <field name="total_quantity"/>
+                                    <field name="quantity_cleared"/>
+                                    <field name="quantity_remaining"/>
+                                </group>
+                            </group>
+                        </page>
+                        
+                        <!-- Step 6: Costs & Taxes -->
+                        <page string="6. Costs &amp; Taxes">
+                            <group string="Ethiopian Taxes">
+                                <group>
+                                    <field name="customs_duty"/>
+                                    <field name="vat_amount"/>
+                                    <field name="excise_tax"/>
+                                </group>
+                                <group>
+                                    <field name="sur_tax"/>
+                                    <field name="withholding_tax"/>
+                                    <field name="total_tax_amount"/>
+                                </group>
+                            </group>
+                            
+                            <group string="Additional Charges">
+                                <group>
+                                    <field name="storage_charges"/>
+                                    <field name="handling_charges"/>
+                                </group>
+                                <group>
+                                    <field name="estimated_last_date"/>
+                                    <field name="remaining_days"/>
+                                    <field name="local_mode_of_transport"/>
+                                </group>
+                            </group>
+                            <group string="Handover &amp; Completion">
+                                <group>
+                                    <field name="grn_received"/>
+                                    <field name="container_interchanged"/>
+                                </group>
+                            </group>
+                        </page>
+                        
+                        <!-- Step 7: Process Tracking -->
+                        <page string="7. Process Tracking">
+                            <group string="Handover &amp; Processing">
+                                <group string="Handover &amp; Processing">
+                                    <field name="handover_to_transiter"/>
+                                    <field name="acceptance_date"/>
+                                    <field name="inspection_date"/>
+                                    <field name="release_date"/>
+                                </group>
+                            </group>
+                        </page>
+                        
+                        <!-- Step 8: Notes -->
+                        <page string="8. Notes">
+                            <field name="notes" placeholder="Additional notes and comments..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+ 
+    <record id="view_foreign_transit_process_tree" model="ir.ui.view">
+        <field name="name">foreign.transit.process.tree</field>
+        <field name="model">foreign.transit.process</field>
+        <field name="type">list</field>
+        <field name="arch" type="xml">
+            <list string="Foreign Transit Processes" 
+                  decoration-info="state=='draft'" 
+                  decoration-warning="state in ('planned', 'in_origin', 'departed_origin')" 
+                  decoration-success="state=='completed'"
+                  decoration-danger="risk_level=='critical'">
+                <field name="name"/>
+                <field name="purchase_order_id"/>
+                <field name="supplier_id"/>
+                <field name="duty_status"/>
+                <field name="customs_office"/>
+                <field name="remaining_days"/>
+                <field name="risk_level"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+
+
+    <record id="action_foreign_transit_process" model="ir.actions.act_window">
+        <field name="name">Transit Processes</field>
+        <field name="res_model">foreign.transit.process</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first transit process!
+            </p>
+            <p>
+                Manage the complete transit process with Ethiopian customs integration.
+            </p>
+        </field>
+    </record>
+
+    <!-- Scheduled Action to check for delayed transits -->
+   <record id="ir_cron_check_delayed_transits" model="ir.cron">
+    <field name="name">Transit: Check for Delayed Processes</field>
+    <field name="model_id" ref="model_foreign_transit_process"/>
+    <field name="state">code</field>
+    <field name="code">model.cron_check_for_delayed_transits()</field>
+    <field name="user_id" ref="base.user_root"/>
+    <field name="interval_number">1</field>
+    <field name="interval_type">days</field>
+    <!-- <field name="number_of_calls">-1</field> -->
+    <field name="active" eval="True"/>
+</record>
+
+</odoo>
+
+

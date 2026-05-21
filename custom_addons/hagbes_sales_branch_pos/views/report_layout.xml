@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="custom_header_with_branch" inherit_id="web.external_layout_standard" name="Header with Branch">
+        <xpath expr="//div[@name='company_address']//ul[@name='company_address_list']" position="replace">
+            <ul class="list-unstyled">
+                <li>
+                    <strong>
+                        <t t-out="company.name"/>
+                        <t t-if="o and o._name == 'sale.order' and hasattr(o, 'branch_id') and o.branch_id"> - <t t-out="o.branch_id.name"/></t>
+                    </strong>
+                </li>
+
+                <t t-if="o and o._name == 'sale.order' and hasattr(o, 'branch_id') and o.branch_id">
+                    <!-- Optional: show branch address if stored in analytic account -->
+                    <!-- Note: account.analytic.account doesn't have street/city by default! -->
+                    <li><t t-out="o.branch_id.name"/> Branch</li>
+                </t>
+                <t t-else="">
+                    <li><t t-out="company.street or ''"/></li>
+                    <li>
+                        <t t-out="company.city or ''"/>
+                        <t t-if="company.state_id">, <t t-out="company.state_id.name"/></t>
+                        <t t-if="company.country_id">, <t t-out="company.country_id.name"/></t>
+                    </li>
+                </t>
+
+                <t t-if="forced_vat">
+                    <li>
+                        <t t-esc="company.country_id.vat_label or 'Tax ID'"/>: <t t-esc="forced_vat"/>
+                    </li>
+                </t>
+            </ul>
+        </xpath>
+    </template>
+</odoo>

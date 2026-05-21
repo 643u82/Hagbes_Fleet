@@ -1,0 +1,14 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_agresso_ledger_user_system,access.agresso.ledger.user.system,model_bank_reco_ledger,base.group_system,1,1,1,1
+access_agresso_ledger_user_viewer,access.agresso.ledger.user.viewer,model_bank_reco_ledger,bank_reconciliation.group_bank_reco_viewer,1,1,1,0
+access_agresso_ledger_user_reconciler,access.agresso.ledger.user.reconciler,model_bank_reco_ledger,bank_reconciliation.group_bank_reco_reconciler,1,1,1,0
+access_agresso_ledger_user_manager,access.agresso.ledger.user.manager,model_bank_reco_ledger,bank_reconciliation.group_bank_reco_manager,1,1,1,0
+access_bank_reco_header_viewer,access.bank.reco.header.viewer,model_bank_reco_header,bank_reconciliation.group_bank_reco_viewer,1,0,0,0
+access_bank_reco_header_reconciler,access.bank.reco.header.reconciler,model_bank_reco_header,bank_reconciliation.group_bank_reco_reconciler,1,1,1,0
+access_bank_reco_header_manager,access.bank.reco.header.manager,model_bank_reco_header,bank_reconciliation.group_bank_reco_manager,1,1,1,1
+access_bank_reco_detail_reconciler,access.bank.reco.detail.reconciler,model_bank_reco_detail,bank_reconciliation.group_bank_reco_reconciler,1,1,1,0
+access_bank_reco_detail_manager,access.bank.reco.detail.manager,model_bank_reco_detail,bank_reconciliation.group_bank_reco_manager,1,1,1,1
+access_bank_reco_detail_viewer,access.bank.reco.detail.viewer,model_bank_reco_detail,bank_reconciliation.group_bank_reco_viewer,1,0,0,0
+access_bank_reco_header_system,access.bank.reco.header.system,model_bank_reco_header,base.group_system,1,1,1,1
+access_bank_reco_detail_system,access.bank.reco.detail.system,model_bank_reco_detail,base.group_system,1,1,1,1
+access_sync_ledger_from_sqlserver_system,Access SQL Server Ledger,model_sync_sqlserver_ledger,base.group_system,1,1,1,1

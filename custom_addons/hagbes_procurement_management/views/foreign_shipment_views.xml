@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Shipment Tree View -->
+    <record id="view_foreign_shipment_tree" model="ir.ui.view">
+        <field name="name">foreign.shipment.tree</field>
+        <field name="model">foreign.shipment</field>
+        <field name="arch" type="xml">
+            <list string="Foreign Shipments" decoration-info="state in ['draft','booked']" 
+                  decoration-warning="state in ['loaded','departed','in_transit']" 
+                  decoration-success="state in ['delivered','completed']"
+                  decoration-danger="is_delayed==True">
+                <field name="name"/>
+                <field name="purchase_order_id"/>
+                <field name="supplier_id"/>
+                <field name="vessel_name"/>
+                <field name="port_of_loading"/>
+                <field name="port_of_discharge"/>
+                <field name="shipment_date"/>
+                <field name="expected_arrival_date"/>
+                <field name="is_delayed" column_invisible="1"/>
+                <field name="state" widget="badge" 
+                       decoration-info="state in ['draft','booked']" 
+                       decoration-warning="state in ['loaded','departed','in_transit']" 
+                       decoration-success="state in ['delivered','completed']"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Shipment Form View -->
+    <record id="view_foreign_shipment_form" model="ir.ui.view">
+        <field name="name">foreign.shipment.form</field>
+        <field name="model">foreign.shipment</field>
+        <field name="arch" type="xml">
+            <form string="Foreign Shipment">
+                <header>
+                    <button name="action_book_shipment" string="Book Shipment" type="object" 
+                            class="oe_highlight" invisible="state != 'draft'"/>
+                    <button name="action_mark_loaded" string="Mark Loaded" type="object" 
+                            invisible="state != 'booked'"/>
+                    <button name="action_mark_departed" string="Mark Departed" type="object" 
+                            invisible="state != 'loaded'"/>
+                    <button name="action_mark_in_transit" string="In Transit" type="object" 
+                            invisible="state != 'departed'"/>
+                    <button name="action_mark_arrived" string="Mark Arrived" type="object" 
+                            invisible="state != 'in_transit'"/>
+                    <button name="action_customs_clearance" string="Customs Clearance" type="object" 
+                            invisible="state != 'arrived'"/>
+                    <button name="action_mark_delivered" string="Mark Delivered" type="object" 
+                            invisible="state != 'customs_clearance'"/>
+                    <button name="action_complete" string="Complete" type="object" 
+                            invisible="state != 'delivered'"/>
+                    <field name="state" widget="statusbar" 
+                           statusbar_visible="draft,booked,loaded,departed,in_transit,arrived,customs_clearance,delivered,completed"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_documents" type="object" 
+                                class="oe_stat_button" icon="fa-file-text-o">
+                            <field name="document_count" widget="statinfo" string="Documents"/>
+                        </button>
+                    </div>
+                    
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    
+                    <group>
+                        <group>
+                            <field name="purchase_order_id" options="{'no_create': True}"/>
+                            <field name="lc_id" options="{'no_create': True}"/>
+                            <field name="supplier_id" readonly="1"/>
+                            <field name="incoterm_id" options="{'no_create': True}"/>
+                            <field name="tracking_number"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Shipment Details" name="shipment_details">
+                            <group>
+                                <group string="Ports/Locations">
+                                    <field name="port_of_loading"/>
+                                    <field name="port_of_discharge"/>
+                                </group>
+                                <group string="Dates">
+                                    <field name="shipment_date"/>
+                                    <field name="expected_arrival_date"/>
+                                    <field name="actual_arrival_date" readonly="1"/>
+                                    <field name="days_in_transit" readonly="1"/>
+                                </group>
+                            </group>
+                            <group>
+                                <group string="Container Information">
+                                    <field name="container_number"/>
+                                </group>
+                            </group>
+                        </page>
+                        
+                        <page string="Ship Information" name="ship_info">
+                            <group>
+                                <group string="Vessel Details">
+                                    <field name="ship_imo_number"/>
+                                    <field name="ship_mmsi"/>
+                                    <field name="ship_call_sign"/>
+                                    <field name="ship_flag"/>
+                                </group>
+                            </group>
+                        </page>
+                        
+                        <page string="Costs" name="costs">
+                            <group>
+                                <group>
+                                    <field name="freight_cost" widget="monetary"/>
+                                    <field name="insurance_cost" widget="monetary"/>
+                                    <field name="other_charges" widget="monetary"/>
+                                    <field name="currency_id" invisible="1"/>
+                                </group>
+                                <group>
+                                    <field name="total_shipping_cost" widget="monetary" readonly="1"/>
+                                </group>
+                            </group>
+                        </page>
+                        
+                        <page string="Additional Information" name="additional_info">
+                            <group>
+                                <field name="special_instructions" nolabel="1" 
+                                       placeholder="Special shipping instructions..."/>
+                            </group>
+                            <group>
+                                <field name="notes" nolabel="1" 
+                                       placeholder="Internal notes..."/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <!-- <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div> -->
+            </form>
+        </field>
+    </record>
+
+    <!-- Shipment Kanban View -->
+    <record id="view_foreign_shipment_kanban" model="ir.ui.view">
+        <field name="name">foreign.shipment.kanban</field>
+        <field name="model">foreign.shipment</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="state">
+                <field name="name"/>
+                <field name="supplier_id"/>
+                <field name="vessel_name"/>
+                <field name="port_of_loading"/>
+                <field name="port_of_discharge"/>
+                <field name="expected_arrival_date"/>
+                <field name="is_delayed"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div t-attf-class="oe_kanban_card oe_kanban_global_click #{record.is_delayed.raw_value ? 'oe_kanban_color_2' : ''}">
+                            <div class="o_kanban_record_top">
+                                <div class="o_kanban_record_headings">
+                                    <strong class="o_kanban_record_title">
+                                        <field name="name"/>
+                                    </strong>
+                                </div>
+                                <div class="o_kanban_record_top_right">
+                                    <span t-if="record.is_delayed.raw_value" 
+                                          class="badge badge-danger">Delayed</span>
+                                </div>
+                            </div>
+                            <div class="o_kanban_record_body">
+                                <div class="o_kanban_record_subtitle">
+                                    <field name="supplier_id"/>
+                                </div>
+                                <div>
+                                    <strong><field name="vessel_name"/></strong>
+                                </div>
+                                <div>
+                                    <field name="port_of_loading"/> → <field name="port_of_discharge"/>
+                                </div>
+                                <div class="oe_kanban_bottom_right">
+                                    ETA: <field name="expected_arrival_date"/>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Shipment Actions -->
+    <record id="action_foreign_shipment" model="ir.actions.act_window">
+        <field name="name">Shipment Tracking</field>
+        <field name="res_model">foreign.shipment</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Track your first foreign shipment!
+            </p>
+            <p>
+                Monitor your shipments from booking to final delivery with real-time tracking.
+            </p>
+        </field>
+    </record>
+
+</odoo>

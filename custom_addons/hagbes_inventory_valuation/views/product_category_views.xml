@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="product_category_form_view_inherit_stock_valuation" model="ir.ui.view">
+        <field name="name">product.category.form.inherit.stock.valuation</field>
+        <field name="model">product.category</field>
+        <field name="inherit_id" ref="product.product_category_form_view"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//group[@name='first']" position="inside">
+                <field name="property_cost_method" string="Costing Method"/>
+                <field name="property_valuation" string="Inventory Valuation" widget="radio" options="{'horizontal': true}"/>
+            </xpath>
+
+        </field>
+    </record>
+</odoo>

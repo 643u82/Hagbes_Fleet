@@ -1,0 +1,54 @@
+<odoo>
+  <record id="seq_resignation" model="ir.sequence">
+    <field name="name">Resignation Request</field>
+    <field name="code">employee.resignation</field>
+    <field name="prefix">RES-%(y)s-</field> <!-- e.g., Resignation- -->
+    <field name="padding">5</field>
+    <field name="number_next">1</field>
+    <field name="number_increment">1</field>
+    <field name="implementation">no_gap</field>
+    <field name="use_date_range">True</field> <!-- This enables yearly reset -->
+  </record>
+  <record id="seq_discipline" model="ir.sequence">
+    <field name="name">Discipline</field>
+    <field name="code">employee.discipline</field>
+    <field name="prefix">DES-%(y)s-</field> <!-- e.g., Resignation- -->
+    <field name="padding">5</field>
+    <field name="number_next">1</field>
+    <field name="number_increment">1</field>
+    <field name="implementation">no_gap</field>
+    <field name="use_date_range">True</field> <!-- This enables yearly reset -->
+  </record>
+
+  <record id="seq_retirement" model="ir.sequence">
+    <field name="name">Retirement </field>
+    <field name="code">employee.retirement</field>
+    <field name="prefix">RET-%(y)s-</field> <!-- e.g., Resignation- -->
+    <field name="padding">5</field>
+    <field name="number_next">1</field>
+    <field name="number_increment">1</field>
+    <field name="implementation">no_gap</field>
+    <field name="use_date_range">True</field> <!-- This enables yearly reset -->
+  </record>
+   <record id="seq_acceptance" model="ir.sequence">
+      <field name="name">Acceptance Letter</field>
+      <field name="code">employee.resignation.acceptance</field>
+      <field name="prefix">AL-%(y)s-</field> <!-- e.g., Resignation- -->
+      <field name="padding">5</field>
+      <field name="number_next">1</field>
+      <field name="number_increment">1</field>
+      <field name="implementation">no_gap</field>
+      <field name="use_date_range">True</field> <!-- This enables yearly reset -->
+  </record>
+  <record id="seq_termination" model="ir.sequence">
+      <field name="name">Acceptance Letter</field>
+      <field name="code">employee.termination</field>
+      <field name="prefix">TER-%(y)s-</field> <!-- e.g., Resignation- -->
+      <field name="padding">5</field>
+      <field name="number_next">1</field>
+      <field name="number_increment">1</field>
+      <field name="implementation">no_gap</field>
+      <field name="use_date_range">True</field> <!-- This enables yearly reset -->
+  </record>
+
+</odoo>

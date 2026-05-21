@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_config_settings_view_form_hagbes_fleet" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.hagbes.fleet</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+                <app string="Fleet" name="hagbes_fleet" groups="base.group_system">
+                    <block title="Approval Settings" invisible="not is_approval_installed">
+                        <setting string="Approval Engine Status" help="The hagbes_approval_workflow module is installed.">
+                            <field name="is_approval_installed" invisible="1"/>
+                            <field name="fleet_approval_master_enabled"/>
+                        </setting>
+                        <setting string="Assignment Approval" invisible="not fleet_approval_master_enabled">
+                            <field name="fleet_approval_enable_assignment"/>
+                        </setting>
+                        <setting string="Disposal Approval" invisible="not fleet_approval_master_enabled">
+                            <field name="fleet_approval_enable_disposal"/>
+                        </setting>
+                        <setting string="Maintenance Threshold" invisible="not fleet_approval_master_enabled">
+                            <field name="fleet_approval_maintenance_threshold"/>
+                        </setting>
+                        <setting string="Configuration Sync" help="Reload approval flow definitions from XML data.">
+                            <button name="action_sync_approval_data" type="object" string="Sync Approval Configuration" class="btn-primary"/>
+                        </setting>
+                    </block>
+                    <block title="Approval Status" invisible="is_approval_installed">
+                        <setting string="Approval Strategy" help="Approval workflows are currently disabled because the hagbes_approval_workflow module is not installed.">
+                            <div class="text-muted">
+                                System is running in standalone mode (direct transitions).
+                            </div>
+                        </setting>
+                    </block>
+                </app>
+            </xpath>
+        </field>
+    </record>
+</odoo>

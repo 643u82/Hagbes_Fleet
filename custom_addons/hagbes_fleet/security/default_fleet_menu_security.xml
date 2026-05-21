@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- The standard Odoo Fleet app remains installed as a dependency, but
+             its navigation is restricted to system administrators to prevent
+             duplicate Fleet menus for operational users. -->
+        <record id="fleet.menu_root" model="ir.ui.menu">
+            <field name="groups_id" eval="[(6, 0, [ref('base.group_system')])]"/>
+        </record>
+        <record id="fleet.fleet_vehicles" model="ir.ui.menu">
+            <field name="groups_id" eval="[(6, 0, [ref('base.group_system')])]"/>
+        </record>
+        <record id="fleet.fleet_vehicle_menu" model="ir.ui.menu">
+            <field name="groups_id" eval="[(6, 0, [ref('base.group_system')])]"/>
+        </record>
+        <record id="fleet.fleet_vehicle_odometer_menu" model="ir.ui.menu">
+            <field name="groups_id" eval="[(6, 0, [ref('base.group_system')])]"/>
+        </record>
+        <record id="fleet.fleet_vehicle_log_contract_menu" model="ir.ui.menu">
+            <field name="groups_id" eval="[(6, 0, [ref('base.group_system')])]"/>
+        </record>
+        <record id="fleet.fleet_vehicle_log_services_menu" model="ir.ui.menu">
+            <field name="groups_id" eval="[(6, 0, [ref('base.group_system')])]"/>
+        </record>
+        <record id="fleet.menu_fleet_reporting" model="ir.ui.menu">
+            <field name="groups_id" eval="[(6, 0, [ref('base.group_system')])]"/>
+        </record>
+    </data>
+</odoo>

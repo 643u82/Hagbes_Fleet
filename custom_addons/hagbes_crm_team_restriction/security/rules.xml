@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data noupdate="0">
+
+        <!-- 🔴 Disable the default Odoo rule -->
+        <function model="ir.rule" name="write">
+            <value eval="[ref('sales_team.crm_rule_all_salesteam')]"/>
+            <value eval="{'active': False}"/>
+        </function>
+       
+        <!-- ✅ Custom rule for CRM Teams with branch restriction -->
+        <record id="crm_rule_all_salesteam_custom" model="ir.rule">
+            <field name="name">CRM Team Rule - Branch Restriction</field>
+            <field name="model_id" ref="sales_team.model_crm_team"/>
+           
+            <field name="domain_force">[('branch_id', 'in', user.allowed_branch_ids.ids)]</field>
+          
+            <field name="groups" eval="[(4, ref('hagbes_crm_team_restriction.group_crm_sales_general_manager'))]"/>
+        </record>
+
+        <!-- ✅ Optional: Admins see all teams -->
+        <record id="crm_team_admin_rule" model="ir.rule">
+            <field name="name">CRM Teams: Admin Full Access</field>
+            <field name="model_id" ref="sales_team.model_crm_team"/>
+            <field name="domain_force">[(1,'=',1)]</field>
+            <field name="groups" eval="[(4, ref('base.group_system'))]"/>
+        </record>
+
+        <!-- <record id="crm_team_read_only_rule" model="ir.rule">
+            <field name="name">CRM Team: Read Only for Salesperson  Team Leader</field>
+            <field name="model_id" ref="crm.model_crm_team"/>
+            <field name="groups" eval="[(4, ref('hagbes_crm_team_restriction.group_crm_sales_team_leader'))]"/>
+            <field name="groups" eval="[(4, ref('sales_team.group_sale_salesman'))]"/>
+
+            <field name="perm_read" eval="1"/>
+            <field name="perm_write" eval="0"/>
+            <field name="perm_create" eval="0"/>
+            <field name="perm_unlink" eval="0"/>
+            <field name="domain_force">[(1,'=',1)]</field>
+        </record> -->
+        <record id="crm_team_read_only_rule" model="ir.rule">
+            <field name="name">CRM Team: Read Only for Salesperson  Team Leader</field>
+            <field name="model_id" ref="crm.model_crm_team"/>
+            <field name="groups" eval="[(4, ref('base.group_system'))]"/> 
+            <field name="perm_read" eval="1"/>
+            <field name="perm_write" eval="0"/>
+            <field name="perm_create" eval="0"/>
+            <field name="perm_unlink" eval="0"/>
+            <field name="domain_force">[(1,'=',1)]</field>
+        </record>
+
+         <record id="crm_team_sales_general_manager_read_only_rule" model="ir.rule">
+            <field name="name">CRM Team: Read Only for Sales general manager</field>
+            <field name="model_id" ref="crm.model_crm_team"/>
+            <field name="groups" eval="[(4, ref('hagbes_crm_team_restriction.group_crm_sales_general_manager'))]"/>
+           
+            <field name="perm_read" eval="1"/>
+            <field name="perm_write" eval="0"/>
+            <field name="perm_create" eval="1"/>
+            <field name="perm_unlink" eval="0"/>
+            <field name="domain_force">[('branch_id', 'in', user.allowed_branch_ids.ids)]</field>
+        </record>
+        <record id="crm_lead_team_leader_rule" model="ir.rule">
+            <field name="name">CRM Lead: Team Leader Own and Team Members</field>
+            <field name="model_id" ref="crm.model_crm_lead"/>
+            <field name="groups" eval="[(4, ref('hagbes_crm_team_restriction.group_crm_sales_team_leader'))]"/>
+            <field name="domain_force">['|', ('user_id', '=', user.id), ('team_id.user_id', '=', user.id)]</field>
+
+            <!-- Permissions -->
+            <field name="perm_read" eval="1"/>
+            <field name="perm_write" eval="1"/>
+            <field name="perm_unlink" eval="1"/>
+            <field name="perm_create" eval="1"/>
+        </record>
+         
+
+         <!-- <record id="crm_lead_create_rule" model="ir.rule">
+            <field name="name">CRM Lead: Allow Create (sales person)</field>
+            <field name="model_id" ref="crm.model_crm_lead"/>
+            <field name="groups" eval="[(4, ref('sales_team.group_sale_salesman'))]"/>
+           <field name="domain_force">[('team_id.member_ids', 'in', [user.id])]</field>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_write" eval="0"/>
+            <field name="perm_unlink" eval="0"/>
+            <field name="perm_create" eval="1"/>
+        </record> -->
+            <record id="crm_lead_general_manager_rule" model="ir.rule">
+                <field name="name">CRM Lead: General Manager - Allowed Branches</field>
+                <field name="model_id" ref="crm.model_crm_lead"/>
+                <field name="groups" eval="[(4, ref('hagbes_crm_team_restriction.group_crm_sales_general_manager'))]"/>
+                <!-- Restrict to leads whose team’s branch is inside user.allowed_branch_ids -->
+                <field name="domain_force">[('team_id.branch_id', 'in', user.allowed_branch_ids.ids)]</field>
+
+                <!-- Permissions -->
+                <field name="perm_read" eval="1"/>
+                <field name="perm_write" eval="1"/>
+                <field name="perm_unlink" eval="1"/>
+                <field name="perm_create" eval="1"/>
+            </record>
+
+        <!-- ✅ Optional: Read-only rule for normal salespeople -->
+        <record id="crm_team_readonly_rule" model="ir.rule">
+            <field name="name">CRM Teams: Salesperson Restricted Read</field>
+            <field name="model_id" ref="sales_team.model_crm_team"/>
+            <field name="domain_force">[('branch_id', 'in', user.allowed_branch_ids.ids)]</field>
+            <field name="groups" eval="[(4, ref('sales_team.group_sale_salesman'))]"/>
+            <field name="perm_read" eval="1"/>
+            <field name="perm_write" eval="0"/>
+            <field name="perm_create" eval="0"/>
+            <field name="perm_unlink" eval="0"/>
+        </record>
+      
+        <!--  Activities: Restrict to team members  -->
+        <record id="crm_activity_sales_team_leader_rule" model="ir.rule">
+            <field name="name">CRM Activity - Sales Team Leader Restriction</field>
+            <field name="model_id" ref="mail.model_mail_activity"/>
+            <field name="groups" eval="[(4, ref('hagbes_crm_team_restriction.group_crm_sales_team_leader'))]"/>
+            <field name="domain_force">[('user_id', 'in', [user.id] + user.sale_team_id.member_ids.ids)]</field>
+        </record>
+        <!--  Reports: Restrict by team  -->
+        <record id="crm_report_sales_team_leader_rule" model="ir.rule">
+            <field name="name">CRM Reporting - Sales Team Leader Restriction</field>
+            <field name="model_id" ref="crm.model_crm_team"/>
+            <field name="groups" eval="[(4, ref('hagbes_crm_team_restriction.group_crm_sales_team_leader'))]"/>
+            <field name="domain_force">[('id', 'in', user.sale_team_id.ids)]</field>
+        </record>
+        <!--  Operational Director only to access reporting -->
+        <record id="crm_lead_operation_director_rule" model="ir.rule">
+            <field name="name">CRM Lead Access for Operation Director</field>
+            <field name="model_id" ref="crm.model_crm_lead"/>
+            <field name="groups" eval="[(4, ref('hagbes_crm_team_restriction.group_operation_director'))]"/>
+            <!--  No domain restriction: can see everything  -->
+            <field name="domain_force">[(1,'=',1)]</field>
+            </record>
+            <record id="crm_team_rule_general_manager" model="ir.rule">
+            <field name="name">CRM Team: General Manager Branch Restriction</field>
+            <field name="model_id" ref="crm.model_crm_team"/>
+            <field name="groups" eval="[(4, ref('hagbes_crm_team_restriction.group_crm_sales_general_manager'))]"/>
+            <!--  Only allow teams that belong to the same branch as the user  -->
+            <field name="domain_force">[('branch_id', 'in', user.allowed_branch_ids.ids)]</field>
+        </record>
+        <record id="crm_lead_rule_general_manager" model="ir.rule">
+            <field name="name">CRM Lead: General Manager Branch Restriction</field>
+            <field name="model_id" ref="crm.model_crm_lead"/>
+            <field name="groups" eval="[(4, ref('hagbes_crm_team_restriction.group_crm_sales_general_manager'))]"/>
+            <!--  Show leads only if the lead's team belongs to the user's branch  -->
+            <field name="domain_force">[('team_id.branch_id', 'in', user.allowed_branch_ids.ids)]</field>
+        </record>
+        <!--Salesman only his own data-->
+        <record id="crm_lead_salesperson_rule" model="ir.rule">
+            <field name="name">Salesperson: Own Leads/Opportunities</field>
+            <field name="model_id" ref="crm.model_crm_lead"/>
+            <field name="groups" eval="[(4, ref('sales_team.group_sale_salesman'))]"/>
+            <field name="domain_force">[('user_id', '=', user.id)]</field>
+        </record>
+        
+        <record id="mail_activity_salesperson_rule" model="ir.rule">
+            <field name="name">Salesperson: Own Activities</field>
+            <field name="model_id" ref="mail.model_mail_activity"/>
+            <field name="groups" eval="[(4, ref('sales_team.group_sale_salesman'))]"/>
+            <field name="domain_force">[('user_id', '=', user.id)]</field>
+        </record>
+
+
+    </data>
+</odoo>

@@ -1,0 +1,200 @@
+<templates xml:space="preserve">
+    <t t-name="custom_financial_reports.CashFlowReport">
+        <div class="o_action account_report h-100 d-flex flex-column overflow-hidden">
+            <!-- CONTROL PANEL -->
+            <div class="o_control_panel d-flex flex-column gap-3 px-3 pt-2 pb-3 border-bottom">
+                <div class="o_control_panel_main d-flex flex-wrap flex-lg-nowrap justify-content-between align-items-lg-start gap-2 gap-lg-3 flex-grow-1">
+                    
+                    <!-- Breadcrumbs -->
+                    <div class="o_control_panel_breadcrumbs d-flex align-items-center gap-1 order-0 h-lg-100">
+                        <div class="o_control_panel_main_buttons d-flex gap-1 d-empty-none d-print-none">
+                            <button class="btn text-nowrap btn-primary" t-on-click="printPdf">PDF</button>
+                            <button class="btn text-nowrap btn-secondary" t-on-click="exportXlsx">XLSX</button>
+                        </div>
+                        <div class="o_breadcrumb d-flex gap-1 text-truncate">
+                            <div class="o_last_breadcrumb_item active d-flex fs-4 min-w-0 align-items-center">
+                                <span class="min-w-0 text-truncate">Cash Flow Statement</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Filters -->
+                    <div class="o_control_panel_actions d-empty-none d-flex align-items-center justify-content-start justify-content-lg-around order-2 order-lg-1 w-100 mw-100 w-lg-auto">
+                        <div class="d-flex gap-1">
+                            <Dropdown>
+                                <button class="btn btn-secondary o-dropdown dropdown-toggle">
+                                    <i class="fa fa-calendar me-1"/>
+                                    <t t-if="state.filter_type == 'custom'">Custom</t>
+                                    <t t-else=""><t t-esc="getPeriodName()"/></t>
+                                </button>
+                                <t t-set-slot="content">
+                                    <DropdownItem onSelected="() => this.onFilterTypeChanged('month')" class="state.filter_type === 'month' ? 'selected' : ''">Month</DropdownItem>
+                                    <DropdownItem onSelected="() => this.onFilterTypeChanged('quarter')" class="state.filter_type === 'quarter' ? 'selected' : ''">Quarter</DropdownItem>
+                                    <DropdownItem onSelected="() => this.onFilterTypeChanged('year')" class="state.filter_type === 'year' ? 'selected' : ''">Year</DropdownItem>
+                                    <DropdownItem onSelected="() => this.onFilterTypeChanged('custom')" class="state.filter_type === 'custom' ? 'selected' : ''">Custom</DropdownItem>
+                                    
+                                    <div class="p-2">
+                                        <t t-if="state.filter_type !== 'custom'">
+                                            <div class="text-muted fst-italic mb-1">Select Reference Date:</div>
+                                            <DateTimePicker value="state.anchor_date" onSelect="(d) => this.onAnchorDateChanged(d)"/>
+                                        </t>
+                                        <t t-else="">
+                                            <div class="mb-2">
+                                                <label class="small text-muted">From:</label>
+                                                <DateTimePicker value="state.date_from" onSelect="(d) => this.onCustomDateFromChanged(d)"/>
+                                            </div>
+                                            <div>
+                                                <label class="small text-muted">To:</label>
+                                                <DateTimePicker value="state.date_to" onSelect="(d) => this.onCustomDateToChanged(d)"/>
+                                            </div>
+                                        </t>
+                                    </div>
+                                </t>
+                            </Dropdown>
+
+                            <Dropdown>
+                                <button class="btn btn-secondary o-dropdown dropdown-toggle">
+                                    <i class="fa fa-percent me-1"/>
+                                    <span>Comparison: </span>
+                                    <span t-if="state.comparison_option == 'no_comparison'">None</span>
+                                    <span t-if="state.comparison_option == 'previous_period'">Previous Period</span>
+                                    <span t-if="state.comparison_option == 'same_last_year'">Previous Year</span>
+                                    <span t-if="state.comparison_option == 'custom'">Specific Date</span>
+                                </button>
+                                <t t-set-slot="content">
+                                    <DropdownItem onSelected="() => this.onComparisonOptionChanged('no_comparison')" class="state.comparison_option === 'no_comparison' ? 'selected' : ''">No Comparison</DropdownItem>
+                                    <DropdownItem onSelected="() => this.onComparisonOptionChanged('previous_period')" class="state.comparison_option === 'previous_period' ? 'selected' : ''">Previous Period</DropdownItem>
+                                    <DropdownItem onSelected="() => this.onComparisonOptionChanged('same_last_year')" class="state.comparison_option === 'same_last_year' ? 'selected' : ''">Same Period Last Year</DropdownItem>
+                                    <DropdownItem onSelected="() => this.onComparisonOptionChanged('custom')" class="state.comparison_option === 'custom' ? 'selected' : ''">Specific Date</DropdownItem>
+                                    <div t-if="state.comparison_option === 'custom'" class="p-2 border-top">
+                                        <DateTimePicker value="state.comparison_date" onSelect="(d) => this.onComparisonDateChanged(d)"/>
+                                    </div>
+                                </t>
+                            </Dropdown>
+
+                            <Dropdown>
+                                <button class="btn btn-secondary o-dropdown dropdown-toggle">
+                                    <i class="fa fa-book me-1"/>
+                                    <t t-if="state.journal_ids.length === 0">All Journals</t>
+                                    <t t-else="">Journals (<t t-esc="state.journal_ids.length"/>)</t>
+                                </button>
+                                <t t-set-slot="content">
+                                    <t t-foreach="state.journals" t-as="journal" t-key="journal.id">
+                                        <DropdownItem onSelected="() => this.onJournalChanged(journal.id)">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" t-att-checked="state.journal_ids.includes(journal.id)"/>
+                                                <label class="form-check-label"><t t-esc="journal.code"/> - <t t-esc="journal.name"/></label>
+                                            </div>
+                                        </DropdownItem>
+                                    </t>
+                                </t>
+                            </Dropdown>
+
+                            <Dropdown>
+                                <button class="btn btn-secondary o-dropdown dropdown-toggle">
+                                    <i class="fa fa-sliders me-1"/> Options
+                                </button>
+                                <t t-set-slot="content">
+                                    <DropdownItem onSelected="() => this.onTargetMoveChanged(state.target_move !== 'posted')">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" t-att-checked="state.target_move === 'posted'"/>
+                                            <label class="form-check-label">Posted Entries Only</label>
+                                        </div>
+                                    </DropdownItem>
+                                </t>
+                            </Dropdown>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- REPORT CONTENT -->
+            <div class="o_content flex-grow-1 overflow-auto bg-light">
+                <div class="p-4 d-flex justify-content-center">
+                    <div class="bg-white shadow-sm border p-4 w-100" style="max-width: 1140px;">
+                        
+                        <div class="text-center mb-4" t-if="state.data">
+                            <h2 class="m-0 fw-bold"><t t-esc="state.data.company_name"/></h2>
+                            <h4 class="text-muted">Cash Flow Statement</h4>
+                            <div class="text-muted">
+                                <t t-if="state.filter_type == 'custom'">
+                                    <t t-esc="formatDate(state.data.date_from)"/> - <t t-esc="formatDate(state.data.date_to)"/>
+                                </t>
+                                <t t-else=""><t t-esc="getPeriodName()"/></t>
+                            </div>
+                        </div>
+
+                        <table class="table table-sm table-hover table-borderless" t-if="state.data">
+                            <thead class="border-bottom">
+                                <tr>
+                                    <th></th>
+                                    <th class="column_header text-end pb-2">As of <t t-esc="formatDate(state.data.date_to)"/></th>
+                                    <t t-if="state.data.has_comparison">
+                                        <th class="column_header text-end pb-2">As of <t t-esc="formatDate(state.data.date_compare)"/></th>
+                                        <th class="column_percent_comparison_header text-end pb-2"><i class="fa fa-percent"/></th>
+                                    </t>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="state.data.sections" t-as="section" t-key="section.name">
+                                    <tr t-if="section.type === 'header'" class="bg-light fw-bold text-uppercase border-bottom border-top mt-3">
+                                        <td class="fw-bold py-2 ps-2"><t t-esc="section.name"/></td>
+                                        <td></td>
+                                        <t t-if="state.data.has_comparison"><td></td><td></td></t>
+                                    </tr>
+                                    <tr t-if="section.type === 'subheader'" class="fw-bold">
+                                        <td class="fw-bold ps-4 py-1"><t t-esc="section.name"/></td>
+                                        <td></td>
+                                        <t t-if="state.data.has_comparison"><td></td><td></td></t>
+                                    </tr>
+                                    <t t-if="section.lines">
+                                        <tr t-foreach="section.lines" t-as="line" t-key="line.id" class="o_account_report_line" t-on-click="() => this.openLine(line)" style="cursor: pointer;">
+                                            <td class="ps-5 py-1">
+                                                <t t-esc="line.name"/>
+                                                <i t-if="line.note" class="fa fa-info-circle text-muted ms-1" t-att-title="line.note"/>
+                                            </td>
+                                            <td class="text-end py-1">
+                                                <span t-att-class="line.current &lt; 0 ? 'text-danger' : (line.current === 0 ? 'text-muted' : '')">
+                                                    <t t-esc="formatCurrency(line.current)"/>
+                                                </span>
+                                            </td>
+                                            <t t-if="state.data.has_comparison">
+                                                <td class="text-end py-1">
+                                                    <span t-att-class="line.previous &lt; 0 ? 'text-danger' : (line.previous === 0 ? 'text-muted' : '')">
+                                                        <t t-esc="formatCurrency(line.previous)"/>
+                                                    </span>
+                                                </td>
+                                                <td class="text-end py-1">
+                                                    <span t-if="line.percent !== false" t-att-class="line.percent &lt; 0 ? 'text-danger' : 'text-success'">
+                                                        <t t-esc="line.percent.toFixed(1)"/>%
+                                                    </span>
+                                                    <span t-else="" class="fst-italic text-muted">n/a</span>
+                                                </td>
+                                            </t>
+                                        </tr>
+                                        <tr class="fw-bold border-top">
+                                            <td class="ps-4 py-2">Total <t t-esc="section.name"/></td>
+                                            <td class="text-end py-2">
+                                                <span t-att-class="section.total_current &lt; 0 ? 'text-danger' : ''">
+                                                    <t t-esc="formatCurrency(section.total_current)"/>
+                                                </span>
+                                            </td>
+                                            <t t-if="state.data.has_comparison">
+                                                <td class="text-end py-2">
+                                                    <span t-att-class="section.total_previous &lt; 0 ? 'text-danger' : ''">
+                                                        <t t-esc="formatCurrency(section.total_previous)"/>
+                                                    </span>
+                                                </td>
+                                                <td></td>
+                                            </t>
+                                        </tr>
+                                    </t>
+                                </t>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </t>
+</templates>

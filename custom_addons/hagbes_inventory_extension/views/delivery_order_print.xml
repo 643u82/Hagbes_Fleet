@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Report Action -->
+    <record id="action_temporary_note" model="ir.actions.report">
+        <field name="name">report temporary note Note</field>
+         <field name="model">stock.picking</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">hagbes_inventory_extension.report_delivery_order</field>
+        <field name="print_report_name">'Delivery_Order_%s' % (object.name)</field>
+        <!-- report_file is not needed in Odoo 18 -->
+    </record>
+
+    <!-- Report Template -->
+    <template id="report_delivery_order">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+            <t t-set="company" t-value="company"/>
+            <t t-call="web.external_layout">
+                    <div class="page">
+                        <!-- Header Section -->
+                        <div style="text-align: right;">
+                            <strong>Date:</strong>
+                             <span t-esc="datetime.date.today().strftime('%Y-%m-%d')"/>
+                        </div>
+                        <div style="text-align: center; margin: 30px 0;">
+                            <h3 style="margin: 0;"><u>Delivery Order</u></h3>
+                        </div>
+                        <!-- Supplier / Order Info -->
+                        <div style="margin: 30px;">
+                            <div class="row">
+                                <div class="col-7">
+                                    <strong>From: </strong>
+                                    <span t-esc="o.picking_type_id.warehouse_id.name"/>
+                                </div>
+                                <div class="col-5">
+                                    <strong>To:</strong>
+                                    <span t-esc="o.location_dest_id.name"/>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <strong>Invoice Code: </strong>
+                               <span t-esc="o.origin"></span>
+                            </div>
+                        </div>
+
+                        <!-- Product Lines Table -->
+                        <div style="margin: 30px;">
+                            <table class="table table-sm table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Item No</th>
+                                        <th>Part No</th>
+                                        <th>Description</th>
+                                        <th>Unit Of M</th>
+                                        <th>Qty</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr t-foreach="o.move_ids_without_package" t-as="items" t-foreach-index="i">
+                                        <td><span t-esc="o_index + 1"/></td>
+                                        <td><span t-field="items.product_id.default_code"></span></td>
+                                        <td><span t-field="items.product_id.display_name"></span></td>
+                                        <td><span t-field="items.product_uom.name"></span></td>
+                                        <td><span t-field="items.product_uom_qty"></span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- Signatures -->
+                        <div class="row" style="margin: 30px 0;">
+                            <div class="col-6">
+                                <strong>Prepared By:</strong>
+                                <u><span >__________________</span></u>
+                            </div>
+                            <div class="col-6">
+                                <strong>Approved By: ______________________________</strong>
+                            </div>
+                        </div>
+
+                        <div class="row" style="margin: 30px 0;">
+                            I hear by certify that the above listed item are received in good conditions.
+                        </div>
+
+                        <div class="row" style="margin: 30px 0;">
+                            <div class="col-6">
+                                <strong>Received By:</strong>
+                                <u><span >__________________</span></u>
+                            </div>
+                            <div class="col-6">
+                                <strong>Date: ______________________________</strong>
+                            </div>
+                        </div>
+
+                        <div class="row" style="margin: 30px 0;">
+                            <div class="col-4">
+                                <strong>Address:</strong>
+                                <u> <span t-esc="o.partner_id.name"></span></u>
+                            </div>
+                            <div class="col-4">
+                                <strong>Id No: ______________________________</strong>
+                            </div>
+                        </div>
+
+                        <!-- Distribution Info -->
+                        <div >
+                            <strong>Distribution</strong>
+                            <div class="ms-3">
+                                <span>Original <b>Warehouse</b> | 1st copy <b>Finance</b> | 2nd copy <b>Shop Store</b>| 3rd copy <b>Customer</b></span>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

@@ -1,0 +1,4 @@
+.o_form_view .o_field_widget[name="score"] select option {
+    color: goldenrod;
+    font-weight: bold;
+}

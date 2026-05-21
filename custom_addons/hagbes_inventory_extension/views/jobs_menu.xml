@@ -1,0 +1,72 @@
+<odoo>
+    <!-- Parent menu -->
+    <menuitem
+        id="menu_stock_warehouse_mgmt_child"
+        name="Jobs"
+        parent="stock.menu_stock_warehouse_mgmt"
+        sequence="2"
+    />
+
+    <!-- Search view -->
+    <record id="view_mrcv_search" model="ir.ui.view">
+        <field name="name">view.mrcv.search</field>
+        <field name="model">stock.picking</field>
+        <field name="arch" type="xml">
+            <search>
+               <group string="Filters" expand="0">
+                <filter name="mrcv" string="MRCV"
+                        domain="[('picking_type_code', '=', 'mrcv')]" />
+                <field name="partner_id"/>
+                <field name="name"/>
+               </group>
+            </search>
+        </field>
+    </record>
+    <record id="view_mrv_search" model="ir.ui.view">
+        <field name="name">view.mrv.search</field>
+        <field name="model">stock.picking</field>
+        <field name="arch" type="xml">
+            <search>
+               <group string="Filters" expand="0">
+                <filter name="mrv" string="MRV"
+                        domain="[('picking_type_code', '=', 'mrv')]" />
+                <field name="partner_id"/>
+                <field name="name"/>
+               </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_picking_tree_mrcv" model="ir.actions.act_window">
+        <field name="name">MRCV</field>
+        <field name="res_model">stock.picking</field>
+        <field name="view_mode">list,kanban,form,calendar,activity</field>
+        <field name="domain">[('picking_type_code', '=', 'mrcv')]</field>
+        <field name="search_view_id" ref="view_mrcv_search"/>
+    </record>
+    <!-- Action -->
+    <record id="action_picking_tree_mrv" model="ir.actions.act_window">
+        <field name="name">MRV</field>
+        <field name="res_model">stock.picking</field>
+        <field name="view_mode">list,kanban,form,calendar,activity</field>
+        <field name="domain">[('picking_type_code', '=', 'mrv')]</field>
+        <field name="search_view_id" ref="view_mrv_search"/>
+    </record>
+
+    <!-- MRCV menu -->
+    <menuitem
+        id="menu_stock_warehouse_mgmt_mrcv"
+        name="MRCV"
+        parent="menu_stock_warehouse_mgmt_child"
+        action="action_picking_tree_mrcv"
+        sequence="2"
+    />
+    <menuitem
+        id="menu_stock_warehouse_mgmt_mrv"
+        name="MRV"
+        parent="menu_stock_warehouse_mgmt_child"
+        action="action_picking_tree_mrv"
+        sequence="2"
+    />
+</odoo>

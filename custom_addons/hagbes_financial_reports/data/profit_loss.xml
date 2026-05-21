@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Client Action -->
+    <record id="action_custom_profit_loss_client" model="ir.actions.client">
+        <field name="name">Profit and Loss</field>
+        <field name="tag">custom_financial_reports.profit_loss_client_action</field>
+    </record>
+
+    <!-- Menu Item -->
+    <menuitem id="menu_custom_profit_loss"
+              name="Profit and Loss"
+              parent="account.menu_finance_reports"
+              action="action_custom_profit_loss_client"
+              sequence="20"/>
+
+    <!-- Report Action -->
+    <record id="action_report_profit_loss" model="ir.actions.report">
+        <field name="name">Profit and Loss</field>
+        <field name="model">custom.profit.loss.wizard</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">custom_financial_reports.report_profit_loss</field>
+        <field name="report_file">custom_financial_reports.report_profit_loss</field>
+    </record>
+</odoo>

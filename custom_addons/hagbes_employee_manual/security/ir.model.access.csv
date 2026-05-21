@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_user_manual_category_admin,user.manual.category admin access,model_user_manual_category,base.group_system,1,1,1,1
+access_user_manual_category_manager,user.manual.category manager access,model_user_manual_category,hr.group_hr_manager,1,0,0,0
+access_user_manual_category_officer,user.manual.category officer access,model_user_manual_category,hr.group_hr_user,1,0,0,0
+access_user_manual_category_employee,user.manual.category employee access,model_user_manual_category,,1,0,0,0

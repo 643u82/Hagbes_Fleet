@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- Multi-Company Isolation -->
+        <record id="rule_fleet_requisition_multi_company" model="ir.rule">
+            <field name="name">Fleet Requisition: Multi-Company Isolation</field>
+            <field name="model_id" ref="model_fleet_requisition"/>
+            <field name="domain_force">[('company_id', 'in', user.company_ids.ids)]</field>
+        </record>
+
+        <record id="rule_fleet_trip_multi_company" model="ir.rule">
+            <field name="name">Fleet Trip: Multi-Company Isolation</field>
+            <field name="model_id" ref="model_fleet_trip"/>
+            <field name="domain_force">[('company_id', 'in', user.company_ids.ids)]</field>
+        </record>
+
+        <!-- Role Based Access: Fleet Requester (Department Visibility) -->
+        <record id="rule_fleet_requisition_requester" model="ir.rule">
+            <field name="name">Fleet Requisition: Requester Department Visibility</field>
+            <field name="model_id" ref="model_fleet_requisition"/>
+            <field name="groups" eval="[(4, ref('hagbes_fleet.group_fleet_requester'))]"/>
+            <field name="domain_force">['|', ('request_by', '=', user.id), ('department_id', '=', user.employee_id.department_id.id)]</field>
+        </record>
+
+        <!-- Role Based Access: Department Manager (Department Scope Only) -->
+        <record id="rule_fleet_requisition_dept_manager" model="ir.rule">
+            <field name="name">Fleet Requisition: Department Manager Scope</field>
+            <field name="model_id" ref="model_fleet_requisition"/>
+            <field name="groups" eval="[(4, ref('hagbes_fleet.group_dept_manager'))]"/>
+            <field name="domain_force">[('department_id', '=', user.employee_id.department_id.id)]</field>
+        </record>
+
+        <!-- Role Based Access: Fleet Operator/Manager (All within Company) -->
+        <record id="rule_fleet_requisition_operator_all" model="ir.rule">
+            <field name="name">Fleet Requisition: Operator All Company Records</field>
+            <field name="model_id" ref="model_fleet_requisition"/>
+            <field name="groups" eval="[(4, ref('hagbes_fleet.group_fmo'))]"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+        </record>
+
+        <record id="rule_fleet_trip_operator_all" model="ir.rule">
+            <field name="name">Fleet Trip: Operator All Company Records</field>
+            <field name="model_id" ref="model_fleet_trip"/>
+            <field name="groups" eval="[(4, ref('hagbes_fleet.group_fmo'))]"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+        </record>
+
+        <!-- Role Based Access: Internal User (Traveller Visibility) -->
+        <record id="rule_fleet_requisition_internal_user_traveller" model="ir.rule">
+            <field name="name">Fleet Requisition: Internal User Traveller Visibility</field>
+            <field name="model_id" ref="model_fleet_requisition"/>
+            <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+            <field name="domain_force">[('traveller', '=', user.id)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+    </data>
+</odoo>

@@ -1,0 +1,10 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_hr_job_hr_user,access_hr_job_hr_user,model_hr_job,hr.group_hr_user,1,1,1,0
+access_hr_job_read_only,access_hr_job_read_only,model_hr_job,custom_org_chart_extension.group_org_chart_view_only,1,0,0,0
+access_hr_employee_read_only,access_hr_employee_read_only,hr.model_hr_employee,custom_org_chart_extension.group_org_chart_view_only,1,0,0,0
+access_account_analytic_account_hr_read,Access Account Analytic Account Read Only,model_account_analytic_account,base.group_user,1,0,0,0
+access_account_analytic_plan_hr_read,Access Account Analytic Plan Read Only,analytic.model_account_analytic_plan,base.group_user,1,0,0,0
+access_account_analytic_line_hr_read,Access Account Analytic line Read Only,analytic.model_account_analytic_line,base.group_user,1,0,0,0
+
+
+

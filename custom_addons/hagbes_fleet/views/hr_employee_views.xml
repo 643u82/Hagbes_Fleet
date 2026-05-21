@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_employee_form_hagbes_fleet" model="ir.ui.view">
+        <field name="name">hr.employee.form.hagbes.fleet</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='personal_information']/group" position="inside">
+                <group string="Driver Information">
+                    <field name="is_driver"/>
+                    <field name="license_number" invisible="not is_driver"/>
+                    <field name="license_expiry" invisible="not is_driver"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_employee_search_hagbes_fleet" model="ir.ui.view">
+        <field name="name">hr.employee.search.hagbes.fleet</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_filter"/>
+        <field name="arch" type="xml">
+            <xpath expr="//separator[1]" position="before">
+                <filter name="fleet_drivers" string="Drivers" domain="[('is_driver', '=', True)]"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

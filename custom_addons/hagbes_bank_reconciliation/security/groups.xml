@@ -1,0 +1,14 @@
+<odoo>
+    <record id="group_bank_reco_viewer" model="res.groups">
+        <field name="name">Bank Reconciliation Viewer</field>
+    </record>
+
+    <record id="group_bank_reco_reconciler" model="res.groups">
+        <field name="name">Bank Reconciliation Reconciler</field>
+    </record>
+
+    <record id="group_bank_reco_manager" model="res.groups">
+        <field name="name">Bank Reconciliation Manager</field>
+        <field name="implied_ids" eval="[(4, ref('hagbes_bank_reconciliation.group_bank_reco_reconciler'))]"/>
+    </record>
+</odoo>

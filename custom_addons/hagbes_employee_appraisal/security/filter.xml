@@ -1,0 +1,9 @@
+<record id="action_filtered_appraisals" model="ir.actions.server">
+    <field name="name">Filtered Appraisals</field>
+    <field name="model_id" ref="model_employee_appraisal"/>
+    <field name="binding_model_id" ref="model_employee_appraisal"/>
+    <field name="state">code</field>
+    <field name="code">
+         action = model.action_filtered_appraisals()
+    </field>
+</record>

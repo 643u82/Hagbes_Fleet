@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_custom_balance_sheet_wizard_form" model="ir.ui.view">
+        <field name="name">custom.balance.sheet.wizard.form</field>
+        <field name="model">custom.balance.sheet.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Statement of Financial Position">
+                <header>
+                    <button name="action_print_pdf" string="Print PDF" type="object" class="btn-primary"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="date_to"/>
+                            <field name="target_move" widget="radio"/>
+                        </group>
+                        <group>
+                            <field name="comparison_option"/>
+                            <field name="comparison_date" invisible="comparison_option != 'custom'" required="comparison_option == 'custom'"/>
+                            <field name="journal_ids" widget="many2many_tags"/>
+                        </group>
+                    </group>
+                    <separator string="Preview"/>
+                    <div class="o_horizontal_separator"></div>
+                    <field name="preview_html" widget="html" nolabel="1" options="{'style-inline': true}"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_custom_balance_sheet_wizard" model="ir.actions.act_window">
+        <field name="name">Statement of Financial Position</field>
+        <field name="res_model">custom.balance.sheet.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">current</field>
+    </record>
+</odoo>

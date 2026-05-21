@@ -1,0 +1,2 @@
+id,name,model_id:id,group_id,perm_read,perm_write,perm_create,perm_unlink
+access_custom_payslip_user,access_custom_payslip_user,model_custom_payslip,,1,1,1,1

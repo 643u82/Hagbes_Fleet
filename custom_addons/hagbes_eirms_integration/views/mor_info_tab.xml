@@ -1,0 +1,29 @@
+<odoo>
+    <data>
+
+       <record id="view_move_form_mor_info" model="ir.ui.view">
+            <field name="name">account.move.form.mor.info</field>
+            <field name="model">account.move</field>
+            <field name="inherit_id" ref="account.view_move_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//page[@name='aml_tab']" position="after">
+                    <page name="mor_info" string="MOR Info">
+                        <group>
+                            <group>
+                                <field name="irn"/>
+                                <field name="irn_ack_date"/>
+                                <field name="irn_document_number"/>
+                                <field name="irn_status"/>
+                            </group>
+                            <group>
+                                <field name="qr_code" widget="image" class="oe_avatar qr_big"/>
+                            </group>
+                        </group>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+
+
+    </data>
+</odoo>

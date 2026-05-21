@@ -1,0 +1,307 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Dashboard Form View -->
+    <record id="view_foreign_dashboard_form" model="ir.ui.view">
+        <field name="name">foreign.procurement.dashboard.form</field>
+        <field name="model">foreign.procurement.dashboard</field>
+        <field name="arch" type="xml">
+            <form string="Foreign Procurement Dashboard" create="false" edit="false" delete="false">
+                <sheet>
+                    <div class="oe_title mb-4">
+                        <h1 class="text-primary">🌍 Foreign Procurement Dashboard</h1>
+                        <p class="text-muted">Real-time overview of your international procurement operations</p>
+                    </div>
+                    
+                    <!-- Added Summary Cards at the top -->
+                    <div class="row mb-4">
+                        <div class="col-md-3">
+                            <div class="card border-primary">
+                                <div class="card-body text-center">
+                                    <h3 class="text-primary"><field name="total_active_amount" widget="monetary"/></h3>
+                                    <p class="card-text">Total Active Amount</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card border-warning">
+                                <div class="card-body text-center">
+                                    <h3 class="text-warning"><field name="urgent_items_count"/></h3>
+                                    <p class="card-text">Urgent Items</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card border-info">
+                                <div class="card-body text-center">
+                                    <h3 class="text-info"><field name="bank_process_count"/></h3>
+                                    <p class="card-text">Active Bank Processes</p>
+                                    <button name="action_view_bank_processes" type="object" class="btn btn-sm btn-outline-info">View</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card border-success">
+                                <div class="card-body text-center">
+                                    <h3 class="text-success"><field name="lc_count"/></h3>
+                                    <p class="card-text">Active LCs</p>
+                                    <button name="action_view_lcs" type="object" class="btn btn-sm btn-outline-success">View</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Purchase Orders Section -->
+                    <group string="📋 Purchase Orders" class="mb-4">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="card bg-light border-secondary">
+                                    <div class="card-body text-center">
+                                        <h2 class="text-secondary"><field name="po_draft_count"/></h2>
+                                        <p class="card-text">Draft POs</p>
+                                        <button name="%(action_view_purchase_orders)d" type="action" 
+                                                context="{'search_default_state': 'draft'}" 
+                                                class="btn btn-sm btn-outline-secondary">View</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card bg-warning text-white">
+                                    <div class="card-body text-center">
+                                        <h2><field name="po_confirmed_count"/></h2>
+                                        <p class="card-text">Confirmed POs</p>
+                                        <button name="%(action_view_purchase_orders)d" type="action" 
+                                                context="{'search_default_state': 'purchase'}" 
+                                                class="btn btn-sm btn-light">View</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card bg-success text-white">
+                                    <div class="card-body text-center">
+                                        <h2><field name="po_purchased_count"/></h2>
+                                        <p class="card-text">Purchased POs</p>
+                                        <button name="%(action_view_purchase_orders)d" type="action" 
+                                                context="{'search_default_state': 'done'}" 
+                                                class="btn btn-sm btn-light">View</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card border-primary">
+                                    <div class="card-body text-center">
+                                        <h4 class="text-primary"><field name="po_total_amount" widget="monetary"/></h4>
+                                        <p class="card-text">Total PO Value</p>
+                                        <button name="action_view_purchase_orders" type="object" class="btn btn-sm btn-outline-primary">View All</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </group>
+
+                    <!-- Enhanced Payment Requests Section with all states -->
+                    <group string="💰 Payment Requests" class="mb-4">
+                        <div class="row mb-3">
+                            <div class="col-md-12">
+                                <div class="alert alert-info d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <strong>Financial Summary:</strong> 
+                                        Total: <field name="pr_total_amount" widget="monetary" readonly="1"/> | 
+                                        Pending: <field name="pr_pending_amount" widget="monetary" readonly="1"/>
+                                    </div>
+                                    <div>
+                                        <span class="badge badge-danger" attrs="{'invisible': [('pr_overdue_count', '=', 0)]}">
+                                            <field name="pr_overdue_count"/> Overdue
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-2">
+                                <div class="card bg-light border-secondary">
+                                    <div class="card-body text-center p-2">
+                                        <h3 class="text-secondary"><field name="pr_draft_count"/></h3>
+                                        <small>Draft</small>
+                                        <br/><button name="action_view_payment_requests" type="object" 
+                                                   context="{'search_default_state': 'draft'}" 
+                                                   class="btn btn-xs btn-outline-secondary mt-1">View</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="card bg-info text-white">
+                                    <div class="card-body text-center p-2">
+                                        <h3><field name="pr_submitted_count"/></h3>
+                                        <small>Submitted</small>
+                                        <br/><button name="action_view_payment_requests" type="object" 
+                                                   context="{'search_default_state': 'submitted'}" 
+                                                   class="btn btn-xs btn-light mt-1">View</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="card bg-warning text-white">
+                                    <div class="card-body text-center p-2">
+                                        <h3><field name="pr_pending_count"/></h3>
+                                        <small>Pending</small>
+                                        <br/><button name="action_view_payment_requests" type="object" 
+                                                   context="{'search_default_state': 'pending'}" 
+                                                   class="btn btn-xs btn-light mt-1">View</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="card bg-primary text-white">
+                                    <div class="card-body text-center p-2">
+                                        <h3><field name="pr_approved_count"/></h3>
+                                        <small>Approved</small>
+                                        <br/><button name="action_view_payment_requests" type="object" 
+                                                   context="{'search_default_state': 'approved'}" 
+                                                   class="btn btn-xs btn-light mt-1">View</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="card bg-success text-white">
+                                    <div class="card-body text-center p-2">
+                                        <h3><field name="pr_paid_count"/></h3>
+                                        <small>Paid</small>
+                                        <br/><button name="action_view_payment_requests" type="object" 
+                                                   context="{'search_default_state': 'paid'}" 
+                                                   class="btn btn-xs btn-light mt-1">View</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="card bg-danger text-white" attrs="{'invisible': [('pr_overdue_count', '=', 0)]}">
+                                    <div class="card-body text-center p-2">
+                                        <h3><field name="pr_overdue_count"/></h3>
+                                        <small>Overdue</small>
+                                        <br/><button name="action_view_overdue_requests" type="object" 
+                                                   class="btn btn-xs btn-light mt-1">View</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </group>
+
+                    <!-- Costing and Shipments Row -->
+                    <div class="row">
+                        <!-- Costing Section -->
+                        <div class="col-md-6">
+                            <group string="📊 Import Costing" class="mb-4">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="card bg-light border-info">
+                                            <div class="card-body text-center">
+                                                <h3 class="text-info"><field name="costing_draft_count"/></h3>
+                                                <p class="card-text">Draft</p>
+                                                <button name="action_view_costings" type="object" 
+                                                        context="{'search_default_state': 'draft'}" 
+                                                        class="btn btn-sm btn-outline-info">View</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="card bg-success text-white">
+                                            <div class="card-body text-center">
+                                                <h3><field name="costing_confirmed_count"/></h3>
+                                                <p class="card-text">Confirmed</p>
+                                                <button name="action_view_costings" type="object" 
+                                                        context="{'search_default_state': 'confirmed'}" 
+                                                        class="btn btn-sm btn-light">View</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="card border-success">
+                                            <div class="card-body text-center">
+                                                <h4 class="text-success"><field name="costing_total_amount" widget="monetary"/></h4>
+                                                <p class="card-text">Total Value</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </group>
+                        </div>
+
+                        <!-- Shipments Section -->
+                        <div class="col-md-6">
+                            <group string="🚢 Shipments" class="mb-4">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="card bg-light border-secondary">
+                                            <div class="card-body text-center">
+                                                <h3 class="text-secondary"><field name="shipment_draft_count"/></h3>
+                                                <p class="card-text">Draft</p>
+                                                <button name="action_view_shipments" type="object" 
+                                                        context="{'search_default_state': 'draft'}" 
+                                                        class="btn btn-sm btn-outline-secondary">View</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="card bg-warning text-white">
+                                            <div class="card-body text-center">
+                                                <h3><field name="shipment_in_transit_count"/></h3>
+                                                <p class="card-text">In Transit</p>
+                                                <button name="action_view_shipments" type="object" 
+                                                        context="{'search_default_state': 'in_transit'}" 
+                                                        class="btn btn-sm btn-light">View</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="card bg-success text-white">
+                                            <div class="card-body text-center">
+                                                <h3><field name="shipment_delivered_count"/></h3>
+                                                <p class="card-text">Delivered</p>
+                                                <button name="action_view_shipments" type="object" 
+                                                        context="{'search_default_state': 'delivered'}" 
+                                                        class="btn btn-sm btn-light">View</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </group>
+                        </div>
+                    </div>
+
+                    <!-- Added Quick Actions Section -->
+                    <group string="⚡ Quick Actions" class="mt-4">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <button name="%(foreign_payment_request.action_foreign_payment_request)d" type="action" 
+                                        class="btn btn-primary btn-block">New Payment Request</button>
+                            </div>
+                            <div class="col-md-3">
+                                <button name="%(purchase.purchase_form_action)d" type="action" 
+                                        class="btn btn-success btn-block">New Purchase Order</button>
+                            </div>
+                            <div class="col-md-3">
+                                <button name="action_view_overdue_requests" type="object" 
+                                        class="btn btn-warning btn-block">Review Overdue</button>
+                            </div>
+                            <div class="col-md-3">
+                                <button name="action_view_payment_requests" type="object" 
+                                        context="{'search_default_state': 'pending'}" 
+                                        class="btn btn-info btn-block">Pending Approvals</button>
+                            </div>
+                        </div>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Dashboard Action -->
+    <record id="action_foreign_dashboard" model="ir.actions.act_window">
+        <field name="name">Foreign Procurement Dashboard</field>
+        <field name="res_model">foreign.procurement.dashboard</field>
+        <field name="view_mode">form</field>
+        <field name="target">current</field>
+        <field name="context">{'form_view_initial_mode': 'readonly'}</field>
+    </record>
+
+  
+</odoo>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        
+        <!-- Create Stock Journal if it doesn't exist -->
+        <record id="stock_journal_valuation" model="account.journal">
+            <field name="name">Inventory Valuation</field>
+            <field name="code">IVJ</field>  <!-- Or anything else unique -->
+            <field name="type">general</field>
+            <field name="show_on_dashboard">True</field>
+            <field name="sequence">15</field>
+        </record>
+        
+        <!-- Create basic stock accounts -->
+        <record id="account_stock_valuation" model="account.account">
+            <field name="name">Stock Valuation</field>
+            <field name="code">1300</field>
+            <field name="account_type">asset_current</field>
+            <field name="reconcile">False</field>
+        </record>
+        
+        <record id="account_stock_input" model="account.account">
+            <field name="name">Stock Input</field>
+            <field name="code">1310</field>
+            <field name="account_type">asset_current</field>
+            <field name="reconcile">False</field>
+        </record>
+        
+        <record id="account_stock_output" model="account.account">
+            <field name="name">Stock Output</field>
+            <field name="code">1320</field>
+            <field name="account_type">asset_current</field>
+            <field name="reconcile">False</field>
+        </record>
+        
+        <record id="account_price_difference" model="account.account">
+            <field name="name">Price Difference</field>
+            <field name="code">6100</field>
+            <field name="account_type">expense</field>
+            <field name="reconcile">False</field>
+        </record>
+        
+    </data>
+</odoo>

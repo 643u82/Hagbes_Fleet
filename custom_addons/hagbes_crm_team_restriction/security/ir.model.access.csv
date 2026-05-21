@@ -1,0 +1,9 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_operation_director_crm_lead,Operation Director - CRM Lead,crm.model_crm_lead,crm_team_restriction.group_operation_director,1,0,0,0
+access_crm_lead_sales_gm,Sales GM - CRM Lead,crm.model_crm_lead,crm_team_restriction.group_crm_sales_general_manager,1,1,1,1
+access_crm_team_sales_gm,Sales GM - CRM Team,crm.model_crm_team,crm_team_restriction.group_crm_sales_general_manager,1,1,1,1
+access_crm_team_member_sales_gm,Sales GM - CRM Team Member,sales_team.model_crm_team_member,crm_team_restriction.group_crm_sales_general_manager,1,1,1,1
+access_crm_team_sales_team_leader,Sales Team Leader - CRM Team,crm.model_crm_team,crm_team_restriction.group_crm_sales_team_leader,1,0,0,0
+access_crm_team_member_sales_team_leader,Sales Team Leader - CRM Team Member,sales_team.model_crm_team_member,crm_team_restriction.group_crm_sales_team_leader,1,1,1,1
+access_crm_sales_person,Sales Person - CRM Team Access,crm.model_crm_team,sales_team.group_sale_salesman,1,1,1,1
+

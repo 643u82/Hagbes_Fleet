@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Fleet Menu - Hide from fleet user, show to others -->
+        <menuitem id="menu_fleet_root" 
+                  name="Fleet" 
+                  sequence="50" 
+                  web_icon="hagbes_fleet,static/description/icon.png"
+                  groups="base.group_user,hagbes_fleet.group_fleet_requester,hagbes_fleet.group_dept_manager,hagbes_fleet.group_fmo,hagbes_fleet.group_fleet_manager,hagbes_fleet.group_property_manager,hagbes_fleet.group_fleet_admin"/>
+        
+        <!-- Vehicles -->
+        <menuitem id="menu_fleet_vehicles"
+                  name="Vehicles"
+                  parent="menu_fleet_root"
+                  action="action_fleet_vehicle"
+                  sequence="10"
+                  groups="hagbes_fleet.group_fmo,hagbes_fleet.group_fleet_manager,hagbes_fleet.group_property_manager,hagbes_fleet.group_fleet_admin"/>
+
+        <!-- Allocations -->
+        <menuitem id="menu_fleet_allocations"
+                  name="Allocations"
+                  parent="menu_fleet_root"
+                  action="action_fleet_allocation"
+                  sequence="15"
+                  groups="hagbes_fleet.group_fmo,hagbes_fleet.group_fleet_manager,hagbes_fleet.group_property_manager,hagbes_fleet.group_fleet_admin"/>
+
+        <!-- Trips - Executed Trip Tracking -->
+        <menuitem id="menu_fleet_trips"
+                  name="Trips"
+                  parent="menu_fleet_root"
+                  action="action_fleet_trip"
+                  sequence="20"
+                  groups="hagbes_fleet.group_fmo,hagbes_fleet.group_fleet_manager,hagbes_fleet.group_fleet_admin,hagbes_fleet.group_property_manager"/>
+
+        <!-- Discrepancies -->
+        <menuitem id="menu_fleet_discrepancies"
+                  name="Discrepancies"
+                  parent="menu_fleet_root"
+                  action="action_fleet_discrepancy"
+                  sequence="25"
+                  groups="hagbes_fleet.group_property_manager,hagbes_fleet.group_fleet_admin"/>
+
+        <!-- Requisitions -->
+        <menuitem id="menu_fleet_requisitions"
+                  name="Requisitions"
+                  parent="menu_fleet_root"
+                  action="action_fleet_requisition"
+                  sequence="30"
+                  groups="base.group_user,hagbes_fleet.group_fleet_requester,hagbes_fleet.group_dept_manager,hagbes_fleet.group_fmo,hagbes_fleet.group_fleet_manager,hagbes_fleet.group_property_manager,hagbes_fleet.group_fleet_admin"/>
+
+        <!-- Approvals - Dept Manager Inbox -->
+        <menuitem id="menu_fleet_dept_approvals"
+                  name="Approvals"
+                  parent="menu_fleet_root"
+                  action="action_fleet_requisition_dept_approval"
+                  sequence="32"
+                  groups="hagbes_fleet.group_dept_manager"/>
+
+        <!-- Reports -->
+        <menuitem id="menu_fleet_reports"
+                  name="Reports"
+                  parent="menu_fleet_root"
+                  sequence="35"
+                  groups="hagbes_fleet.group_fmo,hagbes_fleet.group_fleet_manager,hagbes_fleet.group_fleet_admin"/>
+
+        <!-- Operations -->
+        <menuitem id="menu_fleet_operations"
+                  name="Operations"
+                  parent="menu_fleet_root"
+                  sequence="40"
+                  groups="hagbes_fleet.group_fmo,hagbes_fleet.group_fleet_manager,hagbes_fleet.group_fleet_admin"/>
+
+        <menuitem id="menu_fleet_daily_checkup"
+                  name="Daily Vehicle Checkup"
+                  parent="menu_fleet_operations"
+                  action="action_fleet_checkup_wizard"
+                  sequence="10"
+                  groups="hagbes_fleet.group_fmo"/>
+        
+        <!-- Configuration - Hide from fleet user -->
+        <menuitem id="menu_fleet_configuration" 
+                  name="Configuration" 
+                  parent="menu_fleet_root" 
+                  sequence="50"
+                  groups="hagbes_fleet.group_fleet_admin,base.group_system"/>
+    </data>
+</odoo>

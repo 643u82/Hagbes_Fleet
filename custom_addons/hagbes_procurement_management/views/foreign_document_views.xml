@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Document List View -->
+    <record id="view_foreign_document_list" model="ir.ui.view">
+        <field name="name">foreign.document.list</field>
+        <field name="model">foreign.document</field>
+        <field name="type">list</field>  <!-- Important to match <list> tag -->
+        <field name="arch" type="xml">
+            <list string="Foreign Documents" decoration-danger="is_expired==True">
+                <field name="name"/>
+                <field name="document_type"/>
+                <field name="document_number"/>
+                <field name="document_date"/>
+                <field name="expiry_date"/>
+                <field name="days_to_expiry"/>
+                <field name="is_expired" invisible="1"/>
+                <field name="issued_by"/>
+                <field name="status" widget="badge" 
+                       decoration-info="status=='draft'" 
+                       decoration-warning="status in ['submitted','verified']" 
+                       decoration-success="status=='approved'" 
+                       decoration-danger="status in ['rejected','expired']"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Document Form View -->
+    <record id="view_foreign_document_form" model="ir.ui.view">
+        <field name="name">foreign.document.form</field>
+        <field name="model">foreign.document</field>
+        <field name="arch" type="xml">
+            <form string="Foreign Document">
+                <header>
+                    <button name="action_verify" string="Verify" type="object" 
+                            class="oe_highlight" invisible="status != 'draft'"/>
+                    <button name="action_approve" string="Approve" type="object" 
+                            class="oe_highlight" invisible="status != 'verified'"
+                            groups="foreign_procurement.group_foreign_procurement_manager"/>
+                    <button name="action_reject" string="Reject" type="object" 
+                            invisible="status not in ['draft','verified']"/>
+                    <button name="action_reset_to_draft" string="Reset to Draft" type="object" 
+                            invisible="status not in ['rejected']"/>
+                    <field name="status" widget="statusbar" 
+                           statusbar_visible="draft,submitted,verified,approved"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name"/>
+                        </h1>
+                    </div>
+                    
+                    <group>
+                        <group>
+                            <field name="document_type"/>
+                            <field name="document_number"/>
+                            <field name="document_date"/>
+                            <field name="expiry_date"/>
+                            <field name="days_to_expiry" readonly="1" 
+                                   decoration-danger="days_to_expiry &lt; 30 and days_to_expiry &gt; 0"
+                                   decoration-warning="days_to_expiry &lt; 60 and days_to_expiry &gt;= 30"/>
+                        </group>
+                        <group>
+                            <field name="issued_by"/>
+                            <field name="verified_by" readonly="1"/>
+                            <field name="verified_date" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Document File" name="file">
+                            <group>
+                                <field name="document_file" filename="document_filename"/>
+                                <field name="document_filename" invisible="1"/>
+                            </group>
+                        </page>
+                        
+                        <page string="Related Records" name="related">
+                            <group>
+                                <group>
+                                    <field name="purchase_order_id" options="{'no_create': True}"/>
+                                    <field name="payment_request_id" options="{'no_create': True}"/>
+                                    <field name="lc_id" options="{'no_create': True}"/>
+                                </group>
+                                <group>
+                                    <field name="shipment_id" options="{'no_create': True}"/>
+                                    <field name="landing_id" options="{'no_create': True}"/>
+                                    <field name="bank_process_id" options="{'no_create': True}"/>
+                                </group>
+                            </group>
+                        </page>
+                        
+                        <page string="Additional Information" name="additional_info">
+                            <group>
+                                <field name="description" nolabel="1" 
+                                       placeholder="Document description..."/>
+                            </group>
+                            <group>
+                                <field name="notes" nolabel="1" 
+                                       placeholder="Internal notes..."/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <!-- <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div> -->
+            </form>
+        </field>
+    </record>
+
+    <!-- Document Actions -->
+    <record id="action_foreign_document" model="ir.actions.act_window">
+        <field name="name">Documents</field>
+        <field name="res_model">foreign.document</field>
+        <field name="view_mode">list,form</field>  <!-- update from tree to list -->
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Upload your first foreign procurement document!
+            </p>
+            <p>
+                Manage all documents related to your foreign procurement processes.
+            </p>
+        </field>
+    </record>
+
+ 
+
+</odoo>

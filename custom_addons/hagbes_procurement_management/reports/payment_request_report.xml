@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Payment Request Report Template -->
+    <template id="report_foreign_payment_request">
+        <t t-call="web.external_layout">
+            <t t-foreach="docs" t-as="doc">
+                <div class="page">
+                    <div class="text-center">
+                        <h2><strong><span t-field="doc.company_id.name"/></strong></h2>
+                        <h4>FOREIGN PAYMENT REQUISITION FORM</h4>
+                        <h5>(FOR IMPORT DEPARTMENT ONLY)</h5>
+                    </div>
+
+                    <div class="row mt32">
+                        <div class="col-6">
+                            <table class="table table-sm table-borderless">
+                                <tr>
+                                    <td><strong>Request No.:</strong></td>
+                                    <td><span t-field="doc.name"/></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Supplier:</strong></td>
+                                    <td><span t-field="doc.supplier_id.name"/></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Purchase Order:</strong></td>
+                                    <td><span t-field="doc.purchase_order_id.name"/></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Branch:</strong></td>
+                                    <td><span t-field="doc.branch_id.name"/></td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="col-6">
+                            <table class="table table-sm table-borderless">
+                                <tr>
+                                    <td><strong>Request Date:</strong></td>
+                                    <td><span t-field="doc.request_date"/></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Required Date:</strong></td>
+                                    <td><span t-field="doc.required_date"/></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Currency:</strong></td>
+                                    <td><span t-field="doc.currency_id.name"/></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Status:</strong></td>
+                                    <td><span t-field="doc.state"/></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+
+                    <h4 class="mt16">Payment Details</h4>
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Payment Type</th>
+                                <th>Description</th>
+                                <th>Beneficiary</th>
+                                <th class="text-right">Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="doc.payment_line_ids" t-as="line">
+                                <tr>
+                                    <td><span t-field="line.payment_type"/></td>
+                                    <td><span t-field="line.description"/></td>
+                                    <td><span t-field="line.beneficiary"/></td>
+                                    <td class="text-right">
+                                        <span t-field="line.amount" t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>
+                                    </td>
+                                </tr>
+                            </t>
+                            <tr class="border-top">
+                                <td colspan="3"><strong>Total Amount</strong></td>
+                                <td class="text-right">
+                                    <strong>
+                                        <span t-field="doc.total_amount" t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>
+                                    </strong>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="row mt32">
+                        <div class="col-12">
+                            <p><strong>Purpose:</strong> <span t-field="doc.notes"/></p>
+                        </div>
+                    </div>
+
+                    <div class="row mt32">
+                        <div class="col-6">
+                            <h5>For Transit &amp; Forwarding Department</h5>
+                            <table class="table table-sm table-borderless">
+                                <tr>
+                                    <td><strong>Prepared By:</strong></td>
+                                    <td><span t-field="doc.requested_by.name"/></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Date:</strong></td>
+                                    <td><span t-field="doc.request_date"/></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Signature:</strong></td>
+                                    <td>_____________________</td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="col-6">
+                            <h5>For Finance Department</h5>
+                            <table class="table table-sm table-borderless">
+                                <tr>
+                                    <td><strong>Reviewed By:</strong></td>
+                                    <td><span t-field="doc.finance_reviewer.name"/></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Approved By:</strong></td>
+                                    <td><span t-field="doc.approved_by.name"/></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Date:</strong></td>
+                                    <td><span t-field="doc.approved_date"/></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Signature:</strong></td>
+                                    <td>_____________________</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="row mt32" t-if="doc.rejection_reason">
+                        <div class="col-12">
+                            <h5>Rejection Reason</h5>
+                            <p><span t-field="doc.rejection_reason"/></p>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </t>
+    </template>
+
+</odoo>

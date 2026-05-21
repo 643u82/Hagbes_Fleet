@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <template id="report_balance_sheet_ifrs">
+    <t t-call="web.html_container">
+      <t t-call="web.external_layout">
+        <t t-set="company" t-value="company"/>
+        <div class="page">
+            <style>
+                .table-sm th, .table-sm td { padding: 2px 5px; vertical-align: middle; }
+                .section-header { background-color: #f2f2f2; font-weight: bold; text-transform: uppercase; }
+                .group-header { font-weight: bold; }
+                .account-line { padding-left: 20px; }
+                .text-grey { color: #888; }
+                .text-red { color: red; }
+            </style>
+
+            <div class="text-center mb-4">
+                <h2 class="mt-0">Balance Sheet</h2>
+                <div>As of <span t-esc="date_to" t-options="{'widget': 'date'}"/></div>
+            </div>
+
+            <table class="table table-sm table-borderless">
+                <thead>
+                    <tr class="border-bottom">
+                        <th style="width: 40%"></th>
+                        <th class="text-end">As of <span t-esc="date_to" t-options="{'widget': 'date'}"/></th>
+                        <t t-if="has_comparison">
+                            <th class="text-end">As of <span t-esc="date_compare" t-options="{'widget': 'date'}"/></th>
+                            <th class="text-end">%</th>
+                        </t>
+                    </tr>
+                </thead>
+                <tbody>
+                    <t t-foreach="lines.items()" t-as="section_item">
+                        <t t-set="section_key" t-value="section_item[0]"/>
+                        <t t-set="section_lines" t-value="section_item[1]"/>
+                        
+                        <!-- Section Header -->
+                        <tr t-if="section_key in ['non_current_assets', 'equity', 'non_current_liabilities']" class="section-header">
+                            <td colspan="100%">
+                                <t t-if="section_key == 'non_current_assets'">ASSETS</t>
+                                <t t-elif="section_key == 'equity'">EQUITY</t>
+                                <t t-elif="section_key == 'non_current_liabilities'">LIABILITIES</t>
+                            </td>
+                        </tr>
+
+                        <!-- Group Header -->
+                        <tr class="group-header">
+                            <td>
+                                <t t-if="section_key == 'non_current_assets'">Non-current Assets</t>
+                                <t t-elif="section_key == 'current_assets'">Current Assets</t>
+                                <t t-elif="section_key == 'equity'">Equity</t>
+                                <t t-elif="section_key == 'non_current_liabilities'">Non-current Liabilities</t>
+                                <t t-elif="section_key == 'current_liabilities'">Current Liabilities</t>
+                            </td>
+                            <td></td>
+                            <t t-if="has_comparison"><td></td><td></td></t>
+                        </tr>
+
+                        <!-- Lines -->
+                        <tr t-foreach="section_lines" t-as="line">
+                            <td class="account-line">
+                                <span t-esc="line['name']"/>
+                            </td>
+                            <td class="text-end">
+                                <span t-att-class="'text-red' if line['current'] &lt; 0 else ('text-grey' if line['current'] == 0 else '')" 
+                                      t-esc="line['current']" t-options="{'widget': 'monetary', 'display_currency': company.currency_id}"/>
+                            </td>
+                            <t t-if="has_comparison">
+                                <td class="text-end">
+                                    <span t-att-class="'text-red' if line['previous'] &lt; 0 else ('text-grey' if line['previous'] == 0 else '')" 
+                                          t-esc="line['previous']" t-options="{'widget': 'monetary', 'display_currency': company.currency_id}"/>
+                                </td>
+                                <td class="text-end">
+                                    <span t-if="line['percent'] is not False" t-att-class="'text-red' if line['percent'] &lt; 0 else 'text-success'" 
+                                          t-esc="line['percent']" t-options="{'widget': 'float', 'precision': 1}"/>
+                                    <span t-else="" class="text-grey fst-italic">n/a</span>
+                                </td>
+                            </t>
+                        </tr>
+
+                        <!-- Section Total -->
+                        <tr class="fw-bold border-top">
+                            <td class="ps-4">Total</td>
+                            <td class="text-end">
+                                <!-- Map totals keys manually based on section -->
+                                <t t-if="section_key == 'non_current_assets'"><span t-esc="totals['nca_current']" t-options="{'widget': 'monetary', 'display_currency': company.currency_id}"/></t>
+                                <t t-if="section_key == 'current_assets'"><span t-esc="totals['ca_current']" t-options="{'widget': 'monetary', 'display_currency': company.currency_id}"/></t>
+                                <t t-if="section_key == 'equity'"><span t-esc="totals['equity_current']" t-options="{'widget': 'monetary', 'display_currency': company.currency_id}"/></t>
+                                <t t-if="section_key == 'non_current_liabilities'"><span t-esc="totals['ncl_current']" t-options="{'widget': 'monetary', 'display_currency': company.currency_id}"/></t>
+                                <t t-if="section_key == 'current_liabilities'"><span t-esc="totals['cl_current']" t-options="{'widget': 'monetary', 'display_currency': company.currency_id}"/></t>
+                            </td>
+                            <t t-if="has_comparison">
+                                <td class="text-end">
+                                    <t t-if="section_key == 'non_current_assets'"><span t-esc="totals['nca_previous']" t-options="{'widget': 'monetary', 'display_currency': company.currency_id}"/></t>
+                                    <t t-if="section_key == 'current_assets'"><span t-esc="totals['ca_previous']" t-options="{'widget': 'monetary', 'display_currency': company.currency_id}"/></t>
+                                    <t t-if="section_key == 'equity'"><span t-esc="totals['equity_previous']" t-options="{'widget': 'monetary', 'display_currency': company.currency_id}"/></t>
+                                    <t t-if="section_key == 'non_current_liabilities'"><span t-esc="totals['ncl_previous']" t-options="{'widget': 'monetary', 'display_currency': company.currency_id}"/></t>
+                                    <t t-if="section_key == 'current_liabilities'"><span t-esc="totals['cl_previous']" t-options="{'widget': 'monetary', 'display_currency': company.currency_id}"/></t>
+                                </td>
+                                <td></td>
+                            </t>
+                        </tr>
+                    </t>
+
+                    <!-- Grand Totals -->
+                    <tr class="fw-bold border-top border-dark border-2">
+                        <td>TOTAL ASSETS</td>
+                        <td class="text-end"><span t-esc="totals['assets_current']" t-options="{'widget': 'monetary', 'display_currency': company.currency_id}"/></td>
+                        <t t-if="has_comparison">
+                            <td class="text-end"><span t-esc="totals['assets_previous']" t-options="{'widget': 'monetary', 'display_currency': company.currency_id}"/></td>
+                            <td></td>
+                        </t>
+                    </tr>
+                    <tr class="fw-bold border-top border-dark border-2">
+                        <td>TOTAL EQUITY AND LIABILITIES</td>
+                        <td class="text-end"><span t-esc="totals['el_current']" t-options="{'widget': 'monetary', 'display_currency': company.currency_id}"/></td>
+                        <t t-if="has_comparison">
+                            <td class="text-end"><span t-esc="totals['el_previous']" t-options="{'widget': 'monetary', 'display_currency': company.currency_id}"/></td>
+                            <td></td>
+                        </t>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+      </t>
+    </t>
+  </template>
+</odoo>

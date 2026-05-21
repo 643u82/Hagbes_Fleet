@@ -1,0 +1,112 @@
+<!-- <odoo>
+    <template id="portal_user_manuals" name="User Manuals Portal">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs" t-value="[(None, 'User Manuals')]"/>
+            <div class="o_portal_my_documents">
+                <h1>User Manuals</h1>
+                <div class="row">
+                    <t t-foreach="manuals" t-as="manual">
+                        <div class="col-md-4 mb-3">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <h5 class="card-title" t-esc="manual.name"/>
+                                    <p class="card-text">
+                                        <strong>Group:</strong>
+                                        <span t-esc="manual.group_id.name"/>
+                                    </p>
+                                    <a t-att-href="'/employee/user_manuals/download/%s' % manual.id"
+                                       class="btn btn-primary">
+                                        Download
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                    <t t-if="not manuals">
+                        <div class="col-12">
+                            <div class="alert alert-info">
+                                No manuals available for your role.
+                            </div>
+                        </div>
+                    </t>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <template id="portal_user_manuals_menu" inherit_id="portal.portal_my_home">
+        <xpath expr="//div[@id='portal_my_home']/div[1]" position="inside">
+            <div class="col-md-4 mb-3">
+                <div class="card o_portal_preview">
+                    <div class="card-body">
+                        <h3 class="card-title">User Manuals</h3>
+                        <p class="card-text">Access manuals assigned to you.</p>
+                        <a class="btn btn-secondary"
+                           href="/employee/user_manuals">
+                            View Manuals
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </xpath>
+    </template>
+</odoo>
+ -->
+
+<odoo>
+    <data>
+        <!-- Portal User Manuals Listing -->
+        <template id="portal_user_manuals" name="User Manuals Portal">
+            <t t-call="portal.portal_layout">
+                <t t-set="breadcrumbs" t-value="[(None, 'User Manuals')]"/>
+                <div class="o_portal_my_documents container mt-4">
+                    <h1>User Manuals</h1>
+                    <div class="row">
+                        <t t-foreach="manuals" t-as="manual">
+                            <div class="col-md-4 mb-3">
+                                <div class="card h-100">
+                                    <div class="card-body">
+                                        <h5 class="card-title" t-esc="manual.name"/>
+                                        <p class="card-text">
+                                            <strong>Group:</strong>
+                                            <span t-esc="manual.group_id.name"/>
+                                        </p>
+                                        <a t-att-href="'/employee/user_manuals/download/%s' % manual.id"
+                                           class="btn btn-primary">
+                                            Download
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                        <t t-if="not manuals">
+                            <div class="col-12">
+                                <div class="alert alert-info">
+                                    No manuals available for your role.
+                                </div>
+                            </div>
+                        </t>
+                    </div>
+                </div>
+            </t>
+        </template>
+
+        <!-- Portal Menu Card -->
+        <template id="portal_user_manuals_menu" inherit_id="portal.portal_my_home">
+            <!-- Use class-based XPath for Odoo 18 -->
+            <xpath expr="//div[contains(@class, 'o_portal_my_home')]" position="inside">
+                <div class="col-md-4 mb-3">
+                    <div class="card o_portal_preview">
+                        <div class="card-body">
+                            <h3 class="card-title">User Manuals</h3>
+                            <p class="card-text">Access manuals assigned to you.</p>
+                            <a class="btn btn-secondary" href="/employee/user_manuals">
+                                View Manuals
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </xpath>
+        </template>
+    </data>
+</odoo>

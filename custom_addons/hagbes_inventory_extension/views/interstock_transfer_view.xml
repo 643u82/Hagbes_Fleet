@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+    <!-- Action -->
+    <record id="action_interstock_transfer" model="ir.actions.act_window">
+        <field name="name">Transfer Requests</field>
+        <field name="res_model">interstock.transfer</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- Tree View -->
+    <record id="view_interstock_transfer_tree" model="ir.ui.view">
+        <field name="name">interstock.transfer.tree</field>
+        <field name="model">interstock.transfer</field>
+        <field name="arch" type="xml">
+            <list string="Interstock Transfers">
+                <field name="name"/>
+                <field name="Requested_by"/>
+                <field name="issuer_branch_id" string="Issuer Branch"/>
+                <field name="issuer_warehouse_id"/>
+                <field name="items_summary"/>
+                <field name="state"/>
+                <button name="action_finance_checker"
+                    string="Finance Check"
+                    type="object"
+                    class="oe_highlight"
+                    groups="hagbes_inventory_extension.group_custom_approve_adjustment"
+                    invisible="state != 'done' or receiving_picking_id"/>
+            </list>
+        </field>
+    </record>
+
+
+<!--    <record id="rule_branch_user_view_own" model="ir.rule">-->
+<!--        <field name="name">Branch User: View Own Branch Requests</field>-->
+<!--        <field name="model_id" ref="model_interstore_transfer"/>-->
+<!--        <field name="groups" eval="[(4, ref('hagbes_inventory_extension.group_custom_approve_adjustment'))]"/>-->
+<!--        <field name="domain_force">[('issuer_branch_id', '=', user.branch_id.id)]</field>-->
+<!--    </record>-->
+
+
+    <!-- Form View -->
+    <record id="view_interstock_transfer_form" model="ir.ui.view">
+        <field name="name">interstock.transfer.form</field>
+        <field name="model">interstock.transfer</field>
+        <field name="arch" type="xml">
+        <form string="Transfer Request">
+            <header >
+                <button name="action_submit" type="object" string="Submit" class="btn-primary" invisible="state != 'draft'"/>
+                <button name="action_resubmit" type="object" string="Resubmit" class="btn-secondary" invisible="state != 'pending'"/>
+                <button name="action_approve" type="object" string="Approve" class="btn-success" invisible="state != 'submitted'"/>
+                <button name="action_amend" type="object" string="Amend"  class="btn-secondary" invisible="state != 'submitted'"/>
+                 <button name="action_revert" type="object" string="Revert"  class="btn-warning" invisible="state != 'rejected'"/>
+                 <button name="action_reject" type="object" string="Reject"  class="btn-danger" invisible="state != 'submitted'"/>
+            </header>
+            <sheet>
+                    <field name="name" readonly="1" class="bold-large-text"/>
+                <group col="2">
+                    <group>
+                        <separator string="Inter Stock Requester" colspan="2" class="custom-header"/>
+                        <field name="company_id" invisible="1" />
+                         <field name="Requested_by" readonly="1"/>
+                        <field name="requester_branch_id" readonly="1"/>
+                         <field name="requester_warehouse_id" readonly="state != 'draft'"/>
+                         <field name="requester_location_id" readonly="state != 'draft'"/>
+                    </group>
+
+                    <group>
+                        <separator string="Inter Stock Issuer" colspan="2" class="custom-header-odd"/>
+                        <field name="company_id" invisible="1"/>
+                        <field name="issuer_branch_id" readonly="state != 'draft'"/>
+                        <field name="issuer_warehouse_id" readonly="state != 'draft'"/>
+                    </group>
+                </group>
+               <notebook>
+                    <page string="Item Requested" >
+                        <field name="items_requested"  required="1" readonly="state != 'draft'">
+                            <list editable="bottom">
+                                <field name="transfer_id" column_invisible="1"/>
+                                <field name="available_product_ids" column_invisible="1"/>
+                                <field name="product_id" domain="[('id', 'in', available_product_ids)]"/>
+                                <field name="quantity" />
+                                <field name="uom_id"/>
+                                <field name="location_id" readonly="1" force_save="1"/>
+                            </list>
+                        </field>
+                    </page>
+               </notebook>
+              <field name="step_progress" widget="html" readonly="1"/>
+            </sheet>
+
+            </form>
+        </field>
+    </record>
+    </data>
+</odoo>

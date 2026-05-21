@@ -1,0 +1,142 @@
+<odoo>
+    <record id="view_hr_employee_public_form_guarantor_tab" model="ir.ui.view">
+        <field name="name">hr.employee.public.form.inherit.guarantor.tab</field>
+        <field name="model">hr.employee.public</field>
+        <field name="inherit_id" ref="hr.hr_employee_public_view_form"/>
+        <field name="arch" type="xml">
+            <field name="name" position="before">
+                <div style="margin-top: 4px;">
+                    <field name="emp_id"
+                           readonly="1"
+                           style="font-size: 30px; display: block;"
+                           modifiers="{'invisible': [['emp_id', '=', false]]}" />
+                </div>
+            </field>
+            
+            <xpath expr="//page[@name='public']" position="after">
+                <page string="Guarantor Info" name="guarantor_info">
+                    <group>
+                        <field name="is_guarantor_required"/>
+                        <field name="guarantor_name" modifiers="{'readonly': [['is_guarantor_required', '=', False]]}"/>
+                        <field name="guarantor_organization" modifiers="{'readonly': [['is_guarantor_required', '=', False]]}"/>
+                        <field name="guarantor_id_doc" filename="guarantor_id_doc_filename" modifiers="{'readonly': [['is_guarantor_required', '=', False]]}"/>
+                        <field name="guarantor_support_docs" filename="guarantor_support_docs_filename" modifiers="{'readonly': [['is_guarantor_required', '=', False]]}"/>
+                        <!-- If you want to add witness_ids later, close comments properly -->
+                        <!--
+                        <field name="witness_ids" modifiers="{'readonly': [['is_guarantor_required', '=', False]]}">
+                            <list editable="bottom">
+                                <field name="full_name"/>
+                                <field name="date"/>
+                            </list>
+                        </field>
+                        -->
+                    </group>
+                </page>
+            </xpath>
+
+            <!-- ✅ Insert My Profile page after the 'guarantor_info' page -->
+            <xpath expr="//page[@name='guarantor_info']" position="after">
+                <page string="Private Information" name="my_profile">
+                    <group>
+                        <!-- Private Contact -->
+                        <group string="Private Contact">
+                            <group>
+                                <label for="private_country_id" string="Country"/>
+                                <field name="private_country_id" nolabel="1"/>
+
+                                <label for="private_street" string="Subcity"/>
+                                <field name="private_street" nolabel="1"/>
+
+                                <label for="private_street2" string="Wereda"/>
+                                <field name="private_street2" nolabel="1"/>
+
+                                <label for="private_city" string="City"/>
+                                <field name="private_city" nolabel="1"/>
+
+                                <label for="private_state_id" string="Private State"/>
+                                <field name="private_state_id" nolabel="1"/>
+
+                                <label for="private_zip" string="Kebele"/>
+                                <field name="private_zip" class="o_address_zip" nolabel="1"/>
+
+                                <label for="house_number" string="House Number"/>
+                                <field name="house_number" nolabel="1"/>
+                            </group>
+                            <group>
+                                <field name="private_email"/>
+                                <field name="private_phone"/>
+                                <field name="bank_account_id"/>
+                                <field name="private_car_plate"/>
+                            </group>
+                        </group>
+
+                        <!-- Citizenship -->
+                        <group string="Citizenship">
+                            <field name="country_id" />
+                            <field name="identification_id" />
+                            <field name="ssnid" />
+                            <field name="passport_id" />
+                            <field name="gender" />
+                            <field name="birthday" />
+                            <field name="place_of_birth" />
+                            <field name="country_of_birth" />
+                        </group>
+
+                        <!-- Emergency -->
+                        <group string="Emergency" name="emergency">
+                            <field name="emergency_contact" />
+                            <field name="emergency_phone" />
+                            <separator string="Family Status"/>
+                            <field name="marital"  />
+                            <field name="spouse_complete_name" />
+                            <field name="spouse_birthdate" />
+                            <field name="children" />
+                        </group>
+
+                        <!-- Education -->
+                        <group string="Education">
+                            <field name="certificate" />
+                            <field name="study_field" />
+                            <field name="study_school" />
+                            <separator name="has_work_permit" string="Work Permit"/>
+                            <field name="visa_no" />
+                            <field name="permit_no" />
+                            <field name="visa_expire" />
+                            <field name="work_permit_expiration_date" />
+                            <field name="has_work_permit" />
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+            <xpath expr="//field[@name='department_id']" position="before">
+                <field name="branch_id" options="{'no_open': True, 'no_create': True}"/>
+            </xpath>
+            <xpath expr="//field[@name='job_id']" position="after">
+                <field name="hired_date" options="{'no_open': True, 'no_create': True}"/>
+            </xpath>
+            <xpath expr="//field[@name='passport_id']" position="after">
+                <field name="tin_no"/>
+            </xpath>
+            <xpath expr="//field[@name='tin_no']" position="after">
+                <field name="pension_id"/>
+            </xpath>
+            <xpath expr="//field[@name='hired_date']" position="after">
+                <field name="employee_type"/>
+            </xpath>
+            <xpath expr="//field[@name='parent_id']" position="replace">
+                <field name="parent_id" widget="many2one" options="{'no_open': True, 'no_create': True}"/>
+            </xpath>
+            <xpath expr="//field[@name='coach_id']" position="replace">
+                <field name="coach_id" widget="many2one" options="{'no_open': True, 'no_create': True}"/>
+            </xpath>
+            <xpath expr="//field[@name='leave_manager_id']" position="replace">
+                <field name="leave_manager_id" widget="many2one" options="{'no_open': True, 'no_create': True}"/>
+            </xpath>
+             <xpath expr="//field[@name='department_id']" position="replace">
+                <field name="department_id" widget="many2one" options="{'no_open': True, 'no_create': True}"/>
+            </xpath>
+
+        </field>
+
+    </record>
+</odoo>

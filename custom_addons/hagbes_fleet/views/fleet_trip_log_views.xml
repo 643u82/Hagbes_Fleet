@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Tree View -->
+    <record id="view_fleet_trip_log_tree" model="ir.ui.view">
+        <field name="name">hagbes.fleet.trip.log.tree</field>
+        <field name="model">hagbes.fleet.trip.log</field>
+        <field name="arch" type="xml">
+            <list string="Trip Logs">
+                <field name="allocation_id"/>
+                <field name="start_time"/>
+                <field name="end_time"/>
+                <field name="start_odometer"/>
+                <field name="end_odometer"/>
+                <field name="actual_distance"/>
+                <field name="fuel_used"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="view_fleet_trip_log_form" model="ir.ui.view">
+        <field name="name">hagbes.fleet.trip.log.form</field>
+        <field name="model">hagbes.fleet.trip.log</field>
+        <field name="arch" type="xml">
+            <form string="Trip Log">
+                <sheet>
+                    <group>
+                        <group name="allocation_info" string="Allocation Information">
+                            <field name="allocation_id" options="{'no_create': True}"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group name="time_tracking" string="Time Tracking">
+                            <field name="start_time"/>
+                            <field name="end_time"/>
+                        </group>
+                        <group name="odometer_tracking" string="Odometer Tracking">
+                            <field name="start_odometer"/>
+                            <field name="end_odometer"/>
+                            <field name="actual_distance"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group name="fuel_tracking" string="Fuel Tracking">
+                            <field name="fuel_used"/>
+                        </group>
+                    </group>
+                    <group name="gps_data" string="GPS Data">
+                        <field name="gps_coordinates" nolabel="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="view_fleet_trip_log_search" model="ir.ui.view">
+        <field name="name">hagbes.fleet.trip.log.search</field>
+        <field name="model">hagbes.fleet.trip.log</field>
+        <field name="arch" type="xml">
+            <search string="Trip Logs">
+                <field name="allocation_id"/>
+                <field name="start_time"/>
+                <field name="end_time"/>
+                <filter string="This Month" name="this_month"
+                        domain="[('start_time', '&gt;=', (context_today() - relativedelta(day=1)).strftime('%Y-%m-%d')),
+                                 ('start_time', '&lt;', (context_today() + relativedelta(months=1, day=1)).strftime('%Y-%m-%d'))]"/>
+                <filter string="Last Month" name="last_month"
+                        domain="[('start_time', '&gt;=', (context_today() - relativedelta(months=1, day=1)).strftime('%Y-%m-%d')),
+                                 ('start_time', '&lt;', (context_today() - relativedelta(day=1)).strftime('%Y-%m-%d'))]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Allocation" name="group_allocation" context="{'group_by': 'allocation_id'}"/>
+                    <filter string="Start Time" name="group_start_time" context="{'group_by': 'start_time:month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_fleet_trip_log" model="ir.actions.act_window">
+        <field name="name">Trip Logs</field>
+        <field name="res_model">hagbes.fleet.trip.log</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new trip log
+            </p>
+            <p>
+                Trip logs capture real-time execution data for allocations,
+                including odometer readings, fuel usage, and time tracking.
+            </p>
+        </field>
+    </record>
+</odoo>

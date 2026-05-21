@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+
+        <!-- Custom group: Warehouse Manager -->
+
+         <record id="group_custom_count_team" model="res.groups">
+            <field name="name">Inventory Counting Team</field>
+            <field name="category_id" ref="base.module_category_inventory_inventory"/>
+         </record>
+    <!-- costing groups -->
+        <record id="group_cost_sales_price" model="res.groups">
+            <field name="name">view cost and sales price</field>
+            <field name="category_id" ref="base.module_category_inventory_inventory"/>
+        </record>
+
+<!--        branch finance approve internal transfer-->
+         <record id="group_interstore_branch_finance" model="res.groups">
+            <field name="name">Branch Finance</field>
+            <field name="category_id" ref="base.module_category_inventory_inventory"/>
+        </record>
+
+
+        <!-- Custom group: Stock User -->
+     <record id="group_custom_stock_user" model="res.groups">
+            <field name="name">Inventory User</field>
+            <field name="category_id" ref="base.module_category_inventory_inventory"/>
+            <field name="implied_ids" eval="[
+                (4, ref('stock.group_stock_user')),
+            ]"/>
+     </record>
+
+    <record id="group_custom_approve_adjustment" model="res.groups">
+        <field name="name">Inventory Adjustment Reconcile</field>
+        <field name="category_id" ref="base.module_category_inventory_inventory"/>
+        <field name="implied_ids" eval="[
+                (4, ref('stock.group_stock_user')),
+                (4, ref('hagbes_inventory_extension.group_custom_stock_user')),
+            ]"/>
+    </record>
+
+    <record id="group_custom_warehouse_manager" model="res.groups">
+        <field name="name">Store Man</field>
+        <field name="category_id" ref="base.module_category_inventory_inventory"/>
+        <field name="implied_ids" eval="[(4, ref('stock.group_stock_user')),
+                                        (4, ref('hagbes_inventory_extension.group_custom_stock_user'))]"/>
+    </record>
+        <!-- group access to stock   -->
+   <record id="stock.menu_stock_root" model="ir.ui.menu">
+      <field name="groups_id" eval="[(6, 0, [
+          ref('hagbes_inventory_extension.group_custom_stock_user'),
+          ref('hagbes_inventory_extension.group_custom_warehouse_manager'),
+          ref('hagbes_inventory_extension.group_custom_approve_adjustment')
+      ])]"/>
+    </record>
+
+    <record id="group_custom_verify_difference" model="res.groups">
+        <field name="name">Approve Stock Difference</field>
+        <field name="category_id" ref="base.module_category_inventory_inventory"/>
+        <field name="implied_ids" eval="[
+                (4, ref('stock.group_stock_user')),
+                (4, ref('hagbes_inventory_extension.group_custom_stock_user')),
+            ]"/>
+    </record>
+
+    <record id="stock.menu_warehouse_report" model="ir.ui.menu">
+        <field name="groups_id" eval="[(4, ref('stock.group_stock_user'))]"/>
+    </record>
+    <record id="stock.menu_product_stock" model="ir.ui.menu">
+        <field name="groups_id" eval="[(6, 0, [ref('stock.group_stock_manager')])]"/>
+    </record>
+    <record id="stock_rule_quant_user_branch" model="ir.rule">
+        <field name="name">Stock: Quant access by user branch</field>
+        <field name="model_id" ref="stock.model_stock_quant"/>
+
+        <field name="domain_force">[('location_id.warehouse_id.branch_id', 'in', user.allowed_branch_ids.ids)]</field>
+        <field name="groups" eval="[(4, ref('stock.group_stock_user'))]"/>
+        <field name="perm_read" eval="1"/>
+        <field name="perm_write" eval="1"/>
+        <field name="perm_create" eval="1"/>
+        <field name="perm_unlink" eval="0"/>
+    </record>
+
+    <record id="stock_rule_move_user_branch" model="ir.rule">
+        <field name="name">Stock: Move access by user branch</field>
+        <field name="model_id" ref="stock.model_stock_move"/>
+        <field name="domain_force">['|', ('location_id.warehouse_id.branch_id', 'in', user.allowed_branch_ids.ids), ('location_dest_id.warehouse_id.branch_id', 'in', user.allowed_branch_ids.ids) ]</field>
+        <field name="groups" eval="[(4, ref('stock.group_stock_user'))]"/>
+        <field name="perm_read" eval="1"/>
+        <field name="perm_write" eval="0"/>
+        <field name="perm_create" eval="0"/>
+        <field name="perm_unlink" eval="0"/>
+    </record>
+
+<!--        inventory access right restriction-->
+<record id="stock.stock_picking_type_menu" model="ir.ui.menu">
+    <field name="groups_id" eval="[(6, 0, [ref('hagbes_inventory_extension.group_custom_warehouse_manager')])]"/>
+</record>
+
+<record id="stock.menu_stock_procurement" model="ir.ui.menu">
+    <field name="groups_id" eval="[(6, 0, [ref('hagbes_inventory_extension.group_custom_warehouse_manager')])]"/>
+</record>
+<record id="stock.menu_stock_inventory_control" model="ir.ui.menu">
+    <field name="groups_id" eval="[(6, 0, [ref('hagbes_inventory_extension.group_custom_warehouse_manager')])]"/>
+</record>
+<record id="stock.menu_stock_transfers" model="ir.ui.menu">
+    <field name="groups_id" eval="[(6, 0, [
+          ref('hagbes_inventory_extension.group_custom_warehouse_manager'),
+          ref('hagbes_inventory_extension.group_custom_verify_difference')
+      ])]"/>
+</record>
+<record id="stock.menu_stock_adjustments" model="ir.ui.menu">
+    <field name="groups_id" eval="[(6, 0, [
+      ref('hagbes_inventory_extension.group_custom_warehouse_manager'),
+      ref('hagbes_inventory_extension.group_custom_approve_adjustment'),
+      ref('hagbes_inventory_extension.group_custom_verify_difference'),
+      ref('hagbes_inventory_extension.group_custom_count_team')
+    ])]"/>
+</record>
+<record id="stock.menu_warehouse_report" model="ir.ui.menu">
+    <field name="groups_id" eval="[(6, 0, [
+      ref('hagbes_inventory_extension.group_custom_warehouse_manager'),
+      ref('hagbes_inventory_extension.group_custom_approve_adjustment'),
+      ref('hagbes_inventory_extension.group_custom_verify_difference'),
+    ])]"/>
+</record>
+
+<record id="hagbes_inventory_extension.menu_interstock_transfer_root" model="ir.ui.menu">
+    <field name="name">Inter-Store Transfer</field>
+    <field name="groups_id" eval="[(6, 0, [
+        ref('hagbes_inventory_extension.group_custom_warehouse_manager'),
+        ref('hagbes_inventory_extension.group_interstore_branch_finance')
+    ])]"/>
+</record>
+
+<!--         &lt;!&ndash; Full access for admin/system users &ndash;&gt;-->
+<!--    <record id="access_product_interchange_rel_admin" model="ir.model.access">-->
+<!--        <field name="name">product.interchange.rel admin</field>-->
+<!--        <field name="model_id" ref="model_product_interchange_rel"/>-->
+<!--        <field name="group_id" ref="base.group_system"/>-->
+<!--        <field name="perm_read" eval="1"/>-->
+<!--        <field name="perm_write" eval="1"/>-->
+<!--        <field name="perm_create" eval="1"/>-->
+<!--        <field name="perm_unlink" eval="1"/>-->
+<!--    </record>-->
+
+<!--    &lt;!&ndash; Optional: Read-only access for other users &ndash;&gt;-->
+<!--    <record id="access_product_interchange_rel_user" model="ir.model.access">-->
+<!--        <field name="name">product.interchange.rel user</field>-->
+<!--        <field name="model_id" ref="model_product_interchange_rel"/>-->
+<!--        <field name="group_id" ref="base.group_user"/>-->
+<!--        <field name="perm_read" eval="1"/>-->
+<!--        <field name="perm_write" eval="0"/>-->
+<!--        <field name="perm_create" eval="0"/>-->
+<!--        <field name="perm_unlink" eval="0"/>-->
+<!--    </record>-->
+    </data>
+</odoo>

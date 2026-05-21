@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="account_move_customer_invoice_branch_rule" model="ir.rule">
+        <field name="name">Customer Invoices: Allowed Branches</field>
+        <field name="model_id" ref="account.model_account_move"/>
+        <field name="domain_force">
+            [
+                '&amp;',
+                ('move_type', '=', 'out_invoice'),
+                '|',
+                    ('branch_id', '=', False),
+                    ('branch_id', 'in', user.allowed_branch_ids.ids)
+            ]
+        </field>
+        <field name="groups" eval="[(4, ref('account.group_account_invoice'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+    
+</odoo>

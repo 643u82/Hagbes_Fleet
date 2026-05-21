@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+
+     <record id="your_module_hide_demand_in_picking_form" model="ir.ui.view">
+        <field name="name">stock.picking.form.hide.demand</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="arch" type="xml">
+<!--            <xpath expr="//field[@name='move_ids_without_package']/list/field[@name='product_uom_qty']" position="replace">-->
+<!--                <field name="product_uom_qty" String="Requested" readonly="1" />-->
+<!--            </xpath>-->
+            <xpath expr="//field[@name='move_ids_without_package']/list/field[@name='product_uom_qty']" position="attributes">
+                <attribute name="string">Requested</attribute>
+            </xpath>
+            <xpath expr="//field[@name='move_ids_without_package']/list/field[@name='quantity']" position="attributes">
+                <attribute name="string">Actual</attribute>
+            </xpath>
+            <xpath expr="//field[@name='move_ids_without_package']/list/field[@name='quantity']" position="after">
+                <field name="remark"/>
+            </xpath>
+<!--            <xpath expr="//field[@name='move_ids_without_package']/list/field[@name='quantity']" position="replace">-->
+<!--                <field name="quantity" String="Received" readonly="picking_type_code == 'outgoing'" />-->
+<!--            </xpath>-->
+            <xpath expr="//button[@name='action_product_forecast_report']" position="replace"/>
+            <xpath expr="//header/button[@name='do_print_picking']" position="replace"/>
+
+        </field>
+    </record>
+
+
+<record id="custom_picking_form_view" model="ir.ui.view">
+    <field name="name">stock.picking.form.change_validate_label</field>
+    <field name="model">stock.picking</field>
+    <field name="inherit_id" ref="stock.view_picking_form"/>
+    <field name="arch" type="xml">
+        <xpath expr="//header" position="inside">
+            <button name="print_grn" type="object" class="btn btn-primary" string="Print GRN" invisible="not (picking_type_code == 'incoming' and state == 'done')" icon="fa-print"/>
+        </xpath>
+        <xpath expr="//header" position="inside">
+            <button name="print_inter_store" type="object" class="btn btn-primary" string="Print Inter Store" invisible="not (picking_type_code == 'internal' and state == 'done')" icon="fa-print"/>
+        </xpath>
+        <xpath expr="//header" position="inside">
+            <button name="print_temporary_note" type="object" class="btn btn-primary" string="Print Temporary Transfer" invisible="not (picking_type_code == 'exhibition_request' and state == 'done')" icon="fa-print"/>
+        </xpath>
+        <xpath expr="//header" position="inside">
+            <button name="print_issue_note" type="object" class="btn btn-primary" string="Print Issue Note" invisible="not (picking_type_code == 'internal_issue' and state == 'done')" icon="fa-print"/>
+        </xpath>
+        <xpath expr="//header" position="inside">
+            <button name="print_delivery_order" type="object" class="btn btn-primary" string="Print Delivery Order" invisible="not (picking_type_code == 'outgoing' and state == 'done')" icon="fa-print"/>
+        </xpath>
+        <xpath expr="//button[@name='button_validate']" position="replace">
+             <button name="button_validate" type="object" class="btn btn-primary" string="Confirm Receive" invisible="not (picking_type_code == 'incoming' and state == 'assigned' and purchase_order_state == 'transit_done')"/>
+             <button name="button_validate" type="object" class="btn btn-primary" string="Return" invisible="picking_type_code != 'exhibition_receive' or state != 'assigned'"/>
+            <button name="button_validate" type="object" class="btn btn-primary"  string="Confirm Delivery" invisible="picking_type_code == 'incoming' or picking_type_code == 'internal' or picking_type_code == 'exhibition_receive' or state != 'assigned'"/>
+            <button name="button_validate" type="object" class="btn btn-primary"  string="Validate" invisible="picking_type_code != 'internal' or state != 'assigned' "/>
+        </xpath>
+<!--         <xpath expr="//sheet/notebook" position="before">-->
+<!--                <div class="oe_button_box" name="button_box">-->
+<!--                    <button name="action_trigger_backorder"-->
+<!--                            type="object"-->
+<!--                            class="oe_stat_button"-->
+<!--                            icon="fa-retweet"-->
+<!--                            string="Backorder"-->
+<!--                            invisible ="not has_backorder_remark"/>-->
+<!--                </div>-->
+<!--            </xpath>-->
+    </field>
+</record>
+
+<record id="purchase_order_view_form_inherit" model="ir.ui.view">
+    <field name="name">purchase.order.form.inherit</field>
+    <field name="model">purchase.order</field>
+    <field name="inherit_id" ref="purchase.purchase_order_form"/>
+    <field name="arch" type="xml">
+        <xpath expr="//div[hasclass('oe_button_box')]" position="inside">
+            <button type="object"
+                    name="action_trigger_backorder"
+                    class="oe_stat_button"
+                    icon="fa-exclamation-circle"
+                    invisible="backorder_move_count == 0">
+                <field name="backorder_move_count" widget="statinfo" string="Backorders" help="Moves needing backorder"/>
+            </button>
+        </xpath>
+    </field>
+</record>
+
+<record id="view_picking_form_inherit" model="ir.ui.view">
+    <field name="name">stock.picking.form.inherit.hide.return</field>
+    <field name="model">stock.picking</field>
+    <field name="inherit_id" ref="stock.view_picking_form"/>
+    <field name="arch" type="xml">
+        <xpath expr="//button[@name='%(stock.act_stock_return_picking)d']" position="attributes">
+            <attribute name="invisible">picking_type_code == 'exhibition_receive' or picking_type_code == 'exhibition_request'</attribute>
+        </xpath>
+        <xpath expr="//button[@name='%(stock.action_report_delivery)d']" position="attributes">
+            <attribute name="invisible">1</attribute>
+        </xpath>
+    </field>
+</record>
+
+
+</odoo>

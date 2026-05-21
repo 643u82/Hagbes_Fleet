@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data noupdate="1">
+    <record id="seq_interstock_transfer" model="ir.sequence">
+        <field name="name">Interstock Transfer</field>
+        <field name="code">interstock.transfer</field>
+        <field name="prefix"></field>
+        <field name="padding">4</field>
+        <field name="number_next">1</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <record id="seq_issue_transfer" model="ir.sequence">
+        <field name="name">Issue requests</field>
+        <field name="code">issue.requests</field>
+        <field name="prefix"></field>
+        <field name="padding">4</field>
+        <field name="number_next">1</field>
+        <field name="company_id" eval="False"/>
+    </record>
+
+    <record id="seq_exhibition_transfer" model="ir.sequence">
+        <field name="name">Exhibition Requests</field>
+        <field name="code">exhibition.requests</field>
+        <field name="prefix"></field>
+        <field name="padding">4</field>
+        <field name="number_next">1</field>
+        <field name="company_id" eval="False"/>
+    </record>
+    </data>
+</odoo>

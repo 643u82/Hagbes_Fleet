@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Payment Request Report Action -->
+    <record id="action_report_foreign_payment_request" model="ir.actions.report">
+        <field name="name">Foreign Payment Request</field>
+        <field name="model">foreign.payment.request</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">foreign_procurement.report_foreign_payment_request</field>
+        <field name="print_report_name">'Payment Request - %s' % (object.name)</field>
+        <field name="binding_model_id" ref="model_foreign_payment_request"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <!-- LC Report Action -->
+    <record id="action_report_foreign_lc" model="ir.actions.report">
+        <field name="name">Letter of Credit</field>
+        <field name="model">foreign.lc</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">foreign_procurement.report_foreign_lc</field>
+        <field name="print_report_name">'LC - %s' % (object.name)</field>
+        <field name="binding_model_id" ref="model_foreign_lc"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <!-- Shipment Report Action -->
+    <record id="action_report_foreign_shipment" model="ir.actions.report">
+        <field name="name">Shipment Tracking</field>
+        <field name="model">foreign.shipment</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">foreign_procurement.report_foreign_shipment</field>
+        <field name="print_report_name">'Shipment - %s' % (object.name)</field>
+        <field name="binding_model_id" ref="model_foreign_shipment"/>
+        <field name="binding_type">report</field>
+    </record>
+
+</odoo>

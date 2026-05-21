@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Inherit Partner Form View -->
+    <record id="view_partner_form_inherit" model="ir.ui.view">
+        <field name="name">res.partner.form.inherit</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            
+            <!-- Stat Buttons -->
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_view_foreign_purchases" type="object"
+                        class="oe_stat_button" icon="fa-shopping-cart"
+                        invisible="not is_company or supplier_rank == 0">
+                    <field name="foreign_purchase_count" widget="statinfo" string="Foreign Purchases"/>
+                </button>
+                <button name="action_view_payment_requests" type="object"
+                        class="oe_stat_button" icon="fa-money"
+                        invisible="not is_company or supplier_rank == 0">
+                    <field name="payment_request_count" widget="statinfo" string="Payment Requests"/>
+                </button>
+                <button name="action_view_lcs" type="object"
+                        class="oe_stat_button" icon="fa-bank"
+                        invisible="not is_company or supplier_rank == 0">
+                    <field name="lc_count" widget="statinfo" string="LCs"/>
+                </button>
+            </xpath>
+
+            <!-- Make vendor_type selectable -->
+            <xpath expr="//field[@name='category_id']" position="after">
+                <field name="vendor_type"/>
+            </xpath>
+
+            <!-- Add foreign vendor tab -->
+            <xpath expr="//notebook" position="inside">
+                <page string="Foreign Vendor" name="foreign_vendor"
+                      invisible="not is_company or supplier_rank == 0 or vendor_type != 'foreign'">
+                    <group>
+                        <group string="Vendor Classification">
+                            <field name="is_clearing_agent"/>
+                            <field name="is_freight_forwarder"/>
+                            <field name="is_shipping_line"/>
+                        </group>
+                        <group string="Payment Terms">
+                            <field name="foreign_payment_terms"/>
+                            <field name="preferred_incoterm_id" options="{'no_create': True}"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Banking Information">
+                            <field name="bank_swift_code"/>
+                            <field name="bank_routing_number"/>
+                        </group>
+                        <group string="Trade License">
+                            <field name="trade_license_number"/>
+                            <field name="trade_license_expiry"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Tax Information">
+                            <field name="tax_identification_number"/>
+                            <field name="vat_registration_number"/>
+                        </group>
+                        <group string="Certifications">
+                            <field name="iso_certification"/>
+                        </group>
+                    </group>
+                    <group string="Other Certifications">
+                        <field name="other_certifications" nolabel="1" placeholder="List other certifications..."/>
+                    </group>
+                </page>
+            </xpath>
+
+        </field>
+    </record>
+
+</odoo>

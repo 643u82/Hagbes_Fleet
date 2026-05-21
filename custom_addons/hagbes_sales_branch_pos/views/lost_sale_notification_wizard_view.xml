@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_lost_sale_notification_wizard" model="ir.ui.view">
+        <field name="name">lost.sale.notification.wizard.form</field>
+        <field name="model">lost.sale.notification.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Order Marked as Lost">
+                <group>
+                    <field name="message" readonly="1"/>
+                </group>
+                <footer>
+                   <button string="OK" special="cancel" class="btn-primary"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_lost_sale_notification_wizard" model="ir.actions.act_window">
+        <field name="name">Order Lost</field>
+        <field name="res_model">lost.sale.notification.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>

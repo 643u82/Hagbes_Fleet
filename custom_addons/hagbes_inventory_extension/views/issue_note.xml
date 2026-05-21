@@ -1,0 +1,80 @@
+<odoo>
+    <!-- Tree/List View -->
+    <record id="view_issue_request_tree" model="ir.ui.view">
+        <field name="name">issue.request.tree</field>
+        <field name="model">issue.requests</field>
+        <field name="arch" type="xml">
+            <list string="Internal Issue Requests">
+                <field name="subject"/>
+                <field name="requested_by"/>
+                <field name="issuer_department"/>
+                <field name="issuer_warehouse"/>
+                <field name="issue_description"/>
+                <field name="requester_branch_id"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="view_issue_request_form" model="ir.ui.view">
+        <field name="name">issue.request.form</field>
+        <field name="model">issue.requests</field>
+        <field name="arch" type="xml">
+            <form string="Internal Issue Request">
+                <header >
+                    <button name="action_submit" type="object" string="Submit" class="btn-primary" invisible="state != 'draft'"/>
+                    <button name="action_resubmit" type="object" string="Resubmit" class="btn-secondary" invisible="state != 'pending'"/>
+                    <button name="action_approve" type="object" string="Approve" class="btn-success" invisible="state != 'submitted'"/>
+                    <button name="action_amend" type="object" string="Amend"  class="btn-secondary" invisible="state != 'submitted'"/>
+                     <button name="action_revert" type="object" string="Revert"  class="btn-warning" invisible="state != 'rejected'"/>
+                     <button name="action_reject" type="object" string="Reject"  class="btn-danger" invisible="state != 'submitted'"/>
+                </header>
+                <sheet>
+                    <field name="name" readonly="1" style="padding-top:10px; padding-bottom:10px; font-weight:bold; font-size:18px;"/>
+                    <group>
+                        <field name="requested_by" readonly="1"/>
+                        <field name="requester_branch_id" readonly="1"/>
+                        <field name="issuer_company" />
+                        <field name="issuer_department"/>
+                        <field name="issuer_warehouse"/>
+                    </group>
+                    <group>
+                        <field name="subject" />
+                        <field name="issue_description" />
+                    </group>
+                    <notebook>
+                        <page string="Requested Items">
+                            <field name="items_requested">
+                                <list editable="bottom">
+                                    <field name="product_id"/>
+                                    <field name="quantity"/>
+                                    <field name="uom_id"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                    <field name="step_progress" widget="html" readonly="1"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_issue_requests" model="ir.actions.act_window">
+        <field name="name">Issue Requests</field>
+        <field name="res_model">issue.requests</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first Issue Request
+            </p>
+        </field>
+    </record>
+
+      <menuitem id="menu_internal_issue_request"
+              name="Internal Issue Requests"
+              parent="menu_interstock_transfer_root"
+               action="action_issue_requests"
+              sequence="1"/>
+
+</odoo>

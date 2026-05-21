@@ -1,0 +1,51 @@
+<odoo>
+    <record id="view_employee_appraisal_form_inherit_scores" model="ir.ui.view">
+        <field name="name">employee.appraisal.form.inherit.scores</field>
+        <field name="model">employee.appraisal</field>
+        <field name="inherit_id" ref="hagbes_employee_appraisal.view_employee_appraisal_form"/>
+        <field name="arch" type="xml">
+
+            
+            <xpath expr="//field[@name='step_progress']" position="after">
+                <field name="total_score" readonly="1"/>
+                <field name="average_score" readonly="1"/>
+            </xpath>
+            <!-- <xpath expr="//field[@name='state']" position="after"> -->
+        </field>
+    </record>
+    
+    <record id="view_employee_appraisal_form_inherit_scores" model="ir.ui.view">
+    <field name="name">employee.appraisal.form.inherit.scores</field>
+    <field name="model">employee.appraisal</field>
+    <field name="inherit_id" ref="hagbes_employee_appraisal.view_employee_appraisal_form"/>
+    <field name="arch" type="xml">
+       
+        <xpath expr="//field[@name='step_progress']" position="after">
+            <field name="total_score" readonly="1"/>
+            <field name="average_score" readonly="1"/>
+            <div class="o_form_label" style="margin-top:10px; font-weight:bold; color:#555;">
+                <span style="margin-right:10px;">1: Poor ⭐</span>
+                <span style="margin-right:10px;">2: Fair ⭐⭐</span>
+                <span style="margin-right:10px;">3: Good ⭐⭐⭐</span>
+                <span style="margin-right:10px;">4: Very Good ⭐⭐⭐⭐</span>
+                <span>5: Excellent ⭐⭐⭐⭐⭐</span>
+            </div>
+        </xpath>
+    </field>
+</record>
+
+    <record id="view_employee_appraisal_form_inherit_button" model="ir.ui.view">
+        <field name="name">employee.appraisal.form.inherit.button</field>
+        <field name="model">employee.appraisal</field>
+        <field name="inherit_id" ref="hagbes_employee_appraisal.view_employee_appraisal_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button name="action_recompute_scores"
+                        type="object"
+                        string="Recompute Scores"
+                        class="btn-secondary"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

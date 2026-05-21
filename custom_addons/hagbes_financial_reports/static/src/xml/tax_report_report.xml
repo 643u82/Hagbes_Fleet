@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="TaxReportTemp">
+        <div class="o_account_reports_body" style="padding: 20px; background-color: white;">
+            <div class="row mb-4">
+                <div class="col-6">
+                    <h2 class="mt0">Tax Report</h2>
+                    <div class="text-muted">
+                        From: <span t-esc="state.options.date_from"/> To: <span t-esc="state.options.date_to"/>
+                    </div>
+                </div>
+                <div class="col-6 text-right">
+                    <button class="btn btn-primary" t-on-click="print_pdf">Print PDF</button>
+                </div>
+            </div>
+
+            <h3 class="mt-4">Sales Tax</h3>
+            <div class="table-responsive">
+                <table class="table table-sm table-striped table-hover">
+                    <thead>
+                        <tr class="thead-light">
+                            <th>Tax Name</th>
+                            <th class="text-right">Base Amount</th>
+                            <th class="text-right">Tax Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr t-foreach="state.data.sales_tax" t-as="line" t-key="line.id">
+                            <td><t t-esc="line.name"/></td>
+                            <td class="text-right"><t t-esc="line.base"/></td>
+                            <td class="text-right"><t t-esc="line.amount"/></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h3 class="mt-4">Purchase Tax</h3>
+            <div class="table-responsive">
+                <table class="table table-sm table-striped table-hover">
+                    <thead>
+                        <tr class="thead-light">
+                            <th>Tax Name</th>
+                            <th class="text-right">Base Amount</th>
+                            <th class="text-right">Tax Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr t-foreach="state.data.purchase_tax" t-as="line" t-key="line.id">
+                            <td><t t-esc="line.name"/></td>
+                            <td class="text-right"><t t-esc="line.base"/></td>
+                            <td class="text-right"><t t-esc="line.amount"/></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </t>
+</templates>

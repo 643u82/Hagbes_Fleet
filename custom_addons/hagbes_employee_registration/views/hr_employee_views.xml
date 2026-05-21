@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_employee_form_inherit_filter" model="ir.ui.view">
+            <field name="name">hr.employee.form.inherit.filter</field>
+            <field name="model">hr.employee</field>
+            <field name="inherit_id" ref="hr.view_employee_form"/>
+            <field name="arch" type="xml">
+                <!-- Disable creation of company, department, and job directly from employee form -->
+                <xpath expr="//field[@name='company_id']" position="attributes">
+                    <attribute name="options">{'no_create': True}</attribute>
+                </xpath>
+                <xpath expr="//field[@name='department_id']" position="attributes">
+                    <attribute name="options">{'no_create': True}</attribute>
+                </xpath>
+                <xpath expr="//field[@name='job_id']" position="attributes">
+                    <attribute name="options">{'no_create': True}</attribute>
+                </xpath>
+               
+            </field>
+        </record>
+    </data>
+</odoo>

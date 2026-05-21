@@ -1,0 +1,128 @@
+<odoo>
+    <!-- Report Action -->
+    <record id="print_private_report" model="ir.actions.report">
+        <field name="name">Employee Profile </field>
+        <field name="model">hr.employee</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">hagbes_employee_registration.report_employee</field>
+        <field name="report_file">hagbes_employee_registration.report_employee</field>
+        <field name="print_report_name">'Employee_%s' % (object.name)</field>
+    </record>
+
+    <!-- Beautiful PDF Template -->
+    <template id="report_employee">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page" style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; color: #333; line-height: 1.6;">
+
+                        <!-- Header with Photo and Name -->
+                        <div style="margin-bottom: 30px; padding-bottom: 20px; border-bottom: 4px solid #1f4e79;">
+                            <div style="display: flex; align-items: center; justify-content: space-between;">
+                                <div>
+                                    <h1 style="margin:0; font-size: 28px; color: #1f4e79;">
+                                         <t t-esc="o.emp_id"/>
+                                        <t t-esc="o.name"/>
+                                    </h1>
+                                    <p style="margin:5px 0 0; font-size: 16px; color: #555;">
+                                        <strong><t t-esc="o.job_id.name or 'Employee'"/></strong>
+                                        <t if="o.branch_id"> | <t t-esc="o.branch_id.name"/></t>
+                                        <t if="o.department_id"> | <t t-esc="o.department_id.name"/></t>
+                                    </p>
+                                </div>
+                                <div style="text-align: right;">
+                                    <img t-if="o.image_1920" t-att-src="image_data_uri(o.image_1920)"
+                                         style="width: 120px; height: 120px; object-fit: cover; border-radius: 50%; border: 5px solid #f0f0f0; box-shadow: 0 4px 12px rgba(0,0,0,0.1);"/>
+                                    <img t-else="" src="/web/static/img/avatar.png"
+                                         style="width: 120px; height: 120px; border-radius: 50%; border: 5px solid #f0f0f0;"/>
+                                </div>
+                            </div>
+                        </div>
+                                                        <!-- Contact Card -->
+                                <div style="background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); margin-bottom: 20px; border: 1px solid #e0e0e0;">
+                                    <h3 style="margin: 0 0 15px 0; color: #2c3e50; font-size: 18px; border-bottom: 2px solid #eee; padding-bottom: 8px;">
+                                        <span class="fa fa-address-book" style="margin-right: 10px;"/> Contact
+                                    </h3>
+                                    <div style="font-size: 14px;">
+                                        <p t-if="o.work_email" style="margin:8px 0;"><span class="fa fa-envelope" style="width:20px; color:#1f4e79;"/> <t t-esc="o.work_email"/></p>
+                                        <p t-if="o.work_phone" style="margin:8px 0;"><span class="fa fa-phone" style="width:20px; color:#1f4e79;"/> <t t-esc="o.work_phone"/></p>
+                                        <p t-if="o.mobile_phone" style="margin:8px 0;"><span class="fa fa-mobile" style="width:20px; font-size:18px; color:#1f4e79;"/> <t t-esc="o.mobile_phone"/></p>
+                                        <p t-if="o.work_location_id or o.address_id" style="margin:8px 0;">
+                                            <span class="fa fa-map-marker" style="width:20px; color:#1f4e79;"/>
+                                            <t t-esc="o.work_location_id.name or o.address_id.display_name or 'N/A'"/>
+                                        </p>
+                                    </div>
+                                </div>
+
+
+
+                        <!-- Two Column Layout -->
+                        <div style="display: flex; gap: 30px; margin-top: 20px;">
+
+                            <!-- Left Column (60%) -->
+                            <div style="flex: 6;">
+
+                                <!-- Personal Information -->
+                                <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin-bottom: 20px; border-left: 5px solid #1f4e79;">
+                                    <h3 style="margin: 0 0 15px 0; color: #1f4e79; font-size: 18px;">
+                                        <span class="fa fa-user" style="margin-right: 10px;"/> Personal Information
+                                    </h3>
+                                    <table style="width:100%;">
+                                        <tr><td style="padding: 6px 0;"><strong>Full Name</strong></td><td style="padding: 6px 0;"><t t-esc="o.name"/></td></tr>
+
+                                        <tr><td style="padding: 6px 0;"><strong>Gender</strong></td><td style="padding: 6px 0;"><t t-esc="o.gender.capitalize() if o.gender else '-'"/></td></tr>
+                                        <tr><td style="padding: 6px 0;"><strong>Date of Birth</strong></td><td style="padding: 6px 0;"><t t-esc="o.birthday" t-options="{'widget': 'date'}"/></td></tr>
+                                        <tr><td style="padding: 6px 0;"><strong>Identification No</strong></td><td style="padding: 6px 0;"><t t-esc="o.identification_id or '-'"/></td></tr>
+                                        <tr><td style="padding: 6px 0;"><strong>Marital Status</strong></td><td style="padding: 6px 0;"><t t-esc="o.marital or '-'"/></td></tr>
+                                    </table>
+                                </div>
+
+                                <!-- Work Information -->
+                                <div style="background: #f0f7ff; padding: 20px; border-radius: 10px; border-left: 5px solid #007acc;">
+                                    <h3 style="margin: 0 0 15px 0; color: #007acc; font-size: 18px;">
+                                        <span class="fa fa-briefcase" style="margin-right: 10px;"/> Work Information
+                                    </h3>
+                                    <table style="width:100%;">
+                                        <tr><td style="padding: 6px 0;"><strong>Job Position</strong></td><td style="padding: 6px 0;"><t t-esc="o.job_id.name or '-'"/></td></tr>
+                                        <tr><td style="padding: 6px 0;"><strong>Department</strong></td><td style="padding: 6px 0;"><t t-esc="o.department_id.name or '-'"/></td></tr>
+                                        <tr><td style="padding: 6px 0;"><strong>Manager</strong></td><td style="padding: 6px 0;"><t t-esc="o.parent_id.name or '-'"/></td></tr>
+                                        <tr><td style="padding: 6px 0;"><strong>Work Location</strong></td><td style="padding: 6px 0;"><t t-esc="o.work_location_id.name  or '-'"/></td></tr>
+                                        <tr><td style="padding: 6px 0;"><strong>Company</strong></td><td style="padding: 6px 0;"><t t-esc="o.company_id.name"/></td></tr>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <!-- Right Column (40%) -->
+                            <div style="flex: 4;">
+
+
+                                <!-- Employment Dates -->
+                                <div style="background: #e8f5e8; padding: 20px; border-radius: 10px; border-left: 5px solid #28a745;">
+                                    <h3 style="margin: 0 0 15px 0; color: #28a745; font-size: 18px;">
+                                        <span class="fa fa-calendar-check" style="margin-right: 10px;"/> Employment
+                                    </h3>
+                                    <table style="width:100%; font-size:14px;">
+                                        <tr><td style="padding:6px 0;"><strong>Hire Date</strong></td><td><t t-esc="o.hired_date" t-options="{'widget': 'date'}"/></td></tr>
+                                        <tr t-if="o.contract_id">
+                                            <td style="padding:6px 0;"><strong>Contract Start</strong></td>
+                                            <td><t t-esc="o.contract_id.date_start" t-options="{'widget': 'date'}"/></td>
+                                        </tr>
+                                        <tr t-if="o.contract_id and o.contract_id.date_end">
+                                            <td style="padding:6px 0;"><strong>Contract End</strong></td>
+                                            <td><t t-esc="o.contract_id.date_end" t-options="{'widget': 'date'}"/></td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Footer Note -->
+                        <div style="margin-top: 40px; text-align: center; color: #888; font-size: 11px; border-top: 1px solid #eee; padding-top: 15px;">
+                            This is a confidential employee profile • Generated on <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%B %d, %Y')"/>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

@@ -1,0 +1,16 @@
+<odoo>
+    <record id="view_users_form_inherit_branch" model="ir.ui.view">
+        <field name="name">res.users.form.branch.inherit</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="base.view_users_form"/>
+        <field name="arch" type="xml">
+           <xpath expr="//group[field[@name='company_id']]" position="after">
+             <group string="Branches">
+               <field name="allowed_branch_ids" widget="many2many_tags"/>
+               <field name="default_branch_id"/>
+             </group>
+           </xpath>
+
+        </field>
+    </record>
+</odoo>

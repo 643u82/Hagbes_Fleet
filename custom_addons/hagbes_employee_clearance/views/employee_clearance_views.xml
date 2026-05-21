@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- BEAUTIFUL FORM VIEW -->
+    <record id="view_hagbes_employee_clearance_form" model="ir.ui.view">
+        <field name="name">employee.clearance.form</field>
+        <field name="model">employee.clearance</field>
+        <field name="arch" type="xml">
+            <form string="Employee Clearance" create="true" edit="true">
+
+                <!-- FORM HEADER -->
+                <header>
+                     <button name="action_submit" type="object" string="Submit"
+                                 class="btn btn-primary"
+                                  invisible="state != 'draft'"
+                                />
+
+                    <button name="action_open_remark_wizard_approve"
+                                type="object"
+                                string="Approve"
+                                class="btn btn-success"
+                                invisible="state != 'pending' or can_approve == False"
+                                />
+
+                    <button name="action_open_remark_wizard_reject" type="object" string="Reject"
+                                class="btn btn-danger"
+                                invisible="state != 'pending' or can_approve == False"
+                               />
+                </header>
+
+                <sheet>
+
+                    <!-- TOP BANNER -->
+                    <div class="oe_title" style="padding-bottom: 15px;">
+                        <h2 style="color:#004085; font-weight:700;">
+                            Employee Clearance Form
+                        </h2>
+                        <span class="text-muted">
+                            Manage and process employee exit clearance
+                        </span>
+                    </div>
+
+                    <group>
+
+                        <!-- EMPLOYEE -->
+                        <group class="oe_inline">
+                           
+                            <field name="employee_id"
+                                placeholder="Select employee"/>
+                        </group>
+
+                        <separator string="Work Information"
+                                style="color:#1E88E5; font-weight:600; margin-top:10px;"/>
+
+                        <!-- WORK INFO -->
+                        <group>
+                            <group>
+                                <field name="company_id"
+                                    placeholder="Employee company"/>
+                                <field name="branch_id"
+                                    placeholder="Employee branch"/>
+                            </group>
+
+                            <group>
+                                <field name="department_id"
+                                    placeholder="Employee department"/>
+                                <field name="job_id"
+                                    placeholder="Employee job position"/>
+                            </group>
+                        </group>
+
+                    </group>
+                    <notebook>
+                        <page string="Remarks History">
+                            <field name="remark_ids" nolabel="1">
+                                <list>
+                                    <field name="date" readonly="1"/>
+                                    <field name="user_id" readonly="1"/>
+                                    <field name="job_id" readonly="1"/>
+                                    <field name="action_type" readonly="1"/>
+                                    <field name="comment" readonly="1"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+              <chatter/>
+            </form>
+        </field>
+        
+
+    </record>
+
+    <!-- CLEAN LIST VIEW -->
+    <record id="view_hagbes_employee_clearance_list" model="ir.ui.view">
+        <field name="name">employee.clearance.list</field>
+        <field name="model">employee.clearance</field>
+        <field name="arch" type="xml">
+            <list string="Employee Clearances" decoration-muted="True">
+                <field name="employee_id"/>
+                <field name="company_id"/>
+                <field name="branch_id"/>
+                <field name="department_id"/>
+                <field name="job_id"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ACTION -->
+    <record id="action_hagbes_employee_clearance" model="ir.actions.act_window">
+        <field name="name">Employee Clearance</field>
+        <field name="res_model">employee.clearance</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first employee clearance record
+            </p>
+        </field>
+    </record>
+
+    <!-- MENU -->
+    <!-- <menuitem id="menu_hagbes_employee_clearance_root" name="Clearances"/> -->
+    <menuitem id="menu_hagbes_employee_clearance"
+              name="Employee Clearances"
+              parent="hr.menu_hr_root"
+              action="action_hagbes_employee_clearance"/>
+
+</odoo>

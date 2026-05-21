@@ -1,0 +1,14 @@
+{
+  "python_compilation": true,
+  "xml_validation": true,
+  "manifest_validation": true,
+  "security_completeness": true,
+  "orm_schema_consistency": false,
+  "approval_workflow_integrity": true,
+  "critical_errors": [
+    "Model in approval_integration.py missing _name attribute",
+    "Model in hr_employee.py missing _name attribute"
+  ],
+  "warnings": [],
+  "deployment_approved": false
+}

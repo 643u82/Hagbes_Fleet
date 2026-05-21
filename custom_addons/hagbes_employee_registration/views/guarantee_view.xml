@@ -1,0 +1,26 @@
+<odoo>
+    <record id="view_employee_form_inherit_guarantor_tab" model="ir.ui.view">
+        <field name="name">hr.employee.form.inherit.guarantor.tab</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook/page[@name='personal_information']" position="after">
+                <page string="Guarantor Info" name="guarantor_info">
+                    <group>
+                        <field name="is_guarantor_required"/>
+                        <field name="guarantor_name" modifiers="{'readonly': [['is_guarantor_required', '=', False]]}"/>
+                        <field name="guarantor_organization" modifiers="{'readonly': [['is_guarantor_required', '=', False]]}"/>
+                        <field name="guarantor_id_doc" filename="guarantor_id_doc_filename" modifiers="{'readonly': [['is_guarantor_required', '=', False]]}"/>
+                        <field name="guarantor_support_docs" filename="guarantor_support_docs_filename" modifiers="{'readonly': [['is_guarantor_required', '=', False]]}"/>
+                        <field name="witness_ids" modifiers="{'readonly': [['is_guarantor_required', '=', False]]}">
+                            <list editable="bottom">
+                                <field name="full_name"/>
+                                <field name="date"/>
+                            </list>
+                        </field>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- Foreign Procurement Journal -->
+        <record id="foreign_procurement_journal" model="account.journal">
+            <field name="name">Foreign Procurement</field>
+            <field name="code">FP</field>
+            <field name="type">general</field>
+            <field name="sequence">50</field>
+        </record>
+
+        <!-- Chart of Accounts for Foreign Procurement -->
+        
+        <!-- Assets -->
+        <record id="account_foreign_currency_receivable" model="account.account">
+            <field name="name">Foreign Currency Receivable</field>
+            <field name="code">1210</field>
+            <field name="account_type">asset_receivable</field>
+            <field name="reconcile">True</field>
+        </record>
+
+        <record id="account_lc_margin" model="account.account">
+            <field name="name">LC Margin Deposits</field>
+            <field name="code">1220</field>
+            <field name="account_type">asset_current</field>
+        </record>
+
+        <!-- Liabilities -->
+        <record id="account_foreign_currency_payable" model="account.account">
+            <field name="name">Foreign Currency Payable</field>
+            <field name="code">2110</field>
+            <field name="account_type">liability_payable</field>
+            <field name="reconcile">True</field>
+        </record>
+
+        <!-- Expenses -->
+        <record id="account_customs_duty" model="account.account">
+            <field name="name">Customs Duty</field>
+            <field name="code">5110</field>
+            <field name="account_type">expense</field>
+        </record>
+
+        <record id="account_freight_charges" model="account.account">
+            <field name="name">Freight Charges</field>
+            <field name="code">5120</field>
+            <field name="account_type">expense</field>
+        </record>
+
+        <record id="account_clearing_charges" model="account.account">
+            <field name="name">Clearing Agent Charges</field>
+            <field name="code">5130</field>
+            <field name="account_type">expense</field>
+        </record>
+
+        <record id="account_exchange_loss" model="account.account">
+            <field name="name">Foreign Exchange Loss</field>
+            <field name="code">5140</field>
+            <field name="account_type">expense</field>
+        </record>
+
+        <!-- Income -->
+        <record id="account_exchange_gain" model="account.account">
+            <field name="name">Foreign Exchange Gain</field>
+            <field name="code">4110</field>
+            <field name="account_type">income_other</field>
+        </record>
+
+    </data>
+</odoo>

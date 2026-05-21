@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_fleet_trip_actual_wizard_form" model="ir.ui.view">
+        <field name="name">fleet.trip.actual.wizard.form</field>
+        <field name="model">fleet.trip.actual.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Record Actual Trip Data">
+                <group>
+                    <group>
+                        <field name="trip_id" readonly="1"/>
+                        <field name="return_date"/>
+                        <field name="return_time" widget="float_time"/>
+                        <field name="signed_by"/>
+                    </group>
+                    <group>
+                        <field name="actual_start_place"/>
+                        <field name="actual_destination"/>
+                    </group>
+                </group>
+                <group string="Odometer Data">
+                    <group>
+                        <field name="km_at_start_actual"/>
+                        <field name="km_at_end_actual"/>
+                    </group>
+                    <group>
+                        <field name="transport_km"/>
+                    </group>
+                </group>
+                <group string="Discrepancies">
+                    <field name="discrepancy_reason" placeholder="Explain any gap or distance variance..."/>
+                </group>
+                <footer>
+                    <button name="action_confirm" string="Complete Trip" type="object" class="oe_highlight"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

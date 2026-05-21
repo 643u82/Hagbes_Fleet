@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+  <data>
+    <record id="rule_read_only_employee_info" model="ir.rule">
+      <field name="name">Read-only employee info for HR and Org Viewers</field>
+      <field name="model_id" ref="hr.model_hr_employee"/>
+      <field name="domain_force">[(1, '=', 1)]</field>
+      <field name="groups" eval="[
+        (4, ref('custom_org_chart_extension.group_org_chart_view_only'))
+      ]"/>
+      <field name="perm_read" eval="1"/>
+      <field name="perm_write" eval="0"/>
+      <field name="perm_create" eval="0"/>
+      <field name="perm_unlink" eval="0"/>
+    </record>
+  </data>
+</odoo>
+
+

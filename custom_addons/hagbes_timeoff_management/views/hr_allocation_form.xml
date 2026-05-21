@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="hr_leave_allocation_view_form_manager_inherit_custom_buttons" model="ir.ui.view">
+        <field name="name">hr.leave.allocation.view.form.manager.inherit.custom.buttons</field>
+        <field name="model">hr.leave.allocation</field>
+        <field name="inherit_id" ref="hr_holidays.hr_leave_allocation_view_form_manager"/>
+        <field name="priority">17</field> <!-- Higher than 16 -->
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="attributes">
+                <attribute name="readonly">[('state', 'in', ['approved', 'rejected', 'pending'])]</attribute>
+            </xpath>
+            <!-- Replace original buttons with your custom ones -->
+            <xpath expr="//button[@name='action_approve']" position="replace">
+                <button string="Approve" name="action_approve"
+                    type="object" class="oe_highlight btn btn-success"
+                    confirm="Are you sure you want to approve this allocation?"
+                    invisible="can_approve == False"/>
+            </xpath>
+            <xpath expr="//button[@name='action_validate']" position="replace">
+                <!-- Hide Validate button — you don't use two-step approval -->
+                <button string="Validate" name="action_validate" invisible="1" type="object" class="oe_highlight"/>
+            </xpath>
+            <xpath expr="//button[@name='action_refuse']" position="replace">
+                <button string="Reject" name="action_reject"
+                    type="object" class="oe_highlight btn btn-danger"
+                    confirm="Are you sure you want to reject this allocation?"
+                    invisible="can_approve == False"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

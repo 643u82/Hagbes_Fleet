@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <report
+        id="custom_proforma_report_action"
+        model="sale.order"
+        string="Pro-Forma Invoice"
+        name="hagbes_sales_branch_pos.custom_proforma_invoice_report"
+        file="hagbes_sales_branch_pos.custom_proforma_invoice_report"
+        report_type="qweb-pdf"
+        print_report_name="'Pro-Forma - %s' % (object.name)"
+    />
+</odoo>

@@ -1,0 +1,20 @@
+<odoo>
+
+    <record id='account_move_cancel_wizard_form' model='ir.ui.view'>
+        <field name='name'>account.move.cancel.wizard.form</field>
+        <field name = 'model'>account.move.cancel.wizard</field>
+        <field name='arch' type='xml'>
+            <form string = "Cancel Invoice">
+                <group>
+                    <field name='reason'/>
+                    <field name="remark"/>
+                </group>
+                <footer>
+                    <button string='Cancel Invoice' type='object' name='action_confirm_cancel' class='btn-primary'/>
+                    <button string='Cancel' class='btn-secondary' special='cancel'/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+</odoo>

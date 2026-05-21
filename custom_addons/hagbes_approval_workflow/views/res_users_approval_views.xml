@@ -1,0 +1,39 @@
+<odoo>
+    <record id="view_res_users_approval_roles_tree" model="ir.ui.view">
+        <field name="name">approval.step.tree.res.users</field>
+        <field name="model">approval.step</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="flow_id" string="Request Type"/>
+                <field name="role_id" string="Role"/>
+                <field name="name" string="Step"/>
+                <field name="company_id"/>
+                <field name="branch_id"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_res_users_form_approval_roles" model="ir.ui.view">
+        <field name="name">res.users.form.approval_roles</field>
+        <field name="model">res.users</field>
+        <field name="inherit_id" ref="base.view_users_form"/>
+        <field name="arch" type="xml">
+            <notebook position="inside">
+                <page string="Approval Roles">
+                    <group>
+                        <field name="approval_step_ids" nolabel="1">
+                            <list create="false" edit="false" delete="false">
+                                <field name="flow_id" optional="show"/>
+                                <field name="role_id" optional="show"/>
+                                <field name="name"/>
+                                <field name="sequence" optional="hide"/>
+                                <field name="company_id" optional="show"/>
+                                <field name="branch_id" optional="show"/>
+                            </list>
+                        </field>
+                    </group>
+                </page>
+            </notebook>
+        </field>
+    </record>
+</odoo>

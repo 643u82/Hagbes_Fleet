@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- Payment Request Submission Email Template -->
+        <record id="mail_template_payment_request_submitted" model="mail.template">
+            <field name="name">Payment Request Submitted</field>
+            <field name="model_id" ref="model_foreign_payment_request"/>
+            <field name="subject">Payment Request ${object.name} Submitted for Review</field>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px;">
+                    <p>Dear Finance Team,</p>
+                    <p>A new foreign payment request has been submitted for your review:</p>
+                    <ul>
+                        <li><strong>Request Number:</strong> ${object.name}</li>
+                        <li><strong>Supplier:</strong> ${object.supplier_id.name}</li>
+                        <li><strong>Amount:</strong> ${object.total_amount} ${object.currency_id.name}</li>
+                        <li><strong>Requested By:</strong> ${object.requested_by.name}</li>
+                        <li><strong>Request Date:</strong> ${object.request_date}</li>
+                    </ul>
+                    <p>Please review and approve at your earliest convenience.</p>
+                    <p>Best regards,<br/>Foreign Procurement System</p>
+                </div>
+            </field>
+            <field name="auto_delete" eval="True"/>
+        </record>
+
+        <!-- Payment Request Approval Email Template -->
+        <record id="mail_template_payment_request_approved" model="mail.template">
+            <field name="name">Payment Request Approved</field>
+            <field name="model_id" ref="model_foreign_payment_request"/>
+            <field name="subject">Payment Request ${object.name} Approved</field>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px;">
+                    <p>Dear ${object.requested_by.name},</p>
+                    <p>Your foreign payment request has been approved:</p>
+                    <ul>
+                        <li><strong>Request Number:</strong> ${object.name}</li>
+                        <li><strong>Amount:</strong> ${object.total_amount} ${object.currency_id.name}</li>
+                        <li><strong>Approved By:</strong> ${object.approved_by.name}</li>
+                        <li><strong>Approval Date:</strong> ${object.approved_date}</li>
+                    </ul>
+                    <p>The payment processing will begin shortly.</p>
+                    <p>Best regards,<br/>Finance Department</p>
+                </div>
+            </field>
+            <field name="auto_delete" eval="True"/>
+        </record>
+
+        <!-- LC Expiry Warning Email Template -->
+        <record id="mail_template_lc_expiry_warning" model="mail.template">
+            <field name="name">LC Expiry Warning</field>
+            <field name="model_id" ref="model_foreign_lc"/>
+            <field name="subject">LC ${object.name} Expiring Soon</field>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px;">
+                    <p>Dear Team,</p>
+                    <p>The following Letter of Credit is expiring soon:</p>
+                    <ul>
+                        <li><strong>LC Number:</strong> ${object.name}</li>
+                        <li><strong>Supplier:</strong> ${object.supplier_id.name}</li>
+                        <li><strong>Amount:</strong> ${object.lc_amount} ${object.currency_id.name}</li>
+                        <li><strong>Expiry Date:</strong> ${object.expiry_date}</li>
+                        <li><strong>Days Remaining:</strong> ${object.days_to_expiry}</li>
+                    </ul>
+                    <p>Please take necessary action to avoid expiry.</p>
+                    <p>Best regards,<br/>Foreign Procurement System</p>
+                </div>
+            </field>
+            <field name="auto_delete" eval="True"/>
+        </record>
+
+    </data>
+</odoo>

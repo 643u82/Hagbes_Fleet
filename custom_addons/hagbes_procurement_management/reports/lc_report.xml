@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- LC Report Template -->
+    <template id="report_foreign_lc">
+        <t t-call="web.external_layout">
+            <t t-foreach="docs" t-as="doc">
+                <div class="page">
+                    <div class="text-center">
+                        <h2><strong><span t-field="doc.company_id.name"/></strong></h2>
+                        <h4>LETTER OF CREDIT APPLICATION</h4>
+                    </div>
+
+                    <div class="row mt32">
+                        <div class="col-6">
+                            <table class="table table-sm table-borderless">
+                                <tr>
+                                    <td><strong>LC Number:</strong></td>
+                                    <td><span t-field="doc.name"/></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>LC Type:</strong></td>
+                                    <td><span t-field="doc.lc_type"/></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>LC Amount:</strong></td>
+                                    <td><span t-field="doc.lc_amount" t-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Currency:</strong></td>
+                                    <td><span t-field="doc.currency_id.name"/></td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="col-6">
+                            <table class="table table-sm table-borderless">
+                                <tr>
+                                    <td><strong>Application Date:</strong></td>
+                                    <td><span t-field="doc.application_date"/></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Issue Date:</strong></td>
+                                    <td><span t-field="doc.issue_date"/></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Expiry Date:</strong></td>
+                                    <td><span t-field="doc.expiry_date"/></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Latest Shipment:</strong></td>
+                                    <td><span t-field="doc.latest_shipment_date"/></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="row mt16">
+                        <div class="col-12">
+                            <h5>Beneficiary Details</h5>
+                            <p>
+                                <strong><span t-field="doc.supplier_id.name"/></strong><br/>
+                                <span t-field="doc.supplier_id.street"/><br/>
+                                <span t-field="doc.supplier_id.city"/>, <span t-field="doc.supplier_id.state_id.name"/><br/>
+                                <span t-field="doc.supplier_id.country_id.name"/>
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="row mt16">
+                        <div class="col-6">
+                            <h5>Issuing Bank</h5>
+                            <p><span t-field="doc.issuing_bank_id.name"/></p>
+                        </div>
+                        <div class="col-6">
+                            <h5>Advising Bank</h5>
+                            <p><span t-field="doc.advising_bank_id.name"/></p>
+                        </div>
+                    </div>
+
+                    <div class="row mt16">
+                        <div class="col-6">
+                            <h5>Port of Loading</h5>
+                            <p><span t-field="doc.port_of_loading"/></p>
+                        </div>
+                        <div class="col-6">
+                            <h5>Port of Discharge</h5>
+                            <p><span t-field="doc.port_of_discharge"/></p>
+                        </div>
+                    </div>
+
+                    <div class="row mt16">
+                        <div class="col-12">
+                            <h5>Payment Terms</h5>
+                            <p><span t-field="doc.payment_terms"/></p>
+                        </div>
+                    </div>
+
+                    <div class="row mt16">
+                        <div class="col-12">
+                            <h5>Document Requirements</h5>
+                            <p><span t-field="doc.document_requirements"/></p>
+                        </div>
+                    </div>
+
+                    <div class="row mt16" t-if="doc.special_instructions">
+                        <div class="col-12">
+                            <h5>Special Instructions</h5>
+                            <p><span t-field="doc.special_instructions"/></p>
+                        </div>
+                    </div>
+
+                    <div class="row mt32">
+                        <div class="col-6">
+                            <p><strong>Applicant Signature:</strong></p>
+                            <p>_____________________</p>
+                            <p>Date: _______________</p>
+                        </div>
+                        <div class="col-6">
+                            <p><strong>Bank Use Only:</strong></p>
+                            <p>Approved By: _____________________</p>
+                            <p>Date: _______________</p>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </t>
+    </template>
+
+</odoo>

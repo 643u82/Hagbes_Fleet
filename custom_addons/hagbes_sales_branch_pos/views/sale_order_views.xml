@@ -1,0 +1,129 @@
+<odoo>
+    <data>
+        <!-- Inherit the sale order form view -->
+        <record id="view_order_form_branch" model="ir.ui.view">
+            <field name="name">sale.order.form.branch</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+
+                <!-- Add branch_id and warehouse_id fields -->
+                <xpath expr="//field[@name='partner_id']" position="after">
+                    <field name="branch_id" options="{'no_create': True}"/>
+                   <field name="warehouse_id" domain="[('branch_id', '=', branch_id)]"/>
+                   
+                </xpath>
+
+                <!-- Add 'lost' to the state field statusbar -->
+                <xpath expr="//field[@name='state']" position="attributes">
+                    <attribute name="statusbar_visible">draft,sent,sale,done,cancel,lost</attribute>
+                </xpath>
+
+                <xpath expr="//button[@id='create_invoice']" position='replace'>
+                    <button name="action_create_invoice_direct" type="object" id="create_invoice_direct_open" string="Create Invoice" invisible="invoice_status != 'to invoice'" class="btn-primary" data-hotkey="q" />
+                </xpath>
+               
+            </field>
+        </record>
+        <record id="view_order_form_inherit_price_unit_list" model="ir.ui.view">
+            <field name="name">sale.order.form.inherit.price.unit.list.readonly</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+               <xpath expr="//field[@name='order_line']/list" position="inside">
+                    <field name="product_type" invisible="1"/>
+                </xpath>
+                <!-- In the order line list -->
+                <xpath expr="//field[@name='order_line']/list//field[@name='price_unit']" position="attributes">
+                    <attribute name="readonly">product_type != 'service'</attribute>
+                </xpath>
+                
+            </field>
+        </record>
+        <!--service tab-->
+        <record id="view_order_form_inherit_service_tab" model="ir.ui.view">
+            <field name="name">sale.order.form.service.tab</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+
+                <!-- Insert a new page after Order Lines -->
+                <xpath expr="//page[@name='order_lines']" position="after">
+                    <page string="Service Info">
+                        <group>
+                            <field name="job_number"/>
+                            <field name="serial_number"/>
+                            <field name="plate_number"/>
+                            <field name="model_name"/>
+                        </group>
+                    </page>
+                </xpath>
+
+            </field>
+        </record>
+        <!--origin column-->
+        <record id="view_order_tree_inherit_origin" model="ir.ui.view">
+            <field name="name">sale.order.tree.origin</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_quotation_tree"/>
+            <field name="arch" type="xml">
+
+                <!-- Insert Origin after Salesperson -->
+                <xpath expr="//field[@name='user_id']" position="after">
+                    <field name="origin_type"/>
+                </xpath>
+
+            </field>
+        </record>
+        <record id="view_order_form_inherit_vat_tin" model="ir.ui.view">
+            <field name="name">sale.order.form.inherit.vat.tin</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+                <!-- Place after partner_id -->
+                <xpath expr="//field[@name='payment_term_id']" position="after">
+                    <field name="display_partner_vat" readonly="1"/>
+                    <field name="display_partner_tin_number" readonly="1"/>
+                    <field name='payment_mode'/>
+                </xpath>
+                <xpath expr="//div[@class='alert alert-warning' and contains(field/@name, 'partner_credit_warning')]" position="replace">
+                    <div class="alert alert-danger" role="alert" invisible="partner_credit_warning == ''">
+                        <field name="partner_credit_warning"/>
+                    </div>
+                </xpath>
+            </field>
+        </record>
+        <record id="sale.menu_sale_order_upselling" model="ir.ui.menu">
+            <field name="active" eval="False"/>
+        </record>
+        <!--customer filter-->
+        <record id="sale_order_form_filter_customers_only" model="ir.ui.view">
+            <field name="name">sale.order.form.filter.customers.only</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+
+                <xpath expr="//field[@name='partner_id']" position="attributes">
+                    <attribute name="domain">
+                        [
+                            ('customer_rank', '>', 0),
+                            ('employee_ids', '=', False)
+                        ]
+                    </attribute>
+                </xpath>
+                <!-- Invoice Address -->
+                <xpath expr="//field[@name='partner_invoice_id']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+
+                <!-- Delivery Address -->
+                <xpath expr="//field[@name='partner_shipping_id']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+
+            </field>
+        </record>
+
+
+    </data>
+</odoo>

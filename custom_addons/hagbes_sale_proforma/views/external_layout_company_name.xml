@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <template id="external_layout_company_name_branch" inherit_id="web.external_layout_standard">
+
+        <!-- ✅ Compute branch safely FIRST (QWeb-safe pattern) -->
+        <xpath expr="//div[contains(@class,'justify-content-between') and contains(@class,'align-items-center')]"
+               position="after">
+
+            <!-- Safe variable initialization -->
+            <t t-set="branch_name" t-value="False"/>
+
+            <!-- Only attempt access if record + field really exist -->
+            <t t-if="o and hasattr(o, '_fields') and o._fields.get('branch_id') and o.branch_id">
+                <t t-set="branch_name" t-value="o.branch_id.name"/>
+            </t>
+
+            <div class="mb-2">
+                <!-- Show Company - Branch ONLY if branch is safely available -->
+                <t t-if="company and branch_name">
+                    <t t-esc="company.name"/> - <t t-esc="branch_name"/>
+                </t>
+
+                <!-- Otherwise fallback to company -->
+                <t t-elif="company">
+                    <t t-esc="company.name"/>
+                </t>
+
+                <!-- Absolute fallback (mail wizard safe) -->
+                <t t-else="">
+                    Company
+                </t>
+            </div>
+
+        </xpath>
+
+
+        <!-- ✅ Address block (also guarded the same way) -->
+        <xpath expr="//span[@t-field='company.company_details']" position="replace">
+
+            <!-- Safe branch detection -->
+            <t t-set="has_branch" t-value="False"/>
+            <t t-if="o and hasattr(o, '_fields') and o._fields.get('branch_id') and o.branch_id">
+                <t t-set="has_branch" t-value="True"/>
+            </t>
+
+            <!-- Only modify layout if we truly are on a Sale Order -->
+            <t t-if="company and company.company_details and has_branch and o._name == 'sale.order'">
+                <span>
+                    <t t-foreach="company.company_details.split('\n')" t-as="line">
+                        <t t-if="line_index &gt; 0 and line.strip()">
+                            <div t-esc="line.strip()"/>
+                        </t>
+                    </t>
+                </span>
+            </t>
+
+            <!-- Default behavior everywhere else -->
+            <t t-else="">
+                <span t-field="company.company_details"/>
+            </t>
+
+        </xpath>
+
+    </template>
+</odoo>

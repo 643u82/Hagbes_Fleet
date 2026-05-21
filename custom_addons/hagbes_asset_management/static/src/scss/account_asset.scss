@@ -1,0 +1,9 @@
+.o_web_client .o_deprec_lines_toggler {
+    color: var(--bs-danger-text-emphasis);
+    &.o_is_posted {
+        color: var(--bs-success-text-emphasis);
+    }
+    &.o_unposted {
+        color: var(--bs-warning-text-emphasis);
+    }
+}

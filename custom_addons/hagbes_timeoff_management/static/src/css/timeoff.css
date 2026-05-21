@@ -1,0 +1,12 @@
+.o_timeoff_card:has(.o_timeoff_name:contains("Pending Requests")) {
+    display: none !important;
+}
+
+/* Add spacing between the stat boxes in the dashboard header */
+.o_timeoff_dashboard_header {
+    gap: 1rem; /* space between stat boxes */
+}
+
+.o_timeoff_dashboard_header .o_stat_box {
+    min-width: 8rem;
+}

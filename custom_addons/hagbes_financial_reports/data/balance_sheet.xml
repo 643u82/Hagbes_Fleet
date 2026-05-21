@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Client Action for OWL Report -->
+    <record id="action_custom_balance_sheet_client" model="ir.actions.client">
+        <field name="name">Statement of Financial Position</field>
+        <field name="tag">custom_financial_reports.balance_sheet_client_action</field>
+    </record>
+
+    <!-- Menu Item -->
+    <menuitem id="menu_custom_balance_sheet"
+              name="Statement of Financial Position"
+              parent="account.menu_finance_reports"
+              action="action_custom_balance_sheet_client"
+              sequence="10"/>
+
+    <!-- Report Action -->
+    <record id="action_report_balance_sheet_ifrs" model="ir.actions.report">
+        <field name="name">Balance Sheet</field>
+        <field name="model">custom.balance.sheet.wizard</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">custom_financial_reports.report_balance_sheet_ifrs</field>
+        <field name="report_file">custom_financial_reports.report_balance_sheet_ifrs</field>
+    </record>
+</odoo>

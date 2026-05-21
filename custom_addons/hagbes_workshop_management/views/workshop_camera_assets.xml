@@ -1,0 +1,8 @@
+<odoo>
+<t t-name="hagbes_workshop_management.CameraWidget">
+    <button t-on-click="captureImage">📷 Capture</button>
+    <div t-if="state.imageData">
+        <img t-att-src="state.imageData"/>
+    </div>
+</t>
+</odoo>

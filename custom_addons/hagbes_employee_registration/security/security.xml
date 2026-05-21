@@ -1,0 +1,37 @@
+<odoo>
+    <!-- Category for HR Discipline -->
+    <record id="module_category_hr_discipline" model="ir.module.category">
+        <field name="name">HR Discipline</field>
+        <field name="sequence">25</field>
+    </record>
+
+    <!-- HR Discipline group -->
+    <record id="group_hr_discipline" model="res.groups">
+        <field name="name">HR Discipline</field>
+        <field name="category_id" ref="hagbes_employee_registration.module_category_hr_discipline"/>
+    </record>
+
+    <!-- Category for Legal Action -->
+    <record id="module_category_legal_action" model="ir.module.category">
+        <field name="name">Legal Action</field>
+        <field name="sequence">26</field>
+    </record>
+
+    <!-- Legal Action group -->
+    <record id="group_legal_action" model="res.groups">
+        <field name="name">Legal Action Button</field>
+        <field name="category_id" ref="hagbes_employee_registration.module_category_legal_action"/>
+    </record>
+
+    <!-- Category for Approval -->
+    <record id="module_category_forward_action" model="ir.module.category">
+        <field name="name">forward Action</field>
+        <field name="sequence">27</field>
+    </record>
+
+    <!-- Approval group -->
+    <record id="group_forward_action" model="res.groups">
+        <field name="name">forward Action Button</field>
+        <field name="category_id" ref="hagbes_employee_registration.module_category_forward_action"/>
+    </record>
+</odoo>

@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Fleet Requisition Rejection Wizard Views -->
+    <record id="view_fleet_requisition_reject_wizard_form" model="ir.ui.view">
+        <field name="name">fleet.requisition.reject.wizard.form</field>
+        <field name="model">fleet.requisition.reject.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Reject Requisition">
+                <header>
+                    <button name="action_confirm_reject" 
+                            string="Confirm Reject" 
+                            type="object" 
+                            class="btn-danger"
+                            confirm="Are you sure you want to reject this requisition?"/>
+                    <button name="action_cancel" 
+                            string="Cancel" 
+                            type="object" 
+                            class="btn-secondary"
+                            special="cancel"/>
+                </header>
+                
+                <sheet>
+                    <div class="alert alert-warning" role="alert">
+                        <strong>Warning:</strong> You are about to reject this requisition. 
+                        This action cannot be undone and will stop the approval workflow.
+                    </div>
+                    
+                    <group>
+                        <group name="requisition_info" string="Requisition Information">
+                            <field name="requisition_id" readonly="1"/>
+                            <field name="current_state" readonly="1"/>
+                            <field name="request_by" readonly="1"/>
+                        </group>
+                        
+                        <group name="rejection_details" string="Rejection Details">
+                            <field name="reason" 
+                                   placeholder="Please provide a detailed reason for rejecting this requisition..."
+                                   required="1"
+                                   nolabel="1"/>
+                        </group>
+                    </group>
+                    
+                    <notebook>
+                        <page string="Requisition Details" name="requisition_details">
+                            <group>
+                                <field name="requisition_id" readonly="1" 
+                                       context="{'form_view_ref': 'hagbes_fleet.view_fleet_requisition_form'}"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Rejection Wizard Action -->
+    <record id="action_fleet_requisition_reject_wizard" model="ir.actions.act_window">
+        <field name="name">Reject Requisition</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">fleet.requisition.reject.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="model_fleet_requisition"/>
+        <field name="binding_type">action</field>
+        <field name="binding_view_types">form</field>
+    </record>
+
+    <!-- Security Rules for Rejection Wizard -->
+    <record id="rule_fleet_requisition_reject_wizard_dept_manager" model="ir.rule">
+        <field name="name">Rejection Wizard - Department Manager Access</field>
+        <field name="model_id" ref="model_fleet_requisition_reject_wizard"/>
+        <field name="domain_force">[
+            ('create_uid', '=', user.id),
+            '|', 
+            ('requisition_id.state', '=', 'submitted'),
+            ('requisition_id.state', '=', 'dept_approved')
+        ]</field>
+        <field name="groups" eval="[(4, ref('hagbes_fleet.group_dept_manager'))]"/>
+    </record>
+
+    <record id="rule_fleet_requisition_reject_wizard_admin" model="ir.rule">
+        <field name="name">Rejection Wizard - Admin Access</field>
+        <field name="model_id" ref="model_fleet_requisition_reject_wizard"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('hagbes_fleet.group_fleet_admin')), (4, ref('base.group_system'))]"/>
+    </record>
+
+</odoo>

@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<templates>
+    <t t-name="AgedReceivableTemp" owl="1">
+        <div class="o_action account_report h-100 d-flex flex-column overflow-hidden">
+            <!-- CONTROL PANEL -->
+            <div class="o_control_panel d-flex flex-column gap-3 px-3 pt-2 pb-3 border-bottom">
+                <div class="o_control_panel_main d-flex flex-wrap flex-lg-nowrap justify-content-between align-items-lg-start gap-2 gap-lg-3 flex-grow-1">
+                    
+                    <!-- Breadcrumbs -->
+                    <div class="o_control_panel_breadcrumbs d-flex align-items-center gap-1 order-0 h-lg-100">
+                        <div class="o_control_panel_main_buttons d-flex gap-1 d-empty-none d-print-none">
+                            <button class="btn text-nowrap btn-primary" t-on-click="printPdf">PDF</button>
+                            <button class="btn text-nowrap btn-secondary" t-on-click="print_xlsx">XLSX</button>
+                        </div>
+                        <div class="o_breadcrumb d-flex gap-1 text-truncate">
+                            <div class="o_last_breadcrumb_item active d-flex fs-4 min-w-0 align-items-center">
+                                <span class="min-w-0 text-truncate"><t t-esc="props.action.name"/></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Filters -->
+                    <div class="o_control_panel_actions d-empty-none d-flex align-items-center justify-content-start justify-content-lg-around order-2 order-lg-1 w-100 mw-100 w-lg-auto">
+                        <div class="d-flex gap-1">
+                            <!-- Date Range -->
+                            <Dropdown>
+                                <button class="btn btn-secondary o-dropdown dropdown-toggle">
+                                    <i class="fa fa-calendar me-1"/>
+                                    Date Range
+                                </button>
+                                <t t-set-slot="content">
+                                    <DropdownItem onSelected="() => this.applyFilter('today')" class="report-filter-button">Today</DropdownItem>
+                                    <DropdownItem onSelected="() => this.applyFilter('last-month-end')" class="report-filter-button">End of Last Month</DropdownItem>
+                                    <DropdownItem onSelected="() => this.applyFilter('last-quarter-end')" class="report-filter-button">End of Last Quarter</DropdownItem>
+                                    <DropdownItem onSelected="() => this.applyFilter('last-year-end')" class="report-filter-button">End of Last Year</DropdownItem>
+                                    <div role="separator" class="dropdown-divider"/>
+                                    <div class="p-2">
+                                        <label class="small text-muted">Date:</label>
+                                        <input type="date" id="end_date" class="form-control form-control-sm" t-ref="date_to" t-on-input="applyFilter" name="end_date"/>
+                                    </div>
+                                </t>
+                            </Dropdown>
+
+                            <!-- Options -->
+                            <Dropdown>
+                                <button class="btn btn-secondary o-dropdown dropdown-toggle">
+                                    <i class="fa fa-sliders me-1"/> Options
+                                </button>
+                                <t t-set-slot="content">
+                                    <DropdownItem onSelected="() => this.unfoldAll()">Unfold All</DropdownItem>
+                                </t>
+                            </Dropdown>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- REPORT CONTENT -->
+            <div class="o_content flex-grow-1 overflow-auto bg-light">
+                <div class="p-4 d-flex justify-content-center">
+                    <div class="bg-white shadow-sm border p-4 w-100" style="max-width: 1140px;">
+                        
+                        <div class="text-center mb-4">
+                            <h2 class="m-0 fw-bold"><t t-esc="props.action.name"/></h2>
+                        </div>
+
+                        <table class="table table-sm table-hover table-borderless">
+                            <thead class="border-bottom">
+                                <tr>
+                                    <th colspan="6"></th>
+                                    <th>Invoice Date</th>
+                                    <th>Amount Currency</th>
+                                    <th>Currency</th>
+                                    <th>Account</th>
+                                    <th>Expected Date</th>
+                                    <th>At Date</th>
+                                    <th class="text-end">1-30</th>
+                                    <th class="text-end">31-60</th>
+                                    <th class="text-end">61-90</th>
+                                    <th class="text-end">91-120</th>
+                                    <th class="text-end">Older</th>
+                                    <th class="text-end">Total</th>
+                                </tr>
+                            </thead>
+                            <tbody t-ref="tbody">
+                                <t t-if="state.move_line">
+                                    <t t-set="i" t-value="0"/>
+                                    <t t-foreach="state.move_line" t-as="move_line" t-key="move_line_index">
+                                        <t t-set="i" t-value="i + 1"/>
+                                        <tr class="bg-light fw-bold border-bottom border-top mt-2">
+                                            <th colspan="6" class="ps-3">
+                                                <div data-bs-toggle="collapse" t-attf-href="#move_line-{{i}}" aria-expanded="false" t-attf-aria-controls="move_line-{{i}}" class="collapsed d-flex align-items-center" style="cursor: pointer;">
+                                                    <i class="fa fa-caret-right me-2"/>
+                                                    <t t-esc="move_line"/>
+                                                </div>
+                                            </th>
+                                            <th colspan="5">
+                                                <button t-att-data-id="state.total[move_line]['partner_id']" class="btn btn-sm btn-outline-secondary py-0 me-1" t-on-click="openPartner">Open</button>
+                                                <button t-att-data-id="state.total[move_line]['partner_id']" class="btn btn-sm btn-outline-secondary py-0" t-on-click="gotoJournalItem">Items</button>
+                                            </th>
+                                            <th class="text-end"><t t-if="state.total[move_line]['diff0_sum']" t-esc="state.total[move_line]['diff0_sum']"/></th>
+                                            <th class="text-end"><t t-if="state.total[move_line]['diff1_sum']" t-esc="state.total[move_line]['diff1_sum']"/></th>
+                                            <th class="text-end"><t t-if="state.total[move_line]['diff2_sum']" t-esc="state.total[move_line]['diff2_sum']"/></th>
+                                            <th class="text-end"><t t-if="state.total[move_line]['diff3_sum']" t-esc="state.total[move_line]['diff3_sum']"/></th>
+                                            <th class="text-end"><t t-if="state.total[move_line]['diff4_sum']" t-esc="state.total[move_line]['diff4_sum']"/></th>
+                                            <th class="text-end"><t t-if="state.total[move_line]['diff5_sum']" t-esc="state.total[move_line]['diff5_sum']"/></th>
+                                            <th class="text-end"><t t-if="state.total[move_line]['credit_sum']" t-esc="state.total[move_line]['credit_sum']"/></th>
+                                        </tr>
+                                        <t t-foreach="state.data[move_line]" t-as="valuelist" t-key="valuelist_index">
+                                            <tr class="collapse border-bottom" t-attf-id="move_line-{{i}}">
+                                                <td colspan="6" class="ps-5">
+                                                    <div class="d-flex align-items-center gap-2">
+                                                        <t t-if="valuelist['move_name']"><t t-esc="valuelist['move_name']"/></t>
+                                                        <t t-if="valuelist['name']"><t t-esc="valuelist['name']"/></t>
+                                                        <button t-att-data-id="valuelist['move_id'][0]" class="btn btn-link p-0" style="font-size: 0.8rem;" t-on-click="gotoJournalEntry">View</button>
+                                                    </div>
+                                                </td>
+                                                <td><t t-esc="valuelist['date']"/></td>
+                                                <td><t t-esc="valuelist['amount_currency']"/></td>
+                                                <td><t t-esc="valuelist['currency_id'][1]"/></td>
+                                                <td><t t-esc="valuelist['account_id'][1]"/></td>
+                                                <td><t t-if="valuelist['date_maturity']" t-esc="valuelist['date_maturity']"/></td>
+                                                <td class="text-end"><t t-if="valuelist['diff0']" t-esc="valuelist['diff0']"/></td>
+                                                <td class="text-end"><t t-if="valuelist['diff1']" t-esc="valuelist['diff1']"/></td>
+                                                <td class="text-end"><t t-if="valuelist['diff2']" t-esc="valuelist['diff2']"/></td>
+                                                <td class="text-end"><t t-if="valuelist['diff3']" t-esc="valuelist['diff3']"/></td>
+                                                <td class="text-end"><t t-if="valuelist['diff4']" t-esc="valuelist['diff4']"/></td>
+                                                <td class="text-end"><t t-if="valuelist['diff5']" t-esc="valuelist['diff5']"/></td>
+                                                <td></td>
+                                            </tr>
+                                        </t>
+                                    </t>
+                                </t>
+                                <tr class="fw-bold border-top border-dark">
+                                    <td colspan="11" class="text-end">Total</td>
+                                    <td class="text-end"><t t-out="state.diff0_sum_display"/></td>
+                                    <td class="text-end"><t t-out="state.diff1_sum_display"/></td>
+                                    <td class="text-end"><t t-out="state.diff2_sum_display"/></td>
+                                    <td class="text-end"><t t-out="state.diff3_sum_display"/></td>
+                                    <td class="text-end"><t t-out="state.diff4_sum_display"/></td>
+                                    <td class="text-end"><t t-out="state.diff5_sum_display"/></td>
+                                    <td class="text-end"><t t-out="state.total_debit_display"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </t>
+</templates>

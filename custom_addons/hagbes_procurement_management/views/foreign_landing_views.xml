@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Landing Tree View -->
+<record id="view_foreign_landing_tree" model="ir.ui.view">
+    <field name="name">foreign.landing.list</field>
+    <field name="model">foreign.landing</field>
+    <field name="arch" type="xml">
+        <list string="Foreign Landing Processes">
+            <field name="name"/>
+            <field name="purchase_order_id"/>
+            <field name="supplier_id"/>
+           <field name="customs_agent_id"/>
+
+            <field name="port_of_entry"/>
+            <field name="arrival_date"/>
+            <field name="total_duties_taxes" widget="monetary"/>
+            <field name="total_clearing_charges" widget="monetary"/>
+            <field name="total_landing_cost" widget="monetary"/>
+            <field name="currency_id" invisible="1"/>
+            <field name="days_in_customs"/>
+            <field name="state"
+                   widget="badge"
+                   decoration-info="state in ['draft','documents_submitted']"
+                   decoration-warning="state in ['customs_processing','duty_assessment','payment_pending']"
+                   decoration-success="state in ['cleared','released','completed']"/>
+        </list>
+    </field>
+</record>
+
+
+
+
+
+
+    <!-- Landing Form View -->
+    <record id="view_foreign_landing_form" model="ir.ui.view">
+        <field name="name">foreign.landing.form</field>
+        <field name="model">foreign.landing</field>
+        <field name="arch" type="xml">
+            <form string="Foreign Landing Process">
+                <header>
+                    <button name="action_submit_documents" string="Submit Documents" type="object" 
+                            class="oe_highlight" invisible="state != 'draft'"/>
+                    <button name="action_customs_processing" string="Customs Processing" type="object" 
+                            invisible="state != 'documents_submitted'"/>
+                    <button name="actihagbes_onduty_management_assessment" string="Duty Assessment" type="object" 
+                            invisible="state != 'customs_processing'"/>
+                    <button name="action_payment_pending" string="Payment Pending" type="object" 
+                            invisible="state != 'duty_assessment'"/>
+                    <button name="action_payment_made" string="Payment Made" type="object" 
+                            invisible="state != 'payment_pending'"/>
+                    <button name="action_examination" string="Physical Examination" type="object" 
+                            invisible="state != 'payment_made'"/>
+                    <button name="action_customs_cleared" string="Customs Cleared" type="object" 
+                            invisible="state != 'examination'"/>
+                    <button name="action_cargo_released" string="Cargo Released" type="object" 
+                            invisible="state != 'cleared'"/>
+                    <button name="action_complete" string="Complete" type="object" 
+                            invisible="state != 'released'"/>
+                    <field name="state" widget="statusbar" 
+                           statusbar_visible="draft,documents_submitted,customs_processing,duty_assessment,payment_pending,payment_made,examination,cleared,released,completed"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_documents" type="object" 
+                                class="oe_stat_button" icon="fa-files-o">
+                            <field name="document_count" widget="statinfo" string="Documents"/>
+                        </button>
+                    </div>
+                    
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    
+                    <group>
+                        <group>
+                            <field name="purchase_order_id" options="{'no_create': True}"/>
+                            <field name="shipment_id" options="{'no_create': True}"/>
+                            <field name="supplier_id" readonly="1"/>
+                            <field name="clearing_agent_id" options="{'no_create': True}"/>
+                        </group>
+                        <group>
+                            <field name="port_of_entry"/>
+                            <field name="arrival_date"/>
+                            <field name="days_in_customs" readonly="1"/>
+                            <field name="currency_id" options="{'no_create': True}"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Document Information" name="documents">
+                            <group>
+                                <group>
+                                    <field name="bl_awb_number"/>
+                                    <field name="bl_awb_date"/>
+                                </group>
+                                <group>
+                                    <field name="customs_declaration_number"/>
+                                    <field name="customs_declaration_date"/>
+                                </group>
+                            </group>
+                        </page>
+                        
+                        <page string="Duties &amp; Taxes" name="duties">
+                            <group>
+                                <group string="Government Duties &amp; Taxes">
+                                    <field name="customs_duty" widget="monetary"/>
+                                    <field name="vat_amount" widget="monetary"/>
+                                    <field name="excise_duty" widget="monetary"/>
+                                    <field name="other_taxes" widget="monetary"/>
+                                </group>
+                                <group string="Summary">
+                                    <field name="total_duties_taxes" widget="monetary" readonly="1"/>
+                                    <field name="currency_id" invisible="1"/>
+                                </group>
+                            </group>
+                        </page>
+                        
+                        <page string="Clearing Charges" name="charges">
+                            <group>
+                                <group string="Service Charges">
+                                    <field name="clearing_charges" widget="monetary"/>
+                                    <field name="port_charges" widget="monetary"/>
+                                    <field name="storage_charges" widget="monetary"/>
+                                    <field name="examination_charges" widget="monetary"/>
+                                    <field name="other_charges" widget="monetary"/>
+                                </group>
+                                <group string="Summary">
+                                    <field name="total_clearing_charges" widget="monetary" readonly="1"/>
+                                </group>
+                            </group>
+                            <group class="oe_subtotal_footer oe_right">
+                                <field name="total_landing_cost" widget="monetary" 
+                                       class="oe_subtotal_footer_separator"/>
+                            </group>
+                        </page>
+                        
+                        <page string="Timeline" name="timeline">
+                            <group>
+                                <group>
+                                    <field name="documents_submitted_date" readonly="1"/>
+                                    <field name="duty_payment_date" readonly="1"/>
+                                </group>
+                                <group>
+                                    <field name="customs_clearance_date" readonly="1"/>
+                                    <field name="cargo_release_date" readonly="1"/>
+                                </group>
+                            </group>
+                        </page>
+                        
+                        <page string="Additional Information" name="additional_info">
+                            <group>
+                                <field name="special_instructions" nolabel="1" 
+                                       placeholder="Special instructions for customs clearance..."/>
+                            </group>
+                            <group>
+                                <field name="notes" nolabel="1" 
+                                       placeholder="Internal notes..."/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <!-- <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div> -->
+            </form>
+        </field>
+    </record>
+
+    <!-- Landing Actions -->
+    <record id="action_foreign_landing" model="ir.actions.act_window">
+        <field name="name">Landing Processes</field>
+        <field name="res_model">foreign.landing</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first landing process!
+            </p>
+            <p>
+                Manage customs clearance and calculate landing costs for your foreign shipments.
+            </p>
+        </field>
+    </record>
+
+    <!-- Menu Items for Landing -->
+    <!-- <menuitem id="menu_foreign_landing_all"
+              name="All Landing Processes"
+              parent="menu_foreign_landing"
+              action="action_foreign_landing"
+              sequence="10"/> -->
+
+</odoo>

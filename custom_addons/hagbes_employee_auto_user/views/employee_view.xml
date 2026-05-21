@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_employee_form_custom" model="ir.ui.view">
+        <field name="name">hr.employee.form.inherit.prevent.create</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_form"/>
+        <field name="arch" type="xml">
+
+            <!-- Prevent create on job position -->
+            <field name="job_id" position="attributes">
+                <attribute name="options">{'no_create': True}</attribute>
+            </field>
+
+            <!-- Prevent create on department -->
+            <field name="department_id" position="attributes">
+                <attribute name="options">{'no_create': True}</attribute>
+            </field>
+
+            <!-- Prevent create on company -->
+            <field name="company_id" position="attributes">
+                <attribute name="options">{'no_create': True}</attribute>
+            </field>
+
+            <!-- Make manager field read-only -->
+            <field name="parent_id" position="attributes">
+                <attribute name="readonly">1</attribute>
+            </field>
+
+        </field>
+    </record>
+</odoo>

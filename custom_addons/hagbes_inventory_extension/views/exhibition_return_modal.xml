@@ -1,0 +1,28 @@
+<odoo>
+    <record id="view_issue_return_wizard_form" model="ir.ui.view">
+        <field name="name">issue.return.wizard.form</field>
+        <field name="model">exhibition.return.modal</field>
+        <field name="arch" type="xml">
+            <form string="Return Products">
+                <group>
+                    <field name="issue_request_id" readonly="1"/>
+                </group>
+                <group>
+                    <field name="line_ids">
+                        <list editable="bottom">
+                            <field name="product_id" readonly="1"/>
+                            <field name="uom_id" readonly="1"/>
+                            <field name="original_qty" readonly="1"/>
+                            <field name="return_qty"/>
+                        </list>
+                    </field>
+                </group>
+                <footer>
+                    <button string="Confirm Return" type="object"
+                            name="action_confirm_return" class="btn-primary"/>
+                    <button string="Cancel" special="cancel" class="btn-secondary"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

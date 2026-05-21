@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_res_partner_form_inherit_tax_fields" model="ir.ui.view">
+        <field name="name">res.partner.form.inherit.tax.fields</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <!-- Add TIN right after VAT, visible only for companies -->
+           
+            <xpath expr="//field[@name='vat']" position="before">
+                <field name="tin_number" />
+            </xpath>
+             <xpath expr="//field[@name='tin_number']" position= 'before'>
+                <field name='partner_type' />
+            </xpath>
+            <xpath expr="//field[@name='vat']" position="replace">
+                <field name="vat" string="VAT"/>
+            </xpath>
+        </field>
+    </record>
+    <record id="view_partner_form_inherit_credit_due_date" model="ir.ui.view">
+        <field name="name">res.partner.form.inherit.credit.due.date</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <!-- Target the Credit Limits group inside the Accounting page -->
+            <xpath expr="//page[@name='accounting']//group[@name='credit_limits']" position="inside">
+                <field name="credit_limit_interval_months" string="Credit Period (Months)" widget="integer"/>
+                <field name="credit_limit_due_date" string="Next Due Date" readonly="1"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

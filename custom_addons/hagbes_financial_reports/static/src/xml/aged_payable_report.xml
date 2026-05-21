@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<templates>
+    <t t-name="AgedPayableTemp" owl="1">
+        <div class="o_action account_report aged_partner_balance h-100 d-flex flex-column overflow-hidden">
+            <!-- CONTROL PANEL -->
+            <div class="o_control_panel d-flex flex-column gap-3 px-3 pt-2 pb-3" data-command-category="actions">
+                <div class="o_control_panel_main d-flex flex-wrap flex-lg-nowrap justify-content-between align-items-lg-start gap-2 gap-lg-3 flex-grow-1">
+                    
+                    <!-- Top Left: Breadcrumbs & Main Buttons -->
+                    <div class="o_control_panel_breadcrumbs d-flex align-items-center gap-1 order-0 h-lg-100">
+                        <div class="o_control_panel_main_buttons d-flex gap-1 d-empty-none d-print-none">
+                            <button class="btn text-nowrap btn-primary" t-on-click="print_pdf">PDF</button>
+                            <button class="btn text-nowrap btn-secondary" t-on-click="print_xlsx">XLSX</button>
+                        </div>
+                        <div class="o_breadcrumb d-flex gap-1 text-truncate">
+                            <div class="o_last_breadcrumb_item active d-flex fs-4 min-w-0 align-items-center">
+                                <span class="min-w-0 text-truncate">Aged Payable</span>
+                            </div>
+                            <div class="o_control_panel_breadcrumbs_actions d-inline-flex d-print-none">
+                                <button class="btn p-0 ms-1 border-0 o-dropdown dropdown-toggle dropdown" aria-expanded="false">
+                                    <i class="fa fa-fw fa-cog"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="me-auto"></div>
+                    </div>
+
+                    <!-- Filter Bar (Actions) -->
+                    <div class="o_control_panel_actions d-empty-none d-flex align-items-center justify-content-start justify-content-lg-around order-2 order-lg-1 w-100 mw-100 w-lg-auto">
+                        <div class="d-flex gap-1">
+                            <!-- Mobile Filter Toggle (Visual only for now) -->
+                            <button class="btn btn-outline-secondary h-100 d-md-none" type="button" data-bs-toggle="collapse" data-bs-target="#reportFilterCollapse">
+                                <span class="fa fa-filter"></span>
+                            </button>
+
+                            <div id="reportFilterCollapse">
+                                <div class="d-flex gap-1 flex-wrap">
+                                    
+                                    <!-- Date Filter -->
+                                    <div id="filter_date" class="filter_date">
+                                        <Dropdown>
+                                            <button class="btn btn-secondary o-dropdown dropdown-toggle dropdown">
+                                                <i class="fa fa-calendar me-1"/>
+                                                As of <t t-if="state.date_to" t-esc="state.date_to"/><t t-else="">Date</t>
+                                            </button>
+                                            <t t-set-slot="content">
+                                                <DropdownItem onSelected="() => this.applyFilter('today')" class="'report-filter-button'">Today</DropdownItem>
+                                                <DropdownItem onSelected="() => this.applyFilter('last-month-end')" class="'report-filter-button'">End of Last Month</DropdownItem>
+                                                <DropdownItem onSelected="() => this.applyFilter('last-quarter-end')" class="'report-filter-button'">End of Last Quarter</DropdownItem>
+                                                <DropdownItem onSelected="() => this.applyFilter('last-year-end')" class="'report-filter-button'">End of Last Year</DropdownItem>
+                                                <div role="separator" class="dropdown-divider"/>
+                                                <div class="p-2">
+                                                    <label class="small text-muted">Date:</label>
+                                                    <input type="date" id="end_date" class="form-control form-control-sm" t-on-change="applyFilter" name="end_date"/>
+                                                </div>
+                                            </t>
+                                        </Dropdown>
+                                    </div>
+
+                                    <!-- Account Type -->
+                                    <div id="filter_account_type">
+                                        <button class="btn btn-secondary o-dropdown dropdown-toggle dropdown" aria-expanded="false">
+                                            <i class="fa fa-user me-1"/>Account: Payable
+                                        </button>
+                                    </div>
+
+                                    <!-- Partners Filter (Searchable) -->
+                                    <div id="filter_partner" class="filter_partner">
+                                        <Dropdown>
+                                            <button class="btn btn-secondary o-dropdown dropdown-toggle dropdown">
+                                                <i class="fa fa-folder-open me-1"/>Partners
+                                            </button>
+                                            <t t-set-slot="content">
+                                                <div class="p-2">
+                                                    <input type="text" class="form-control form-control-sm mb-2" placeholder="Search Partners..." t-on-input="onPartnerSearchInput"/>
+                                                    <div class="overflow-auto" style="max-height: 200px;">
+                                                        <t t-if="state.partner_results">
+                                                            <t t-foreach="state.partner_results" t-as="partner" t-key="partner.id">
+                                                                <DropdownItem onSelected="() => this.onPartnerFilterSelected(partner.id)" class="'d-flex justify-content-between'">
+                                                                    <span t-esc="partner.name"/>
+                                                                    <i t-if="state.options.partner_ids and state.options.partner_ids.includes(partner.id)" class="fa fa-check text-primary"/>
+                                                                </DropdownItem>
+                                                            </t>
+                                                        </t>
+                                                        <t t-else="">
+                                                            <div class="text-muted small fst-italic px-2">Type to search...</div>
+                                                        </t>
+                                                    </div>
+                                                </div>
+                                            </t>
+                                        </Dropdown>
+                                    </div>
+
+                                    <!-- Due Date / Invoice Date -->
+                                    <div>
+                                        <button class="btn btn-secondary o-dropdown dropdown-toggle dropdown"
+                                                t-on-click="toggleDateType"
+                                                t-att-class="state.options.date_compare_mode == 'due_date' ? 'btn-secondary fw-bold' : 'btn-secondary'"
+                                                aria-expanded="false">
+                                            <i class="fa fa-file me-1"/>
+                                            <t t-if="state.options.date_compare_mode == 'due_date'">Based on Due Date</t>
+                                            <t t-else="">Based on Invoice Date</t>
+                                        </button>
+                                    </div>
+
+                                    <!-- Aging Interval -->
+                                    <div id="filter_aging_interval">
+                                        <button class="btn btn-secondary o-dropdown dropdown-toggle dropdown" aria-expanded="false">
+                                            <i class="fa fa-calendar-o me-1"/>30 Days
+                                        </button>
+                                    </div>
+
+                                    <!-- Extra Options (Posted) -->
+                                    <div id="filter_extra_options">
+                                        <button class="btn btn-secondary o-dropdown dropdown-toggle dropdown" 
+                                                t-on-click="toggleTargetMove"
+                                                t-att-class="state.options.target_move == 'posted' ? 'btn-secondary fw-bold' : 'btn-secondary'"
+                                                aria-expanded="false">
+                                            <i class="fa fa-sliders me-1"/>Posted Entries
+                                        </button>
+                                    </div>
+
+                                    <!-- Currency -->
+                                    <div id="filter_rounding_unit">
+                                        <button class="btn btn-secondary o-dropdown dropdown-toggle dropdown" aria-expanded="false">
+                                            In <t t-esc="state.data.company_currency_symbol || '.Br'"/>
+                                        </button>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Navigation (Spacer) -->
+                    <div class="o_control_panel_navigation d-flex flex-wrap flex-md-nowrap justify-content-end gap-1 gap-xl-3 order-1 order-lg-2 flex-grow-1"></div>
+                </div>
+            </div>
+
+            <!-- REPORT CONTENT -->
+            <div class="overflow-hidden d-flex flex-row h-100">
+                <div class="o_content d-flex flex-column w-100 bg-light">
+                    <div id="warnings" class="warnings d-print-none"></div>
+                    <div class="w-print-100 overflow-x-auto">
+                        <div class="d-flex align-items-start justify-content-center">
+                            <table class="table table-borderless table-hover w-print-100 striped bg-white mt-4 shadow-sm" style="max-width: 1100px;">
+                                <thead id="table_header" class="sticky" style="background-color: #f8f9fa;">
+                                    <tr data-id="column_headers_row" style="border-bottom: 1px solid #dee2e6;">
+                                        <th></th>
+                                        <th class="column_header text-center py-2" colspan="8" rowspan="1" style="color: #495057; font-weight: 600;">
+                                            As of <t t-if="state.date_to" t-esc="state.date_to"/><t t-else="">Date</t>
+                                        </th>
+                                    </tr>
+                                    <tr data-id="column_subheaders_row" style="border-bottom: 2px solid #dee2e6;">
+                                        <th class="py-2 ps-3"></th>
+                                        <t t-set="cols" t-value="['Invoice Date', 'At Date', '1-30', '31-60', '61-90', '91-120', 'Older', 'Total']"/>
+                                        <t t-foreach="cols" t-as="col" t-key="col_index">
+                                            <th class="py-2" t-att-class="col_index > 1 ? 'text-end' : ''" style="color: #495057;">
+                                                <button class="btn btn_sortable small p-0 border-0 me-1 text-muted"><i class="fa fa-arrows-v"></i></button><t t-esc="col"/>
+                                            </th>
+                                        </t>
+                                    </tr>
+                                </thead>
+                                <tbody t-ref="tbody">
+                                    <!-- Summary Row -->
+                                    <tr class="fw-bold border-bottom" style="background-color: #fff;">
+                                        <td class="ps-3 py-2">
+                                            <div class="wrapper">
+                                                <div class="content"><div class="name">Aged Payable</div></div>
+                                            </div>
+                                        </td>
+                                        <td></td>
+                                        <td class="text-end py-2" style="color: #6c757d;">0.00</td>
+                                        <td class="text-end py-2" style="color: #6c757d;"><t t-if="state.data.diff0_sum_display" t-esc="state.data.diff0_sum_display"/></td>
+                                        <td class="text-end py-2" style="color: #6c757d;"><t t-if="state.data.diff1_sum_display" t-esc="state.data.diff1_sum_display"/></td>
+                                        <td class="text-end py-2" style="color: #6c757d;"><t t-if="state.data.diff2_sum_display" t-esc="state.data.diff2_sum_display"/></td>
+                                        <td class="text-end py-2" style="color: #6c757d;"><t t-if="state.data.diff3_sum_display" t-esc="state.data.diff3_sum_display"/></td>
+                                        <td class="text-end py-2" style="color: #6c757d;"><t t-if="state.data.diff4_sum_display" t-esc="state.data.diff4_sum_display"/></td>
+                                        <td class="text-end py-2" style="color: #6c757d;"><t t-if="state.data.diff5_sum_display" t-esc="state.data.diff5_sum_display"/></td>
+                                        <td class="text-end py-2" style="color: #6c757d;"><t t-if="state.data.total_debit_display" t-esc="state.data.total_debit_display"/></td>
+                                    </tr>
+
+                                    <t t-if="state.data and state.data.move_line">
+                                        <t t-set="i" t-value="0"/>
+                                        <t t-foreach="state.data.move_line" t-as="move_line" t-key="move_line_index">
+                                            <t t-set="i" t-value="i + 1"/>
+                                            <tr class="line_level_1 border-bottom" style="background-color: #fcfcfc;">
+                                                <td class="ps-3 py-2">
+                                                    <div class="wrapper d-flex align-items-center" data-bs-toggle="collapse" t-attf-href="#move_line-{{i}}" aria-expanded="false" t-attf-aria-controls="move_line-{{i}}" style="cursor: pointer;">
+                                                        <i class="fa fa-caret-right me-2 text-muted"/>
+                                                        <div class="content"><div class="name"><t t-esc="move_line"/></div></div>
+                                                    </div>
+                                                </td>
+                                                <td class="py-2">
+                                                    <button t-att-data-id="state.data.total[move_line]['partner_id']" class="btn btn-sm btn-outline-secondary py-0 me-1" t-on-click="openPartner">Open</button>
+                                                    <button t-att-data-id="state.data.total[move_line]['partner_id']" class="btn btn-sm btn-outline-secondary py-0" t-on-click="gotoJournalItem">Items</button>
+                                                </td>
+                                                <td class="text-end py-2 text-muted"><t t-if="state.data.total[move_line]['diff0_sum']" t-esc="state.data.total[move_line]['diff0_sum'].toFixed(2)"/></td>
+                                                <td class="text-end py-2 text-muted"><t t-if="state.data.total[move_line]['diff1_sum']" t-esc="state.data.total[move_line]['diff1_sum'].toFixed(2)"/></td>
+                                                <td class="text-end py-2 text-muted"><t t-if="state.data.total[move_line]['diff2_sum']" t-esc="state.data.total[move_line]['diff2_sum'].toFixed(2)"/></td>
+                                                <td class="text-end py-2 text-muted"><t t-if="state.data.total[move_line]['diff3_sum']" t-esc="state.data.total[move_line]['diff3_sum'].toFixed(2)"/></td>
+                                                <td class="text-end py-2 text-muted"><t t-if="state.data.total[move_line]['diff4_sum']" t-esc="state.data.total[move_line]['diff4_sum'].toFixed(2)"/></td>
+                                                <td class="text-end py-2 text-muted"><t t-if="state.data.total[move_line]['diff5_sum']" t-esc="state.data.total[move_line]['diff5_sum'].toFixed(2)"/></td>
+                                                <td class="text-end py-2 text-muted"><t t-if="state.data.total[move_line]['credit_sum']" t-esc="state.data.total[move_line]['credit_sum'].toFixed(2)"/></td>
+                                            </tr>
+                                            <t t-foreach="state.data.data[move_line]" t-as="valuelist" t-key="valuelist_index">
+                                                <tr class="collapse border-bottom" t-attf-id="move_line-{{i}}" style="background-color: #fff;">
+                                                    <td class="ps-5 py-2">
+                                                        <div class="d-flex align-items-center gap-2">
+                                                            <t t-if="valuelist['move_name']"><span class="text-muted"><t t-esc="valuelist['move_name']"/></span></t>
+                                                            <t t-if="valuelist['name']"><span><t t-esc="valuelist['name']"/></span></t>
+                                                            <button t-att-data-id="valuelist['move_id']" class="btn btn-link p-0 text-decoration-none" style="font-size: 0.8rem;" t-on-click="gotoJournalEntry"><i class="fa fa-external-link"/></button>
+                                                        </div>
+                                                    </td>
+                                                    <td class="py-2"><t t-esc="valuelist['date']"/></td>
+                                                    <td class="py-2"></td>
+                                                    <td class="text-end py-2 text-muted"><t t-if="valuelist['diff0']" t-esc="valuelist['diff0'].toFixed(2)"/></td>
+                                                    <td class="text-end py-2 text-muted"><t t-if="valuelist['diff1']" t-esc="valuelist['diff1'].toFixed(2)"/></td>
+                                                    <td class="text-end py-2 text-muted"><t t-if="valuelist['diff2']" t-esc="valuelist['diff2'].toFixed(2)"/></td>
+                                                    <td class="text-end py-2 text-muted"><t t-if="valuelist['diff3']" t-esc="valuelist['diff3'].toFixed(2)"/></td>
+                                                    <td class="text-end py-2 text-muted"><t t-if="valuelist['diff4']" t-esc="valuelist['diff4'].toFixed(2)"/></td>
+                                                    <td class="text-end py-2 text-muted"><t t-if="valuelist['diff5']" t-esc="valuelist['diff5'].toFixed(2)"/></td>
+                                                    <td class="py-2"></td>
+                                                </tr>
+                                            </t>
+                                        </t>
+                                    </t>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </t>
+</templates>

@@ -1,0 +1,14 @@
+<odoo>
+
+    <record id="group_manual_user" model="res.groups">
+        <field name="name">Manual User</field>
+        <field name="category_id" ref="base.module_category_hidden"/>
+    </record>
+
+    <record id="group_manual_admin" model="res.groups">
+        <field name="name">Manual Administrator</field>
+        <field name="category_id" ref="base.module_category_hidden"/>
+        <field name="implied_ids" eval="[(4, ref('group_manual_user'))]"/>
+    </record>
+
+</odoo>

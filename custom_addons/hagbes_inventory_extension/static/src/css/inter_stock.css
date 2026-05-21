@@ -1,0 +1,19 @@
+.o_form_view .custom-header {
+    background-color: #e6f7ff; /* Light blue */
+    padding: 6px 10px;
+    font-weight: bold;
+    border-radius: 4px;
+}
+
+.o_form_view .custom-header-odd {
+    background-color: #f9f2ec; /* Light beige/orange */
+    padding: 6px 10px;
+    font-weight: bold;
+    border-radius: 4px;
+}
+.o_form_view {
+  .bold-large-text {
+    font-weight: bold;
+    font-size: 18px;
+  }
+}

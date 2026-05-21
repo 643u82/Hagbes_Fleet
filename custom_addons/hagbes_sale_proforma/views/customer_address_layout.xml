@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <template id="report_saleorder_remove_tax_id_and_gap"
+              inherit_id="sale.report_saleorder_document">
+
+        <!-- Replace the 'address' t-set block -->
+        <xpath expr="//t[@t-set='address']" position="replace">
+            <t t-set="address">
+                <div t-field="doc.partner_id"
+                     t-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;address&quot;, &quot;name&quot;], &quot;no_marker&quot;: True}"/>
+                <t t-if="doc.partner_id.vat or doc.partner_id.tin_number">
+                    <div style="margin-top: 0; font-size: 0.875rem; line-height: 1.3;">
+                        <t t-if="doc.partner_id.vat">VAT: <span t-field="doc.partner_id.vat"/></t>
+                        <t t-if="doc.partner_id.tin_number">
+                            <t t-if="doc.partner_id.vat"><br/></t>
+                            TIN: <span t-field="doc.partner_id.tin_number"/>
+                        </t>
+                    </div>
+                </t>
+            </t>
+        </xpath>
+
+        <!-- Add salesperson email AFTER the Salesperson column -->
+        <xpath expr="//div[@id='informations']/div[strong[text()='Salesperson']]" position="after">
+            <div t-if="doc.user_id.email" class="col">
+                <strong>Salesperson Email</strong>
+                <div t-field="doc.user_id.email"/>
+            </div>
+        </xpath>
+
+        <xpath expr="//span[@name='order_note']" position="replace">
+            <div style="margin-top: 1.5rem; font-size: 0.9rem;">
+                <p><strong>Terms And Conditions</strong></p>
+                <p>1. Subject to prior sale</p>
+                <p>2. Validity: 7 days starting from the issued date.</p>
+                <p>3. Payment Method: <span t-field="doc.payment_mode"/></p>
+                <p>
+                    NB. Kindly note that when you transfer a payment through bank, the name of the payment payer company should be the same as the Proforma invoice issued company name.
+                </p>
+            </div>
+        </xpath>
+        <xpath expr="//p[@t-if='not is_html_empty(doc.payment_term_id.note)']" position="replace"/>
+
+
+    </template>
+</odoo>

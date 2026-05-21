@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <!-- Inherit the login page -->
+  <template id="web_login_label_userid" inherit_id="web.login">
+    
+    <!-- Change placeholder of login input -->
+    <xpath expr="//input[@name='login']" position="attributes">
+      <attribute name="placeholder">Employee ID</attribute>
+    </xpath>
+
+    <xpath expr="//label[@for='login']" position="replace">
+      <label for="login">Employee ID</label>
+    </xpath>
+
+  </template>
+</odoo>

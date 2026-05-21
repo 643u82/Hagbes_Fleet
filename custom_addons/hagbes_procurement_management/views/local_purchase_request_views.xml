@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_local_purchase_request_form" model="ir.ui.view">
+        <field name="name">local.purchase.request.form</field>
+        <field name="model">local.purchase.request</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="Local Purchase Request">
+                    <header>
+                        <field name="state" widget="statusbar"/>
+                        <button name="action_submit" type="object" string="Submit for Approval" class="oe_highlight" invisible="state != 'draft'"/>
+                        <button name="action_reject" type="object" string="Reject" class="btn-danger" invisible="not (state in ['waiting_for_dept_manager', 'waiting_for_gm', 'waiting_for_director', 'waiting_for_procurement_manager'] and is_current_user_approver)"/>
+                        <button name="action_convert_to_rfq" type="object" string="Create RFQ" class="oe_highlight" invisible="state != 'approved'"/>
+                    </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="requested_by"/>
+                            <field name="department_id"/>
+                            <field name="branch_id"/>
+                            <field name="request_date"/>
+                        </group>
+                        <group>
+                            <field name="request_type" readonly="1"/>
+                            <field name="priority"/>
+                            <field name="vendor_id"/>
+                            <field name="vendor_ref"/>
+                            <field name="required_date"/>
+                            <field name="currency_id"/>
+                            <field name="picking_type_id"/>
+                        </group>
+                    </group>
+                    <group>
+                         <field name="justification" widget="text"/>
+                        <field name="amount_total" readonly="1"/>
+                    </group>
+                    <notebook>
+                        <page string="Request Lines">
+                            <field name="request_line_ids">
+                                <list editable="bottom">
+                                    <field name="product_id"/>
+                                    <field name="description"/>
+                                    <field name="quantity"/>
+                                    <field name="uom_id"/>
+                                    <field name="estimated_price"/>
+                                    <field name="estimated_total"/>
+                                    <field name="required_date"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Additional Information">
+                            <group>
+                                <field name="delivery_address"/>
+                                <field name="notes"/>
+                            </group>
+                        </page>
+                        <page string="Legacy / Additional Fields">
+                            <group>
+                                <group>
+                                    <field name="request_for_partner"/>
+                                    <field name="customer_id"/>
+                                    <field name="request_kind"/>
+                                    <field name="to_replace"/>
+                                    <field name="remark"/>
+                                </group>
+                                <group>
+                                    <field name="manager_description"/>
+                                    <field name="specification"/>
+                                    <field name="spec_dep"/>
+                                    <field name="stock_info"/>
+                                </group>
+                            </group>
+                            <group>
+                                <group>
+                                    <field name="current_km"/>
+                                    <field name="prev_request_id"/>
+                                    <field name="received"/>
+                                    <field name="purchased_amount"/>
+                                </group>
+                                <group>
+                                    <field name="manager_user_id"/>
+                                    <field name="gm_user_id"/>
+                                    <field name="director_user_id"/>
+                                    <field name="directors"/>
+                                </group>
+                            </group>
+                            <group>
+                                <group>
+                                    <field name="processing_company_id"/>
+                                    <field name="property_company_id"/>
+                                    <field name="procurement_company_id"/>
+                                    <field name="finance_company_id"/>
+                                </group>
+                                <group>
+                                    <field name="owner_id"/>
+                                    <field name="property_name"/>
+                                    <field name="next_step"/>
+                                    <field name="mode"/>
+                                </group>
+                            </group>
+                            <group>
+                                <field name="reason_instock"/>
+                                <field name="reason_purchased"/>
+                                <field name="additional"/>
+                                <field name="replaced_items"/>
+                            </group>
+                            <group>
+                                <field name="flag"/>
+                                <field name="phase_one"/>
+                                <field name="phase_two"/>
+                                <field name="phase_three"/>
+                                <field name="phase_four"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_local_purchase_request_list" model="ir.ui.view">
+        <field name="name">local.purchase.request.list</field>
+        <field name="model">local.purchase.request</field>
+        <field name="type">list</field>
+        <field name="arch" type="xml">
+            <list string="Local Purchase Requests" decoration-info="state=='draft'" decoration-warning="state in ['pending','waiting_for_dept_manager']" decoration-success="state=='approved'">
+                <field name="name"/>
+                <field name="requested_by"/>
+                <field name="department_id"/>
+                <field name="branch_id"/>
+                <field name="request_date"/>
+                <field name="priority"/>
+                <field name="amount_total"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_local_purchase_request_search" model="ir.ui.view">
+        <field name="name">local.purchase.request.search</field>
+        <field name="model">local.purchase.request</field>
+        <field name="type">search</field>
+        <field name="arch" type="xml">
+            <search string="Search Local Purchase Requests">
+                <field name="name"/>
+                <field name="requested_by"/>
+                <field name="department_id"/>
+                <filter string="My Requests" name="my_requests" domain="[('requested_by','=',uid)]"/>
+                <filter string="Draft" name="draft" domain="[('state','=','draft')]"/>
+                <filter string="Pending Approval" name="pending" domain="[('state','in',['pending','waiting_for_dept_manager','waiting_for_gm'])]"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_local_purchase_request_main" model="ir.actions.act_window">
+        <field name="name">Local Purchase Requests</field>
+        <field name="res_model">local.purchase.request</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Create your first local purchase request!</p>
+        </field>
+    </record>
+
+</odoo>

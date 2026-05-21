@@ -1,0 +1,17 @@
+<odoo>
+  <data>
+    <record id="view_employee_form_hide_org_chart" model="ir.ui.view">
+      <field name="name">hr.employee.form.hide.org.chart</field>
+      <field name="model">hr.employee</field>
+      <field name="inherit_id" ref="hr.view_employee_form"/>
+      <field name="arch" type="xml">
+
+        <!-- Safely hide the org chart container -->
+        <xpath expr="//div[@id='o_employee_right']" position="attributes">
+          <attribute name="invisible">1</attribute>
+        </xpath>
+
+      </field>
+    </record>
+  </data>
+</odoo>

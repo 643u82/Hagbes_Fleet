@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_partner_ledger">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <div class="page">
+                    <h2 class="text-center">Partner Ledger</h2>
+                    <div class="row mt32 mb32">
+                        <div class="col-4">
+                            <strong>Date From:</strong> <span t-esc="data.get('date_from')"/>
+                        </div>
+                        <div class="col-4">
+                            <strong>Date To:</strong> <span t-esc="data.get('date_to')"/>
+                        </div>
+                    </div>
+
+                    <t t-foreach="data['partners']" t-as="partner">
+                        <div class="mt-4 mb-2 p-2 bg-light border">
+                            <strong t-esc="partner['name']"/>
+                            <span class="float-right">
+                                <strong>Initial Balance:</strong> 
+                                <span t-esc="partner['initial_balance']" t-options="{'widget': 'monetary', 'display_currency': res_company.currency_id}"/>
+                            </span>
+                        </div>
+                        <table class="table table-sm table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Move</th>
+                                    <th>Account</th>
+                                    <th>Ref</th>
+                                    <th>Label</th>
+                                    <th class="text-right">Debit</th>
+                                    <th class="text-right">Credit</th>
+                                    <th class="text-right">Balance</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="partner['lines']" t-as="line">
+                                    <td><span t-esc="line['date']"/></td>
+                                    <td><span t-esc="line['move_name']"/></td>
+                                    <td><span t-esc="line['account_code']"/></td>
+                                    <td><span t-esc="line['ref']"/></td>
+                                    <td><span t-esc="line['name']"/></td>
+                                    <td class="text-right"><span t-esc="line['debit']" t-options="{'widget': 'monetary', 'display_currency': res_company.currency_id}"/></td>
+                                    <td class="text-right"><span t-esc="line['credit']" t-options="{'widget': 'monetary', 'display_currency': res_company.currency_id}"/></td>
+                                    <td class="text-right"><span t-esc="line['running_balance']" t-options="{'widget': 'monetary', 'display_currency': res_company.currency_id}"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </t>
+                </div>
+            </t>
+        </t>
+    </template>
+
+    <record id="action_report_partner_ledger" model="ir.actions.report">
+        <field name="name">Partner Ledger</field>
+        <field name="model">report.custom_financial_reports.report_partner_ledger</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">custom_financial_reports.report_partner_ledger</field>
+        <field name="report_file">custom_financial_reports.report_partner_ledger</field>
+    </record>
+</odoo>

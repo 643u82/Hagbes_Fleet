@@ -1,0 +1,33 @@
+<odoo>
+    <menuitem id="menu_onduty_root"
+              name="OnDuty"
+              parent="hr_holidays.menu_hr_holidays_root"
+              sequence="10" />
+
+    <!-- Employee menu -->
+    <menuitem id="submenu_onduty_request"
+              name="Request OnDuty"
+              parent="menu_onduty_root"
+              action="action_onduty_create"
+              sequence="1" />
+    <menuitem id="submenu_onduty_request_admin"
+              name="Request For Others"
+              parent="menu_onduty_root"
+              action="action_onduty_create_admin"
+              sequence="2"
+              groups="base.group_system,hagbes_timeoff_management.group_backdate_requester"/>
+
+    <menuitem id="submenu_onduty_dept_manager_approval"
+              name="My Requests"
+              parent="menu_onduty_root"
+              action="action_my_onduty"
+              sequence="3"/>
+
+    <menuitem id="submenu_onduty_hr_approval"
+              name="OnDuty Reports"
+              parent="menu_onduty_root"
+              action="action_onduty_reports"
+              sequence="4"
+              groups="hr_holidays.group_hr_holidays_manager"/>
+
+</odoo>

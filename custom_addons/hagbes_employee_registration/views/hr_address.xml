@@ -1,0 +1,26 @@
+<odoo>
+  <record id="view_employee_form_override_private_address_labels" model="ir.ui.view">
+    <field name="name">hr.employee.form.override.private.address.labels</field>
+    <field name="model">hr.employee</field>
+    <field name="inherit_id" ref="hr.view_employee_form"/>
+    <field name="arch" type="xml">
+
+      <xpath expr="//page[@name='personal_information']/group/group[1]" position="replace">
+        <group string="Private Contact" required="1">
+          <field name="private_country_id" string="Country" placeholder="Country" class="o_address_country"
+                 options="{'no_open': True, 'no_create': True}"  required="1"/>
+          <field name="private_street" string="Subcity" placeholder="Subcity..." class="o_address_street" required="1"/>
+          <field name="private_street2" string="Wereda" placeholder="Wereda..." class="o_address_street"  required="1"/>
+          <field name="private_city" placeholder="City" class="o_address_city"  required="1"/>
+          <field name="private_state_id" string="Private State" class="o_address_state" placeholder="State"
+                 options="{'no_open': True, 'no_quick_create': True}"
+                 context="{'default_country_id': private_country_id}"
+                 required="1"/>
+          <field name="private_zip" string="Kebele" placeholder="Kebele" class="o_address_zip" />
+          <field name="house_number" string="House Number" placeholder="House Number"  required="1"/>
+        </group>
+      </xpath>
+
+    </field>
+  </record>
+</odoo>

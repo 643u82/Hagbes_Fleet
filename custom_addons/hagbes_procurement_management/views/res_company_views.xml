@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Inherit Company Form View -->
+    <record id="view_company_form_inherit" model="ir.ui.view">
+        <field name="name">res.company.form.inherit</field>
+        <field name="model">res.company</field>
+        <field name="inherit_id" ref="base.view_company_form"/>
+        <field name="arch" type="xml">
+            
+            <!-- Add Foreign Procurement Configuration Page -->
+            <xpath expr="//notebook" position="inside">
+                <page string="Foreign Procurement" name="foreign_procurement">
+                    <group>
+                        <group string="Journal Configuration">
+                            <field name="foreign_procurement_journal_id" options="{'no_create': True}"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Asset Accounts">
+                            <field name="foreign_currency_receivable_account_id" domain="[('account_type', '=', 'asset_receivable')]"/>
+                            <field name="lc_margin_account_id" options="{'no_create': True}"/>
+                        </group>
+                        <group string="Liability Accounts">
+                            <field name="foreign_currency_payable_account_id" options="{'no_create': True}"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Expense Accounts">
+                            <field name="customs_duty_account_id" options="{'no_create': True}"/>
+                            <field name="freight_charges_account_id" options="{'no_create': True}"/>
+                            <field name="clearing_charges_account_id" options="{'no_create': True}"/>
+                            <field name="exchange_loss_account_id" options="{'no_create': True}"/>
+                        </group>
+                        <group string="Income Accounts">
+                            <field name="exchange_gain_account_id" options="{'no_create': True}"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+
+        </field>
+    </record>
+
+</odoo>

@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Tree View -->
+    <record id="view_fleet_discrepancy_tree" model="ir.ui.view">
+        <field name="name">hagbes.fleet.discrepancy.tree</field>
+        <field name="model">hagbes.fleet.discrepancy</field>
+        <field name="arch" type="xml">
+            <list string="Fleet Discrepancies" decoration-danger="severity == 'high'" decoration-warning="severity == 'medium'">
+                <field name="name"/>
+                <field name="type"/>
+                <field name="expected_value"/>
+                <field name="actual_value"/>
+                <field name="variance_percent" widget="percentage"/>
+                <field name="severity"/>
+                <field name="request_id"/>
+                <field name="allocation_id"/>
+                <field name="create_date"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="view_fleet_discrepancy_form" model="ir.ui.view">
+        <field name="name">hagbes.fleet.discrepancy.form</field>
+        <field name="model">hagbes.fleet.discrepancy</field>
+        <field name="arch" type="xml">
+            <form string="Fleet Discrepancy">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group name="discrepancy_details">
+                            <field name="type"/>
+                            <field name="severity"/>
+                            <field name="expected_value"/>
+                            <field name="actual_value"/>
+                            <field name="variance_percent" widget="percentage"/>
+                        </group>
+                        <group name="linked_records">
+                            <field name="request_id"/>
+                            <field name="allocation_id"/>
+                        </group>
+                    </group>
+                </sheet>
+                <notebook>
+                    <page string="Activities">
+                        <field name="activity_ids" widget="mail_activity"/>
+                    </page>
+                    <page string="Messages">
+                        <field name="message_ids" widget="mail_thread"/>
+                    </page>
+                </notebook>
+            </form>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="view_fleet_discrepancy_search" model="ir.ui.view">
+        <field name="name">hagbes.fleet.discrepancy.search</field>
+        <field name="model">hagbes.fleet.discrepancy</field>
+        <field name="arch" type="xml">
+            <search string="Fleet Discrepancies">
+                <field name="name"/>
+                <field name="type"/>
+                <field name="severity"/>
+                <field name="request_id"/>
+                <field name="allocation_id"/>
+                <separator/>
+                <filter name="fuel_discrepancies" string="Fuel Discrepancies" domain="[('type', '=', 'fuel')]"/>
+                <filter name="distance_discrepancies" string="Distance Discrepancies" domain="[('type', '=', 'distance')]"/>
+                <filter name="time_discrepancies" string="Time Discrepancies" domain="[('type', '=', 'time')]"/>
+                <separator/>
+                <filter name="high_severity" string="High Severity" domain="[('severity', '=', 'high')]"/>
+                <filter name="medium_severity" string="Medium Severity" domain="[('severity', '=', 'medium')]"/>
+                <filter name="low_severity" string="Low Severity" domain="[('severity', '=', 'low')]"/>
+                <separator/>
+                <group expand="0" string="Group By">
+                    <filter name="group_by_type" string="Type" context="{'group_by': 'type'}"/>
+                    <filter name="group_by_severity" string="Severity" context="{'group_by': 'severity'}"/>
+                    <filter name="group_by_request" string="Requisition" context="{'group_by': 'request_id'}"/>
+                    <filter name="group_by_allocation" string="Allocation" context="{'group_by': 'allocation_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_fleet_discrepancy" model="ir.actions.act_window">
+        <field name="name">Fleet Discrepancies</field>
+        <field name="res_model">hagbes.fleet.discrepancy</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new fleet discrepancy record
+            </p>
+            <p>
+                Discrepancies track variances between planned and actual values for fuel, distance, or time.
+            </p>
+        </field>
+    </record>
+</odoo>

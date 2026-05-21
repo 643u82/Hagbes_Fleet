@@ -1,0 +1,24 @@
+<odoo>
+    <record id="sale_order_line_product_domain" model="ir.ui.view">
+        <field name="name">sale.order.line.product.domain</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+
+            <!-- product_id (variant) -->
+            <xpath expr="//field[@name='product_id']" position="attributes">
+                <attribute name="domain">
+                    [('id', 'in', parent.available_product_ids), ('sale_ok', '=', True)]
+                </attribute>
+            </xpath>
+
+            <!-- product_template_id (template) -->
+            <xpath expr="//field[@name='product_template_id']" position="attributes">
+                <attribute name="domain">
+                    [('product_variant_ids', 'in', parent.available_product_ids)]
+                </attribute>
+            </xpath>
+
+        </field>
+    </record>
+</odoo>

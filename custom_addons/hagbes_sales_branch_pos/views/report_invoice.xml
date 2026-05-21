@@ -1,0 +1,57 @@
+<odoo>
+    <template id="custom_invoice_report" inherit_id="account.report_invoice_document">
+        <!-- Add Table Headers -->
+        <xpath expr="//table[@class='table table-sm']" position="before">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>S.No</th>
+                        <th>Item Code</th>
+                        <th>Description</th>
+                        <th>Unit</th>
+                        <th>Qty</th>
+                        <th>Unit Price</th>
+                        <th>Total Price</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <t t-foreach="doc.invoice_line_ids" t-as="line">
+                        <tr>
+                            <td><t t-esc="loop.index"/></td>
+                            <td><t t-esc="line.product_id.default_code"/></td>
+                            <td><t t-esc="line.name"/></td>
+                            <td><t t-esc="line.product_uom_id.name"/></td>
+                            <td><t t-esc="line.quantity"/></td>
+                            <td><t t-esc="line.price_unit"/></td>
+                            <td><t t-esc="line.price_subtotal"/></td>
+                        </tr>
+                    </t>
+                </tbody>
+            </table>
+        </xpath>
+
+        <!-- Add Totals -->
+        <xpath expr="//div[@class='o_footer']" position="before">
+            <div class="o_totals">
+                <table class="table table-sm">
+                    <tr>
+                        <td><strong>Birr:</strong></td>
+                        <td>Forty-Eight Thousand Two Hundred</td>
+                    </tr>
+                    <tr>
+                        <td><strong>SUB TOTAL:</strong></td>
+                        <td><t t-esc="doc.amount_untaxed"/></td>
+                    </tr>
+                    <tr>
+                        <td><strong>VAT 15%:</strong></td>
+                        <td><t t-esc="doc.amount_tax"/></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Grand Total:</strong></td>
+                        <td><t t-esc="doc.amount_total"/></td>
+                    </tr>
+                </table>
+            </div>
+        </xpath>
+    </template>
+</odoo>

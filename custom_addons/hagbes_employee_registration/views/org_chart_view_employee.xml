@@ -1,0 +1,19 @@
+<odoo>
+    <data>
+        <record id="your_module.view_hr_employee_public_form_inherit_custom" model="ir.ui.view">
+            <field name="name">hr.employee.public.form.inherit.custom</field>
+            <field name="model">hr.employee.public</field>
+            <field name="inherit_id" ref="hr.employee.public.view_hr_employee_public_form_guarantor_tab"/>
+            <field name="arch" type="xml">
+
+                <xpath expr="//button[@name='action_submit_resignation']" position="after">
+                    <button name="action_submit_resignation"
+                            type="object"
+                            string="Submit Resignation"
+                            class="btn btn-primary"
+                            invisible= "1"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,147 @@
+<odoo>
+    <!-- Ledger Tree -->
+    <record id="view_agresso_ledger_tree" model="ir.ui.view">
+        <field name="name">bank_reco.ledger.tree</field>
+        <field name="model">bank_reco.ledger</field>
+        <field name="arch" type="xml">
+            <list string="Ledger Entries">
+                <field name="account_id"/>
+                <field name="period"/>
+                <field name="voucher_no"/>
+                <field name="reference"/>
+                <field name="voucher_date"/>
+                <field name="voucher_type"/>
+                <field name="debit"/>
+                <field name="credit"/>
+                <field name="amount"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Header Tree -->
+    <record id="view_bank_reco_header_tree" model="ir.ui.view">
+        <field name="name">bank_reco.header.tree</field>
+        <field name="model">bank_reco.header</field>
+        <field name="arch" type="xml">
+            <list string="Bank Reconciliations"
+                  decoration-success="state == 'done'"
+                  decoration-warning="difference != 0">
+                <field name="name"/>
+                <field name="statement_date"/>
+                <field name="period"/>
+                <field name="account_id"/>
+                <field name="beginning_balance"/>
+                <field name="bank_statement_balance"/>
+                <field name="matched_total"/>
+                <field name="deposit_in_transit_total"/>
+                <field name="outstanding_cheque_total"/>
+                <field name="ending_balance"/>
+                <field name="difference"/>
+                <field name="reconciliation_rate" widget="progressbar"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Header Form -->
+    <record id="view_bank_reco_header_form" model="ir.ui.view">
+        <field name="name">bank_reco.header.form</field>
+        <field name="model">bank_reco.header</field>
+        <field name="arch" type="xml">
+            <form string="Bank Reconciliation">
+                <header>
+                    <button name="action_fetch_ledger_transactions"
+                            type="object"
+                            string="Load Transactions"
+                            class="btn-primary"
+                            invisible="state != 'draft'"/>
+                    <button name="action_mark_done"
+                            type="object"
+                            string="Mark as Done"
+                            class="btn-success"
+                            invisible="state == 'done'"/>
+                    <button name="action_reset_draft"
+                            type="object"
+                            string="Reset to Draft"
+                            class="btn-secondary"
+                            invisible="state == 'draft'"/>
+                    <button name="%(bank_reco_report_action)d"
+                            type="action"
+                            string="Print Report"
+                            class="btn-info"
+                            invisible="state != 'done'"/>
+                        <button name="action_forward"
+                            string="Forward Selected"
+                            type="object"
+                            class="btn-secondary"
+                                invisible="state == 'done'"
+                        />
+                    <field name="state" widget="statusbar" statusbar_visible="draft,done"/>
+                </header>
+                <sheet>
+                    <group>
+                        <!-- Left Column: basic info and balances -->
+                        <group col="2">
+                            <field name="name"/>
+                            <field name="statement_date"/>
+                            <field name="period"/>
+                            <field name="account_id"/>
+                            <field name="beginning_balance" readonly="1"/>
+                            <field name="ledger_balance" readonly="1"/>
+                            <field name="bank_debit"/>
+                            <field name="bank_credit"/>
+                        </group>
+
+                        <!-- Right Column: bank statement info and reconciliation -->
+                        <group col="2">
+                            <field name="bank_statement_balance"/>
+                            <field name="opening_balance"/>
+                            <field name="ending_balance" readonly="1"/>
+                            <field name="deposit_in_transit_total" readonly="1"/>
+                            <field name="outstanding_cheque_total" readonly="1"/>
+                            <field name="difference" readonly="1"/>
+                            <field name="reconciliation_rate" widget="progressbar"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Details">
+                            <field name="detail_ids" readonly="state == 'done'">
+                                <list editable="bottom"
+                                      string="Reconciliation Details"
+                                      decoration-muted="matched == True">
+                                    <field name="account_id"/>
+                                    <field name="period"/>
+                                    <field name="original_period" readonly="1"/>
+                                    <field name="voucher_no"/>
+                                    <field name="reference"/>
+                                    <field name="voucher_type"/>
+                                    <field name="voucher_date"/>
+                                    <field name="bank_date"/>
+                                    <field name="debit"/>
+                                    <field name="credit"/>
+                                    <field name="forward_to_period"/>
+                                    <field name="matched" widget="boolean_button" class="matched-field"/>
+                                    <field name="status"/>
+                                    <field name="matched_by"/>
+                                    <field name="matched_date"/>
+                                   <field  name="remarks" widget="text" options="{'truncate': 50}" />
+                                </list>
+                            </field>
+                        </page>
+
+                        <page string="Summary">
+                            <group>
+                                <field name="bank_statement_balance" readonly="1"/>
+                                <field name="ending_balance"/>
+                                <field name="deposit_in_transit_total"/>
+                                <field name="outstanding_cheque_total"/>
+                                <field name="difference"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>

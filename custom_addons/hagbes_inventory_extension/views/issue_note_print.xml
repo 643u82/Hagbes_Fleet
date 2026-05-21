@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Report Action -->
+    <record id="action_issue_note" model="ir.actions.report">
+        <field name="name">report temporary note Note</field>
+        <field name="model">exhibition.requests</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">hagbes_inventory_extension.report_issue_note</field>
+        <field name="print_report_name">'Issue_Note_%s' % (object.name)</field>
+        <!-- report_file is not needed in Odoo 18 -->
+    </record>
+
+    <!-- Report Template -->
+    <template id="report_issue_note">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+            <t t-set="company" t-value="company"/>
+            <t t-call="web.external_layout">
+                    <div class="page">
+                        <!-- Header Section -->
+                        <div style="text-align: right;">
+                            <strong>Date:</strong>
+                             <span t-esc="datetime.date.today().strftime('%Y-%m-%d')"/>
+                        </div>
+                        <div style="text-align: right;">
+                            <strong>Request Number:</strong>
+                            <span t-esc="o.name"></span>
+                        </div>
+                        <div style="text-align: center; margin: 30px 0;">
+                            <h3 style="margin: 0;"><u>Issue Note</u></h3>
+                        </div>
+                        <!-- Supplier / Order Info -->
+                        <div style="margin: 30px;">
+                            <div class="row">
+                                <div class="col-7">
+                                    <strong>Issuer From (Store): </strong>
+                                    <span t-esc="o.issuer_warehouse.name"/>
+                                </div>
+                                <div class="col-5">
+                                    <strong>Issued to(Dept/cashier):</strong>
+                                    <span t-esc="o.requester_branch_id"/>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Product Lines Table -->
+                        <div style="margin: 30px;">
+                            <table class="table table-sm table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Item No</th>
+                                        <th>Part No</th>
+                                        <th>Description</th>
+                                        <th>Unit Of M</th>
+                                        <th>Qty</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr t-foreach="o.items_requested" t-as="items" t-foreach-index="i">
+                                        <td><span t-esc="o_index + 1"/></td>
+                                        <td><span t-field="items.product_id.default_code"></span></td>
+                                        <td><span t-field="items.product_id.display_name"></span></td>
+                                        <td><span t-field="items.uom_id.name"></span></td>
+                                        <td><span t-field="items.quantity"></span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- Signatures -->
+                        <div class="row" style="margin: 30px 0;">
+                            <div class="col-4">
+                                <strong>Issuer Store Keeper:</strong>
+                                <u><span >__________________</span></u>
+                            </div>
+                            <div class="col-4">
+                                <strong>Approved By: ______________________________</strong>
+                            </div>
+                            <div class="col-4">
+                                <strong>Receiver: ____________________</strong>
+                            </div>
+                        </div>
+
+                        <!-- Distribution Info -->
+                        <div style="margin-top: 30px; margin-left: 30px;">
+                            <strong>Distribution</strong>
+                            <div class="ms-3">
+                                <span>Original <b>Customer</b> | 1st copy <b>Finance</b> | 2nd copy <b>Store Keeper</b></span>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

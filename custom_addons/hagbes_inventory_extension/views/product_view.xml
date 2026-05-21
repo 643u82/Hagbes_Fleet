@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record id="view_product_form_inherit_part_number" model="ir.ui.view">
+            <field name="name">product.template.form.inherit.part.number</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="product.product_template_only_form_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='default_code']" position="attributes">
+                    <attribute name="string">Part Number</attribute>
+                    <attribute name="required">1</attribute>
+                </xpath>
+
+                 <xpath expr="//div[@name='list_price_uom']" position="attributes">
+                    <attribute name="groups">hagbes_inventory_extension.group_cost_sales_price</attribute>
+                </xpath>
+
+                <!-- Hide standard_price_uom -->
+                <xpath expr="//div[@name='standard_price_uom']" position="attributes">
+                    <attribute name="groups">hagbes_inventory_extension.group_cost_sales_price</attribute>
+                </xpath>
+
+
+                <xpath expr="//page[@name='purchase']" position="attributes">
+                    <attribute name="groups">hagbes_inventory_extension.group_cost_sales_price</attribute>
+                </xpath>
+                <xpath expr="//page[@name='sales']" position="attributes">
+                    <attribute name="groups">hagbes_inventory_extension.group_cost_sales_price</attribute>
+                </xpath>
+                <xpath expr="//page[@name='invoicing']" position="attributes">
+                    <attribute name="groups">hagbes_inventory_extension.group_cost_sales_price</attribute>
+                </xpath>
+
+                 <xpath expr="//field[@name='property_stock_production']" position="attributes">
+                  <attribute name="groups" remove="1"/>
+                </xpath>
+
+                <xpath expr="//field[@name='property_stock_inventory']" position="attributes">
+                  <attribute name="groups" remove="1"/>
+                    <attribute name="required">1</attribute>
+                </xpath>
+                <field name="supplier_taxes_id" position="attributes">
+                        <attribute name="groups">hagbes_inventory_extension.group_cost_sales_price</attribute>
+                </field>
+
+                <xpath expr="//field[@name='default_code']" position="after">
+                    <field name="interchangeable_number_ids" widget="many2many_tags" options="{'no_create': False}"/>
+                </xpath>
+                <xpath expr="//field[@name='company_id']" position="attributes">
+                    <attribute name="invisible">0</attribute>
+                </xpath>
+            </field>
+        </record>
+
+<record id="product_template_tree_inherit" model="ir.ui.view">
+    <field name="name">product.template.tree.inherit</field>
+    <field name="model">product.template</field>
+    <field name="inherit_id" ref="product.product_template_tree_view"/>
+    <field name="arch" type="xml">
+        <xpath expr="//field[@name='default_code']" position="replace">
+            <field name="default_code" string="Part Number"/>
+        </xpath>
+        <xpath expr="//field[@name='default_code']" position="after">
+            <field name="interchangeable_number_ids" widget="many2many_tags"/>
+        </xpath>
+
+        <field name="list_price" position="attributes">
+            <attribute name="groups">hagbes_inventory_extension.group_cost_sales_price</attribute>
+        </field>
+        <field name="standard_price" position="attributes">
+            <attribute name="groups">hagbes_inventory_extension.group_cost_sales_price</attribute>
+        </field>
+
+    </field>
+</record>
+
+<record id="product_template_form_hide_tax_string" model="ir.ui.view">
+    <field name="name">product.template.form.hide.tax_string</field>
+    <field name="model">product.template</field>
+    <field name="inherit_id" ref="product.product_template_form_view"/>
+    <field name="arch" type="xml">
+
+        <xpath expr="//div[@name='taxes_div']" position="attributes">
+            <attribute name="groups">hagbes_inventory_extension.group_cost_sales_price</attribute>
+        </xpath>
+    </field>
+</record>
+
+
+<record id="product_template_kanban_create_for_manager" model="ir.ui.view" >
+    <field name="name">product.template.kanban.create.for.manager</field>
+    <field name="model">product.template</field>
+    <field name="inherit_id" ref="product.product_template_kanban_view"/>
+    <field name="arch" type="xml">
+        <xpath expr="//kanban" position="attributes">
+            <attribute name="create">true</attribute>
+        </xpath>
+    </field>
+</record>
+<record id="product_template_search_inherit" model="ir.ui.view">
+    <field name="name">product.template.search.inherit.interchange</field>
+    <field name="model">product.template</field>
+    <field name="inherit_id" ref="product.product_template_search_view"/>
+    <field name="arch" type="xml">
+        <xpath expr="//field[@name='name']" position="after">
+            <field name="interchangeable_numbers_text" string="Interchangeable Numbers"/>
+        </xpath>
+    </field>
+</record>
+
+    </data>
+</odoo>

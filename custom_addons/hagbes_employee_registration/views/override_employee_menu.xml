@@ -1,0 +1,37 @@
+<odoo>
+  <data>
+
+    <!-- Custom action: My Profile -->
+    <record id="action_hr_employee_my_profile" model="ir.actions.act_window">
+      <field name="name">My Profile</field>
+      <field name="res_model">hr.employee.public</field>
+      <!-- Show Kanban first, then form -->
+      <field name="view_mode">kanban,form</field>
+      <field name="domain">[('user_id', '=', uid), ('active', '=', True)]</field>
+      <field name="context">{'default_user_id': uid}</field>
+      <field name="search_view_id" ref="hr.hr_employee_public_view_search"/>
+    </record>
+
+    <!-- Associate existing kanban view -->
+    <record id="view_hr_employee_my_profile_kanban" model="ir.actions.act_window.view">
+      <field name="sequence" eval="10"/>
+      <field name="view_mode">kanban</field>
+      <field name="act_window_id" ref="action_hr_employee_my_profile"/>
+      <field name="view_id" ref="hr.hr_employee_public_view_kanban"/>
+    </record>
+
+    <!-- Associate existing form view -->
+    <record id="view_hr_employee_my_profile_form" model="ir.actions.act_window.view">
+      <field name="sequence" eval="20"/>
+      <field name="view_mode">form</field>
+      <field name="act_window_id" ref="action_hr_employee_my_profile"/>
+      <field name="view_id" ref="hr.hr_employee_public_view_form"/>
+    </record>
+
+    <!-- Override the Employees root menu to use the custom filtered action -->
+    <record id="hr.menu_hr_root" model="ir.ui.menu">
+      <field name="action" ref="action_hr_employee_my_profile"/>
+    </record>
+
+  </data>
+</odoo>

@@ -1,0 +1,7 @@
+<odoo>
+    <!-- Create a new group -->
+    <record id="group_lost_sale_viewer" model="res.groups">
+        <field name="name">Lost Sales</field>
+        
+    </record>
+</odoo>

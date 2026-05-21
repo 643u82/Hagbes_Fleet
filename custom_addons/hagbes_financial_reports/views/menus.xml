@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="account.menu_finance_reports" model="ir.ui.menu">
+        <field name="active" eval="False"/>
+    </record>
+
+    <menuitem id="menu_custom_reporting_root"
+              name="Reporting"
+              parent="account.menu_finance"
+              sequence="10"/>
+
+    <!-- Ledgers -->
+    <menuitem id="menu_finance_ledgers"
+              name="Ledgers"
+              parent="menu_custom_reporting_root"
+              sequence="15"/>
+
+    <record id="action_custom_trial_balance" model="ir.actions.client">
+        <field name="name">Trial Balance</field>
+        <field name="tag">t_b</field>
+    </record>
+
+    <menuitem id="menu_finance_ledgers_trial_balance"
+              name="Trial Balance"
+              parent="menu_finance_ledgers"
+              action="action_custom_trial_balance"
+              sequence="1"/>
+
+    <record id="action_custom_general_ledger" model="ir.actions.client">
+        <field name="name">General Ledger</field>
+        <field name="tag">gen_l</field>
+    </record>
+
+    <menuitem id="menu_finance_ledgers_general_ledger"
+              name="General Ledger"
+              parent="menu_finance_ledgers"
+              action="action_custom_general_ledger"
+              sequence="2"/>
+
+    <!-- Create a parent menu for Financial Reports since the standard one is missing -->
+    <menuitem id="menu_finance_financial_reports_tree"
+              name="Financial Reports"
+              parent="menu_custom_reporting_root"
+              sequence="5"/>
+
+    <!-- Custom Financial Reports -->
+    <menuitem id="menu_custom_balance_sheet"
+              name="Statement of Financial Position"
+              parent="menu_finance_financial_reports_tree"
+              action="action_custom_balance_sheet_client"
+              sequence="1"/>
+
+    <menuitem id="menu_custom_cash_flow"
+              name="Cash Flow Statement"
+              parent="menu_finance_financial_reports_tree"
+              action="action_custom_cash_flow_client"
+              sequence="2"/>
+
+    <menuitem id="menu_custom_profit_loss"
+              name="Profit and Loss"
+              parent="menu_finance_financial_reports_tree"
+              action="action_custom_profit_loss_client"
+              sequence="3"/>
+
+    <!-- Partner Reports -->
+    <menuitem id="menu_custom_finance_partner_reports"
+              name="Partner Reports"
+              parent="menu_custom_reporting_root"
+              sequence="16"/>
+
+    <record id="action_custom_partner_ledger" model="ir.actions.client">
+        <field name="name">Partner Ledger</field>
+        <field name="tag">p_l</field>
+    </record>
+    <menuitem id="menu_finance_partner_ledger"
+              name="Partner Ledger"
+              parent="menu_custom_finance_partner_reports"
+              action="action_custom_partner_ledger"
+              sequence="1"/>
+
+    <record id="action_custom_aged_receivable" model="ir.actions.client">
+        <field name="name">Aged Receivable</field>
+        <field name="tag">a_r</field>
+    </record>
+    <menuitem id="menu_finance_aged_receivable"
+              name="Aged Receivable"
+              parent="menu_custom_finance_partner_reports"
+              action="action_custom_aged_receivable"
+              sequence="2"/>
+
+    <record id="action_custom_aged_payable" model="ir.actions.client">
+        <field name="name">Aged Payable</field>
+        <field name="tag">a_p</field>
+    </record>
+    <menuitem id="menu_finance_aged_payable"
+              name="Aged Payable"
+              parent="menu_custom_finance_partner_reports"
+              action="action_custom_aged_payable"
+              sequence="3"/>
+
+    <!-- Daily Reports -->
+    <menuitem id="menu_custom_finance_daily_reports"
+              name="Daily Reports"
+              parent="menu_custom_reporting_root"
+              sequence="17"/>
+
+    <record id="action_custom_cash_book" model="ir.actions.client">
+        <field name="name">Cash Book</field>
+        <field name="tag">csh_b</field>
+    </record>
+    <menuitem id="menu_finance_cash_book"
+              name="Cash Book"
+              parent="menu_custom_finance_daily_reports"
+              action="action_custom_cash_book"
+              sequence="1"/>
+
+    <record id="action_custom_bank_book" model="ir.actions.client">
+        <field name="name">Bank Book</field>
+        <field name="tag">bnk_b</field>
+    </record>
+    <menuitem id="menu_finance_bank_book"
+              name="Bank Book"
+              parent="menu_custom_finance_daily_reports"
+              action="action_custom_bank_book"
+              sequence="2"/>
+
+    <!-- Tax Report -->
+    <record id="action_custom_tax_report" model="ir.actions.client">
+        <field name="name">Tax Report</field>
+        <field name="tag">tax_r</field>
+    </record>
+    <menuitem id="menu_finance_tax_report"
+              name="Tax Report"
+              parent="menu_custom_reporting_root"
+              action="action_custom_tax_report"
+              sequence="18"/>
+
+    <!-- Management Menus -->
+    <menuitem id="menu_finance_management"
+              name="Management"
+              parent="menu_custom_reporting_root"
+              sequence="20"/>
+
+    <menuitem id="menu_action_account_invoice_report_all"
+              name="Invoice Analysis"
+              parent="menu_finance_management"
+              action="account.action_account_invoice_report_all"
+              sequence="1"/>
+
+    <!-- <menuitem id="menu_analytic_report"
+              name="Analytic Report"
+              parent="menu_finance_management"
+              action="account_analytic.action_account_analytic_report"
+              sequence="2"/> -->
+
+    <!-- <menuitem id="menu_budget_analysis"
+              name="Budgets Analysis"
+              parent="menu_finance_management"
+              action="account_budget.action_account_budget_report"
+              sequence="3"
+              groups="account.group_account_user"/> -->
+
+    <!-- <menuitem id="menu_asset_analysis"
+              name="Assets"
+              parent="menu_finance_management"
+              action="hagbes_asset_management.action_account_asset_asset_report"
+              sequence="5"/> -->
+</odoo>

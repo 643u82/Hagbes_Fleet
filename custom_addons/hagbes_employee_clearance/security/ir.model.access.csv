@@ -1,0 +1,2 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_employee_clearance_user,access.employee.clearance.user,model_employee_clearance,base.group_user,1,1,1,0

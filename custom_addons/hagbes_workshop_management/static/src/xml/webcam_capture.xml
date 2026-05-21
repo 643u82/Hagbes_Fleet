@@ -1,0 +1,12 @@
+<templates xml:space="preserve">
+    <t t-name="hagbes_workshop_management.WebcamCapture">
+      <div class="o_webcam_capture">
+        <video t-ref="video" width="320" height="240" autoplay="autoplay" playsinline="playsinline"></video>
+        <canvas t-ref="canvas" width="320" height="240" style="display:none;"></canvas>
+        <button type="button" t-on-click="capture">📸 Capture</button>
+        <t t-if="props.value">
+          <img t-att-src="'data:image/png;base64,' + props.value" width="320" height="240"/>
+        </t>
+      </div>
+    </t>
+</templates>

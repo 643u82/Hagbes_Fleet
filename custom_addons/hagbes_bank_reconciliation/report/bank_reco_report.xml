@@ -1,0 +1,162 @@
+<odoo>
+    <!-- Report Action -->
+    <record id="bank_reco_report_action" model="ir.actions.report">
+        <field name="name">Account Reconciliation Report</field>
+        <field name="model">bank_reco.header</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">hagbes_bank_reconciliation.report_bank_reco</field>
+        <field name="report_file">hagbes_bank_reconciliation.report_bank_reco</field>
+        <field name="print_report_name">'BankReco_%s' % (object.name)</field>
+    </record>
+
+    <!-- PDF Template -->
+    <template id="report_bank_reco">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2>Account Reconciliation – <t t-esc="o.name"/></h2>
+
+                        <p>
+                            <strong>Account:</strong> <t t-esc="o.account_id"/> &#160;|&#160;
+                            <strong>Period:</strong> <t t-esc="o.period"/> &#160;|&#160;
+                            <strong>Statement Date:</strong> <t t-esc="o.statement_date"/> &#160;|&#160;
+                        </p>
+
+                        <h3>Summary</h3>
+                        <div class="o_bank_reco_summary" style="margin-top:15px;">
+                            <div class="row" style="margin-bottom:5px;">
+                                <div class="col-6"><strong>Opening Balance (GL):</strong></div>
+                                <div class="col-6 text-right">
+                                    <t t-esc="o.beginning_balance" t-options='{"widget":"monetary","display_currency": o.detail_ids[:1] and o.detail_ids[0].currency_id or None}'/>
+                                </div>
+                            </div>
+
+                            <div class="row" style="margin-bottom:5px;">
+                                <div class="col-6"><strong>Bank Statement Balance:</strong></div>
+                                <div class="col-6 text-right">
+                                    <t t-esc="o.bank_statement_balance" t-options='{"widget":"monetary","display_currency": o.detail_ids[:1] and o.detail_ids[0].currency_id or None}'/>
+                                </div>
+                            </div>
+
+                            <div class="row" style="margin-bottom:5px;">
+                                <div class="col-6"><strong>General Ledger Ending Balance:</strong></div>
+                                <div class="col-6 text-right">
+                                    <t t-esc="o.ledger_balance" t-options='{"widget":"monetary","display_currency": o.detail_ids[:1] and o.detail_ids[0].currency_id or None}'/>
+                                </div>
+                            </div>
+
+                            <div class="row" style="margin-bottom:5px;">
+                                <div class="col-6"><strong>Cleared Transactions:</strong></div>
+                                <div class="col-6 text-right">
+                                    <t t-esc="o.matched_total" t-options='{"widget":"monetary","display_currency": o.detail_ids[:1] and o.detail_ids[0].currency_id or None}'/>
+                                </div>
+                            </div>
+
+                            <div class="row" style="margin-bottom:5px;">
+                                <div class="col-6"><strong>Deposits in Transit:</strong></div>
+                                <div class="col-6 text-right">
+                                    <t t-esc="o.deposit_in_transit_total" t-options='{"widget":"monetary","display_currency": o.detail_ids[:1] and o.detail_ids[0].currency_id or None}'/>
+                                </div>
+                            </div>
+
+                            <div class="row" style="margin-bottom:5px;">
+                                <div class="col-6"><strong>Outstanding Cheques:</strong></div>
+                                <div class="col-6 text-right">
+                                    <t t-esc="o.outstanding_cheque_total" t-options='{"widget":"monetary","display_currency": o.detail_ids[:1] and o.detail_ids[0].currency_id or None}'/>
+                                </div>
+                            </div>
+
+                            <div class="row" style="margin-bottom:5px;">
+                                <div class="col-6"><strong>Reconciled Balance:</strong></div>
+                                <div class="col-6 text-right">
+                                    <t t-esc="o.ending_balance" t-options='{"widget":"monetary","display_currency": o.detail_ids[:1] and o.detail_ids[0].currency_id or None}'/>
+                                </div>
+                            </div>
+
+                            <div class="row" style="margin-bottom:5px;">
+                                <div class="col-6"><strong>Unreconciled Difference:</strong></div>
+                                <div class="col-6 text-right">
+                                    <span t-att-class="o.difference &lt; 0 and 'text-danger' or ''">
+                                        <t t-esc="o.difference" t-options='{"widget":"monetary","display_currency": o.detail_ids[:1] and o.detail_ids[0].currency_id or None}'/>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Detailed Deposits in Transit -->
+                        <t t-if="o.deposit_in_transit_total">
+                            <h3>Deposits in Transit</h3>
+                            <table class="table table-condensed table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Transaction / Reference</th>
+                                        <th>Amount</th>
+                                        <th>Transaction Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-foreach="o.detail_ids.filtered(lambda l: l.status=='deposit_in_transit')" t-as="line">
+                                        <tr>
+                                            <td><t t-esc="line.reference or line.voucher_no"/></td>
+                                            <td class="text-right">
+                                                <t t-esc="line.amount" t-options='{"widget":"monetary","display_currency": line.currency_id}'/>
+                                            </td>
+                                            <td><t t-esc="line.voucher_date"/></td>
+                                        </tr>
+                                    </t>
+                                </tbody>
+                                        <tfoot>
+                                        <tr>
+                                            <td><strong>Total</strong></td>
+                                            <td class="text-right">
+                                                <strong>
+                                                    <t t-esc="o.deposit_in_transit_total" t-options='{"widget":"monetary","display_currency": o.currency_id}'/>
+                                                </strong>
+                                            </td>
+                                        </tr>
+                                    </tfoot>
+                            </table>
+                        </t>
+
+                        <!-- Detailed Outstanding Cheques -->
+                        <t t-if="o.outstanding_cheque_total">
+                            <h3>Outstanding Cheques</h3>
+                            <table class="table table-condensed table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Transaction / Reference</th>
+                                        <th>Amount</th>
+                                        <th>Transaction Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-foreach="o.detail_ids.filtered(lambda l: l.status=='outstanding_cheque')" t-as="line">
+                                        <tr>
+                                            <td><t t-esc="line.reference or line.voucher_no"/></td>
+                                            <td class="text-right">
+                                                <t t-esc="line.amount" t-options='{"widget":"monetary","display_currency": line.currency_id}'/>
+                                            </td>
+                                            <td><t t-esc="line.voucher_date"/></td>
+                                        </tr>
+                                    </t>
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td><strong>Total</strong></td>
+                                        <td class="text-right">
+                                            <strong>
+                                                <t t-esc="o.outstanding_cheque_total" t-options='{"widget":"monetary","display_currency": o.currency_id}'/>
+                                            </strong>
+                                        </td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </t>
+
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

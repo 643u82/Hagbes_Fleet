@@ -1,0 +1,126 @@
+<odoo>
+  <data>
+    <record id="stock_quant_tree_inherit_open_template" model="ir.ui.view">
+      <field name="name">stock.quant.tree.inherit.open.template</field>
+      <field name="model">stock.quant</field>
+     <field name="inherit_id" ref="stock.view_stock_quant_tree_inventory_editable"/><!-- Use stock.view_stock_quant_tree_editable if needed -->
+      <field name="arch" type="xml">
+
+          <xpath expr="//field[@name='inventory_diff_quantity']" position="attributes">
+            <attribute name="groups">hagbes_inventory_extension.group_custom_approve_adjustment</attribute>
+          </xpath>
+          <xpath expr="//field[@name='quantity']" position="attributes">
+                <attribute name="groups">hagbes_inventory_extension.group_custom_approve_adjustment</attribute>
+          </xpath>
+          <xpath expr="//field[@name='inventory_quantity']" position="attributes">
+                <attribute name="column_invisible">False</attribute>
+                <attribute name="readonly">not can_edit_inventory_quantity</attribute>
+          </xpath>
+          <xpath expr="//field[@name='inventory_quantity']" position="after">
+                <field name="can_edit_inventory_quantity" column_invisible="True"/>
+          </xpath>
+          <xpath expr="//field[@name='inventory_quantity']" position="attributes">
+              <attribute name="invisible">status == 'confirmed'</attribute>
+          </xpath>
+        <xpath expr="//header/button[@name='stock.action_stock_inventory_adjustement_name']" position="attributes">
+            <attribute name="groups">hagbes_inventory_extension.group_custom_approve_adjustment</attribute>
+        </xpath>
+        <xpath expr="//field[@name='inventory_diff_quantity']" position="after">
+            <field name="can_edit_justification" column_invisible="True"/>
+            <field name="difference_justification" optional="show" select="1"  readonly="not can_edit_justification"/>
+            <field name="product_sales_price" groups="hagbes_inventory_extension.group_custom_verify_difference" optional="show"/>
+            <field name="can_edit_remark" column_invisible="True"/>
+            <field name="remark" readonly="not can_edit_remark"/>
+            <field name="review_confirmed_by" invisible="review_confirmed_by ==''" optional="show" select="0"/>
+             <field name="count_confirmed_by" invisible="review_confirmed_by ==''" optional="show" select="0"/>
+        </xpath>
+       <xpath expr="//header/button[@name='action_reset']" position="before">
+           <button name="action_review_difference"
+                    string="Stock Difference"
+                    type="object"
+                    class="btn btn-secondary"
+                    groups="hagbes_inventory_extension.group_custom_warehouse_manager"
+                    display="always"/>
+           <button name="action_all_history"
+                    string="All History"
+                    help="all confirmed stock counting in current year"
+                    type="object"
+                    class="btn btn-secondary"
+                    groups="base.group_erp_manager"
+                    />
+            <button name="action_reset_all"
+                    type="object"
+                    string="Reset All"
+                    class="btn-secondary"
+                    groups="base.group_erp_manager"
+                    />
+        </xpath>
+        <xpath expr="//list" position="inside">
+<!--             <button name="action_stock_adjustment"-->
+<!--                string="Adjust"-->
+<!--                type="object"-->
+<!--                groups="hagbes_inventory_extension.group_custom_warehouse_manager"-->
+<!--                invisible="status != 'recheck'"-->
+<!--                icon="fa-refresh"/>-->
+              <field name="status"
+                   widget="badge"
+                   decoration-warning="status == 'pending'"
+                   decoration-info="status == 'counted'"
+                   decoration-primary="status == 'recounted'"
+                   decoration-muted="status == 'reviewed'"
+                   decoration-success="status == 'confirmed'"/>
+
+        </xpath>
+        <xpath expr="//header/button[@name='action_apply_all']" position="attributes">
+            <attribute name="groups">hagbes_inventory_extension.group_custom_approve_adjustment</attribute>
+            <attribute name="invisible">1</attribute>
+        </xpath>
+        <xpath expr="//button[@name='stock.action_stock_inventory_adjustement_name']" position="attributes">
+           <attribute name="invisible">1</attribute>
+        </xpath>
+          <xpath expr="//button[@name='action_apply_inventory']" position="attributes">
+            <attribute name="groups">hagbes_inventory_extension.group_custom_approve_adjustment</attribute>
+           <attribute name="invisible">inventory_diff_quantity or count_confirmed_by</attribute>
+        </xpath>
+        <xpath expr="//button[@name='action_clear_inventory_quantity']" position="attributes">
+            <attribute name="groups">stock.group_stock_manager</attribute>
+        </xpath>
+        <xpath expr="//button[@name='action_set_inventory_quantity']" position="attributes">
+            <attribute name="groups">stock.group_stock_manager,stock.group_stock_user</attribute>
+            <attribute name="invisible">count_confirmed_by</attribute>
+        </xpath>
+        <xpath expr="//button[@name='action_set_inventory_quantity']" position="after">
+            <button name="action_difference_justification"
+            type="object"
+            string="Justify"
+            class="btn-link" icon="fa-check"
+            invisible="inventory_diff_quantity == 0 or status != 'recounted' or status != 'counted'"
+            groups="hagbes_inventory_extension.group_custom_approve_adjustment"/>
+        </xpath>
+          <xpath expr="//button[@name='action_set_inventory_quantity']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+        <xpath expr="//button[@name='action_set_inventory_quantity']" position="after">
+            <button name="action_apply_inventory"
+            type="object"
+            string="Approve difference"
+            help="approve stock counting difference"
+            class="btn-link"
+            icon="fa-check-circle"
+            invisible="count_confirmed_by"
+            groups="hagbes_inventory_extension.group_custom_verify_difference"/>
+        </xpath>
+        <xpath expr="//button[@name='action_difference_justification']" position="after">
+            <button name="action_reset_line"
+                    type="object"
+                    string="Reset"
+                    icon="fa-undo"
+                    groups="base.group_erp_manager"/>
+        </xpath>
+        
+
+      </field>
+      
+    </record>
+  </data>
+</odoo>

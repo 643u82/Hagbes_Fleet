@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Vehicle Views -->
+    <record id="view_fleet_vehicle_tree" model="ir.ui.view">
+        <field name="name">hagbes.fleet.vehicle.tree</field>
+        <field name="model">hagbes.fleet.vehicle</field>
+        <field name="arch" type="xml">
+            <list string="Vehicles" decoration-success="gps == 'Yes'" 
+                decoration-warning="status=='assigned'" 
+                decoration-danger="status=='maintenance'">
+                <field name="name"/>
+                <field name="plate_number"/>
+                <field name="driver"/>
+                <field name="gps" widget="badge" decoration-success="gps == 'Yes'"/>
+                <field name="status"/>
+                <field name="vehicle_type"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_fleet_vehicle_form" model="ir.ui.view">
+        <field name="name">hagbes.fleet.vehicle.form</field>
+        <field name="model">hagbes.fleet.vehicle</field>
+        <field name="arch" type="xml">
+            <form string="Vehicle">
+                <header>
+                    <button name="action_request_disposal"
+                            type="object"
+                            string="Request Disposal"
+                            class="btn-primary"
+                            invisible="status in ('waiting_approval', 'out_of_service')"/>
+                    <button name="action_force_disposal"
+                            type="object"
+                            string="Force Disposal (Admin)"
+                            class="btn-danger"
+                            groups="hagbes_fleet.group_fleet_admin"
+                            invisible="disposal_state != 'waiting_approval' or not is_approval_disabled_or_missing"/>
+                    <field name="status" widget="statusbar" 
+                            statusbar_visible="available,assigned,maintenance,waiting_approval,out_of_service"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group string="Vehicle Identification">
+                            <field name="name"/>
+                            <field name="plate_number"/>
+                            <field name="model"/>
+                            <field name="brand"/>
+                            <field name="year"/>
+                        </group>
+                        <group string="Technical Details">
+                            <field name="engine_number"/>
+                            <field name="chassis_number"/>
+                            <field name="fuel_type"/>
+                            <field name="kmperl"/>
+                            <field name="gps"/>
+                            <field name="vehicle_type"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Operations">
+                            <field name="driver"/>
+                            <field name="status"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                        <group string="Acquisition">
+                            <field name="acquisition_date"/>
+                            <field name="cost"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Assignments">
+                            <field name="assignment_ids" readonly="1"/>
+                        </page>
+                        <page string="Maintenance">
+                            <field name="maintenance_ids" readonly="1"/>
+                        </page>
+                        <page string="Status History">
+                            <field name="history_ids" readonly="1"/>
+                        </page>
+                        <page string="Status Logs">
+                            <field name="status_log_ids" readonly="1"/>
+                        </page>
+                    </notebook>
+                    <field name="is_approval_disabled_or_missing" invisible="1"/>
+                    <field name="disposal_state" invisible="1"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_fleet_vehicle_kanban" model="ir.ui.view">
+        <field name="name">hagbes.fleet.vehicle.kanban</field>
+        <field name="model">hagbes.fleet.vehicle</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="status" sample="1">
+                <field name="name"/>
+                <field name="plate_number"/>
+                <field name="driver"/>
+                <field name="status"/>
+                <field name="model"/>
+                <field name="fuel_type"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div t-attf-class="oe_kanban_global_click o_kanban_record_has_image_fill">
+                            <div class="oe_kanban_details">
+                                <strong class="o_kanban_record_title">
+                                    <field name="name"/>
+                                </strong>
+                                <div class="o_kanban_record_subtitle">
+                                    <field name="plate_number"/>
+                                </div>
+                                <div class="o_kanban_record_body">
+                                    <div><i class="fa fa-user" title="Driver"/> <field name="driver"/></div>
+                                    <div><i class="fa fa-car" title="Model"/> <field name="model"/></div>
+                                </div>
+                                <div class="o_kanban_record_bottom">
+                                    <div class="oe_kanban_bottom_left">
+                                        <field name="fuel_type" widget="label_selection" options="{'classes': {'petrol': 'info', 'diesel': 'warning', 'electric': 'success', 'hybrid': 'primary'}}"/>
+                                    </div>
+                                    <div class="oe_kanban_bottom_right">
+                                        <field name="status" widget="label_selection" options="{'classes': {'available': 'success', 'assigned': 'warning', 'maintenance': 'danger', 'waiting_approval': 'info', 'out_of_service': 'secondary'}}"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="action_fleet_vehicle" model="ir.actions.act_window">
+        <field name="name">Vehicles</field>
+        <field name="res_model">hagbes.fleet.vehicle</field>
+        <field name="view_mode">kanban,list,form</field>
+    </record>
+</odoo>

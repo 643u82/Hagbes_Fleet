@@ -1,0 +1,32 @@
+<odoo>
+    <!-- Action: Create OnDuty popup -->
+    <record id="action_onduty_create" model="ir.actions.act_window">
+        <field name="name"> Request OnDuty </field>
+        <field name="res_model">onduty.report</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+    <record id="action_onduty_create_admin" model="ir.actions.act_window">
+        <field name="name"> Request For Others) </field>
+        <field name="res_model">onduty.admin.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <record id="action_my_onduty" model="ir.actions.act_window">
+        <field name="name">My OnDuty Requests</field>
+        <field name="res_model">onduty.report</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="view_onduty_list_readonly"/>
+        <field name="domain">[('employee_id.user_id','=',uid)]</field>
+         <field name="context">{'create': False, 'edit': False}</field>
+    </record>
+    <record id="action_onduty_reports" model="ir.actions.act_window">
+        <field name="name">OnDuty Reports</field>
+        <field name="res_model">onduty.report</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="view_onduty_list_readonly"/>
+        <field name="context">{'create': False, 'edit': False}</field>
+   </record>
+
+</odoo>

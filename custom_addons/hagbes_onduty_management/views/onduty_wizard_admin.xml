@@ -1,0 +1,51 @@
+<odoo>
+    <data>
+        <!-- OnDuty Admin Wizard Form -->
+        <record id="view_onduty_admin_wizard_form" model="ir.ui.view">
+            <field name="name">onduty.admin.wizard.form</field>
+            <field name="model">onduty.admin.wizard</field>
+            <field name="arch" type="xml">
+              <form string="Request OnDuty for others" class="o_form_lightbox">
+                <sheet>
+                    <group string="Employee Info" colspan="2" >
+                        <group>
+                            <field name="employee_id" placeholder="Select Employee" options="{'no_create': True}"/>
+                            <field name="department_id" options="{'no_open': True}"/>
+                            <field name="company_id" options="{'no_open': True}"/>
+                        </group>
+                        <group>
+                            <field name="job_id" options="{'no_open': True}"/>
+                            <field name="branch_id" options="{'no_open': True}"/>
+                        </group>
+                    </group>
+                     <group string="Duty Info" colspan="4">
+                        <group>
+                            <field name="branch_company"/>
+                            <field name="sister_company"/>
+                            <field name="other_company"/>
+                        </group>
+                        <group>
+                            <field name="start_date"/>
+                            <field name="end_date"/>
+                        </group>
+                        <group>
+                            <field name="duty"/>
+                        </group>
+                        <group>
+                            <field name="remark"/>
+                        </group>
+                        <group>
+                            <field name="attachment"/>
+                        </group>
+                     </group>
+
+                    <footer>
+                        <button string="Submit" type="object" name="action_submit" class="btn-primary"/>
+                        <button string="Cancel" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </sheet>
+              </form>
+           </field>
+       </record>
+   </data>
+</odoo>

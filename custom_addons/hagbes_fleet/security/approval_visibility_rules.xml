@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Approval Request Visibility Rules -->
+    <record id="rule_approval_request_requester" model="ir.rule">
+        <field name="name">Approval Request: Requester</field>
+        <field name="model_id" ref="hagbes_approval_workflow.model_approval_request"/>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        <field name="domain_force">['|', ('requested_by', '=', user.id), ('approver_ids', 'in', user.id)]</field>
+    </record>
+
+    <record id="rule_approval_request_admin" model="ir.rule">
+        <field name="name">Approval Request: Administrator</field>
+        <field name="model_id" ref="hagbes_approval_workflow.model_approval_request"/>
+        <field name="groups" eval="[(4, ref('base.group_system'))]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+
+    <!-- Approval History Visibility Rules -->
+    <record id="rule_approval_history_requester" model="ir.rule">
+        <field name="name">Approval History: Requester/Approver</field>
+        <field name="model_id" ref="hagbes_approval_workflow.model_approval_history"/>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        <field name="domain_force">['|', ('request_id.requested_by', '=', user.id), ('request_id.approver_ids', 'in', user.id)]</field>
+    </record>
+
+    <record id="rule_approval_history_admin" model="ir.rule">
+        <field name="name">Approval History: Administrator</field>
+        <field name="model_id" ref="hagbes_approval_workflow.model_approval_history"/>
+        <field name="groups" eval="[(4, ref('base.group_system'))]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+</odoo>

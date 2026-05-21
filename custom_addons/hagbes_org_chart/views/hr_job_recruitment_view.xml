@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <record id="hr_job_kanban_inherit_toggle_publish_conditional" model="ir.ui.view">
+    <field name="name">hr.job.kanban.inherit.website.toggle.conditional</field>
+    <field name="model">hr.job</field>
+    <field name="inherit_id" ref="hr_recruitment.view_hr_job_kanban"/>
+    <field name="arch" type="xml">
+
+      <!-- Ensure these fields are loaded -->
+      <xpath expr="//kanban" position="inside">
+        <field name="is_published"/>
+        <field name="website_published"/>
+        <field name="no_of_recruitment"/>
+        <field name="company_id"/>
+        <field name="analytic_account_id"/>
+      </xpath>
+
+      <!-- Replace the company display line with company | branch -->
+      <xpath expr="//div[contains(@class, 'o_kanban_card_header_title')]/div[hasclass('small') and .//i[contains(@class, 'fa-building-o')]]" position="replace">
+          <div class="small" groups="base.group_multi_company">
+            <i class="fa fa-building-o" role="img" aria-label="Company" title="Company"/>
+            <t t-esc="record.company_id.value"/>
+            <t t-if="record.analytic_account_id and record.analytic_account_id.value">
+  |           <t t-esc="record.analytic_account_id.value"/>
+            </t>
+          </div>
+      </xpath>
+
+      <!-- Conditionally show the is_published toggle and job page link -->
+      <xpath expr="//div[@name='kanban_boxes']" position="inside">
+        <t t-if="record.no_of_recruitment.raw_value &gt; 0">
+          <div class="col-6">
+            <field name="is_published"
+                   widget="boolean_toggle_labeled"
+                   options="{'false_label': 'Not Published', 'true_label': 'Published'}"/>
+          </div>
+          <div class="col-6 text-end">
+            <a type="object" name="open_website_url">
+              <i class="fa fa-fw fa-external-link" role="img"></i> Job Page
+            </a>
+          </div>
+        </t>
+        <t t-else="">
+          <div class="col-12 text-muted text-center small py-2">
+            <i class="fa fa-ban text-danger me-1"></i>
+            No open positions to recruit
+          </div>
+        </t>
+      </xpath>
+
+    </field>
+  </record>
+</odoo>

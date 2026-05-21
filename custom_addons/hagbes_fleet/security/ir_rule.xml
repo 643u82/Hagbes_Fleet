@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Multi-Company Rules -->
+        <record id="rule_hagbes_fleet_vehicle_multi_company" model="ir.rule">
+            <field name="name">Hagbes Fleet Vehicle Multi-Company</field>
+            <field name="model_id" ref="model_hagbes_fleet_vehicle"/>
+            <field name="domain_force">[('company_id', 'in', user.company_ids.ids)]</field>
+        </record>
+
+        <record id="rule_hagbes_fleet_vehicle_assign_multi_company" model="ir.rule">
+            <field name="name">Hagbes Fleet Assignment Multi-Company</field>
+            <field name="model_id" ref="model_hagbes_fleet_vehicle_assign"/>
+            <field name="domain_force">[('company_id', 'in', user.company_ids.ids)]</field>
+        </record>
+
+        <record id="rule_hagbes_fleet_maintenance_multi_company" model="ir.rule">
+            <field name="name">Hagbes Fleet Maintenance Multi-Company</field>
+            <field name="model_id" ref="model_hagbes_fleet_maintenance"/>
+            <field name="domain_force">[('company_id', 'in', user.company_ids.ids)]</field>
+        </record>
+
+        <record id="rule_hagbes_fleet_allocation_multi_company" model="ir.rule">
+            <field name="name">Hagbes Fleet Allocation Multi-Company</field>
+            <field name="model_id" ref="model_hagbes_fleet_allocation"/>
+            <field name="domain_force">[('company_id', 'in', user.company_ids.ids)]</field>
+        </record>
+
+        <record id="rule_hagbes_fleet_trip_log_multi_company" model="ir.rule">
+            <field name="name">Hagbes Fleet Trip Log Multi-Company</field>
+            <field name="model_id" ref="model_hagbes_fleet_trip_log"/>
+            <field name="domain_force">[('company_id', 'in', user.company_ids.ids)]</field>
+        </record>
+
+        <record id="rule_hagbes_fleet_trip_gps_multi_company" model="ir.rule">
+            <field name="name">Hagbes Fleet Trip GPS Multi-Company</field>
+            <field name="model_id" ref="model_hagbes_fleet_trip_gps"/>
+            <field name="domain_force">[('company_id', 'in', user.company_ids.ids)]</field>
+        </record>
+
+        <record id="rule_hagbes_fleet_discrepancy_multi_company" model="ir.rule">
+            <field name="name">Hagbes Fleet Discrepancy Multi-Company</field>
+            <field name="model_id" ref="model_hagbes_fleet_discrepancy"/>
+            <field name="domain_force">[('company_id', 'in', user.company_ids.ids)]</field>
+        </record>
+
+        <record id="rule_hagbes_fleet_vehicle_status_log_multi_company" model="ir.rule">
+            <field name="name">Hagbes Fleet Vehicle Status Log Multi-Company</field>
+            <field name="model_id" ref="model_hagbes_fleet_vehicle_status_log"/>
+            <field name="domain_force">[('company_id', 'in', user.company_ids.ids)]</field>
+        </record>
+
+        <record id="rule_hagbes_fleet_allocation_append_multi_company" model="ir.rule">
+            <field name="name">Hagbes Fleet Allocation Append Multi-Company</field>
+            <field name="model_id" ref="model_hagbes_fleet_allocation_append"/>
+            <field name="domain_force">[('company_id', 'in', user.company_ids.ids)]</field>
+        </record>
+
+        <!-- Oversight Rules (Full Access within Company context) -->
+        <record id="rule_hagbes_fleet_vehicle_manager" model="ir.rule">
+            <field name="name">Hagbes Fleet Manager: Full Access</field>
+            <field name="model_id" ref="model_hagbes_fleet_vehicle"/>
+            <field name="groups" eval="[(4, ref('hagbes_fleet.group_fleet_manager'))]"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+        </record>
+    </data>
+</odoo>

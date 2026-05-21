@@ -1,0 +1,26 @@
+<odoo>
+    <record id="view_stock_adjust_wizard_form" model="ir.ui.view">
+        <field name="name">stock.adjust.wizard.form</field>
+        <field name="model">stock.adjust.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Adjust Stock">
+                <group>
+                    <field name="user_id"/>
+                    <field name="new_count"/>
+                    <field name="remark"/>
+                </group>
+                <footer>
+                    <button string="Apply" type="object" name="action_apply_adjustment" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_stock_adjust_wizard" model="ir.actions.act_window">
+        <field name="name">Adjust Stock</field>
+        <field name="res_model">stock.adjust.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>

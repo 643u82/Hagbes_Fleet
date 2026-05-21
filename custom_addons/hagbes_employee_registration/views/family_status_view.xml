@@ -1,0 +1,25 @@
+<odoo>
+    <record id="view_employee_form_inherit_family_info" model="ir.ui.view">
+        <field name="name">hr.employee.form.family.info</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_form"/>
+        <field name="arch" type="xml">
+
+            <!-- Insert marriage certificate after spouse_birthdate -->
+            <xpath expr="//group[@name='emergency']/field[@name='spouse_birthdate']" position="after">
+                <field name="marriage_certificate" filename="marriage_certificate_filename" />
+            </xpath>
+
+            <!-- Insert children list after children count -->
+            <xpath expr="//group[@name='emergency']/field[@name='children']" position="after">
+                <field name="children_ids"  nolabel="1">
+                    <list create="1" editable="bottom">
+                        <field name="name"/>
+                        <field name="birth_date"/>
+                    </list>
+                </field>
+            </xpath>
+
+        </field>
+    </record>
+</odoo>

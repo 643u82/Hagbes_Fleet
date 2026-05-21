@@ -1,0 +1,38 @@
+<odoo>
+    <!-- Pivot View -->
+    <record id="hr_leave_employee_type_report_pivot" model="ir.ui.view">
+        <field name="name">hr.leave.employee.type.report.view.pivot</field>
+        <field name="model">hr.leave.employee.type.report</field>
+        <field name="arch" type="xml">
+            <pivot string="Time Off Report" sample="1" disable_linking="1" >
+                <field name="employee_id" type="row"/>
+                <field name="leave_type" type="col"/>
+                <field name="holiday_status" type="col"/>
+                <field name="year_2_balance" type="measure"/>
+                <field name="year_1_balance" type="measure"/>
+                <field name="current_year_balance" type="measure"/>
+                <field name="number_of_days" type="measure"/>
+                <field name="gained_through_allocation" type="measure"/>
+                <field name="total_balance" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <!-- Chart View -->
+    <record id="hr_leave_employee_type_report_graph" model="ir.ui.view">
+        <field name="name">hr.leave.employee.type.report.view.graph</field>
+        <field name="model">hr.leave.employee.type.report</field>
+        <field name="arch" type="xml">
+            <graph string="Time Off Graph" type="bar">
+                <field name="employee_id" type="row"/>
+                <field name="leave_type" type="col"/>
+                <field name="total_balance" type="measure"/>
+                <field name="year_2_balance" type="measure"/>
+                <field name="year_1_balance" type="measure"/>
+                <field name="current_year_balance" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+
+</odoo>

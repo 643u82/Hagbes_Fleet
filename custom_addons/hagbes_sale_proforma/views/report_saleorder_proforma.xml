@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <template id="hagbes_sale_proforma_invoice"
+              inherit_id="sale.report_saleorder_document">
+
+        <!-- Replace product name to hide internal reference / part number -->
+        <xpath expr="//td[@name='td_name']/span[@t-field='line.name']"
+               position="replace">
+
+            <!-- Removes [CODE] if present, keeps description -->
+            <span t-out="line.name.split('] ', 1)[-1]"/>
+
+        </xpath>
+
+    </template>
+
+</odoo>

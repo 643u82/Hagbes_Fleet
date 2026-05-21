@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_hr_employee_form_inherit_hired_type" model="ir.ui.view">
+        <field name="name">hr.employee.form.hired.type</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='job_id']" position="after">
+                <field name="hired_date" required="1"/>
+                <field name="employment_type" required="1"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,38 @@
+<odoo>
+<!-- Vehicle Make Tree View -->
+<record id="view_vehicle_make_tree" model="ir.ui.view">
+    <field name="name">workshop.vehicle.make.tree</field>
+    <field name="model">workshop.vehicle.make</field>
+    <field name="arch" type="xml">
+        <list>
+            <field name="name"/>
+            <field name="company_id"/>
+            <field name="branch_id"/>
+        </list>
+    </field>
+</record>
+
+<!-- Vehicle Make Form View -->
+<record id="view_vehicle_make_form" model="ir.ui.view">
+    <field name="name">workshop.vehicle.make.form</field>
+    <field name="model">workshop.vehicle.make</field>
+    <field name="arch" type="xml">
+        <form>
+            <sheet>
+                <group>
+                    <field name="name"/>
+                    <field name="company_id"/>
+                    <field name="branch_id"/>
+                </group>
+            </sheet>
+        </form>
+    </field>
+</record>
+
+<!-- Vehicle Make Action -->
+<record id="action_vehicle_make" model="ir.actions.act_window">
+    <field name="name">Vehicle Makes</field>
+    <field name="res_model">workshop.vehicle.make</field>
+    <field name="view_mode">list,form</field>
+</record>
+</odoo>

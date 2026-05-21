@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+  <data>
+
+    <record id="inherit_product_template_replenish_button" model="ir.ui.view">
+      <field name="name">product.template.replenish.button.override</field>
+      <field name="model">product.template</field>
+      <field name="inherit_id" ref="stock.product_template_form_view_procurement_button"/>
+      <field name="arch" type="xml">
+        <xpath expr="//button[@name='%(stock.action_product_replenish)d']" position="attributes">
+          <attribute name="groups">hagbes_inventory_extension.group_custom_warehouse_manager</attribute>
+        </xpath>
+      </field>
+    </record>
+
+       <menuitem
+        id="menu_reordering_rules_replenish"
+        action="stock.action_replenishment"
+        name="Replenishment" parent="stock.menu_stock_procurement" sequence="5"
+        groups="hagbes_inventory_extension.group_custom_warehouse_manager"/>
+
+  </data>
+</odoo>

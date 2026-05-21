@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Record Rule for Inventory Transfers (stock.picking) -->
+   <record id="stock_picking_branch_company_rule" model="ir.rule">
+    <field name="name">Stock Picking: Company and Branch Rule</field>
+    <field name="model_id" ref="stock.model_stock_picking_type"/>
+     <field name="domain_force"> [('company_id', '=', user.company_id.id), ('warehouse_id.branch_id', 'in', user.allowed_branch_ids.ids)]</field>
+
+    <field name="perm_read" eval="True"/>
+    <field name="perm_write" eval="False"/>
+    <field name="perm_create" eval="False"/>
+    <field name="perm_unlink" eval="False"/>
+    <field name="groups" eval="[(4, ref('stock.group_stock_user'))]"/>
+</record>
+<record id="stock_picking_internal_read_rule" model="ir.rule">
+    <field name="name">Allow backend read of inter-branch internal types</field>
+    <field name="model_id" ref="stock.model_stock_picking_type"/>
+    <field name="domain_force">[('code', '=', 'internal')]</field>
+    <field name="perm_read" eval="True"/>
+    <field name="perm_write" eval="False"/>
+    <field name="perm_create" eval="False"/>
+    <field name="perm_unlink" eval="False"/>
+    <field name="groups" eval="[(4, ref('base.group_system'))]"/> <!-- or restrict to admin/server -->
+</record>
+
+
+</odoo>

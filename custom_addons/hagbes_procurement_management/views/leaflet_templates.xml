@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Leaflet Map Template -->
+    <!-- This template is likely not used directly for the live tracking page,
+         but its inline styles are moved to leaflet_custom.css for consistency. -->
+    <template id="leaflet_map_template" name="Leaflet Map">
+        <t t-call="web.layout">
+            <t t-set="head"/> <!-- No inline styles here -->
+            
+            <div class="tracking-container">
+                <div class="tracking-header">
+                    <h1><i class="fa fa-ship"></i> Ship Position</h1>
+                    <div class="subtitle"><t t-esc="title"/></div>
+                </div>
+                
+                <div class="map-container">
+                    <div id="tracking_map"></div>
+                    <div class="update-indicator">Live Tracking</div>
+                </div>
+            </div>
+
+            <script><![CDATA[
+                document.addEventListener('DOMContentLoaded', function() {
+                    var lat = parseFloat(document.currentScript.getAttribute('data-lat')) || 0;
+                    var lon = parseFloat(document.currentScript.getAttribute('data-lon')) || 0;
+                    var zoom = parseInt(document.currentScript.getAttribute('data-zoom')) || 10;
+                    var title = document.currentScript.getAttribute('data-title') || 'Ship Position';
+                    
+                    if (lat && lon && window.L) {
+                        var map = window.L.map('tracking_map').setView([lat, lon], zoom);
+                        
+                        window.L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                            attribution: '© OpenStreetMap contributors'
+                        }).addTo(map);
+                        
+                        var shipIcon = window.L.divIcon({
+                            html: '<i class="fa fa-ship"></i>',
+                            className: 'vessel-marker tracking',
+                            iconSize: [40, 40],
+                            iconAnchor: [20, 20]
+                        });
+
+                        window.L.marker([lat, lon], {icon: shipIcon}).addTo(map)
+                            .bindPopup(title);
+                    }
+                });
+            ]]></script>
+        </t>
+    </template>
+
+    <!-- Shipment Tracking Template -->
+    <template id="shipment_tracking_template" name="Shipment Tracking">
+        <t t-call="web.layout">
+            <t t-set="head">
+                <t t-call-assets="web.assets_frontend"/> <!-- Loads hagbes_procurement_management/static/src/css/leaflet_custom.css -->
+                <!-- Explicitly load Font Awesome if not already in web.assets_frontend -->
+                <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
+            </t>
+            
+            <div class="tracking-container">
+                <!-- Info Panel -->
+                <div class="info-panel">
+                    <div class="tracking-header">
+                        <h1><i class="fa fa-ship"></i> Live Tracking</h1>
+                        <div class="subtitle">
+                            <t t-esc="shipment.vessel_name or 'Unknown Vessel'"/> - 
+                            <t t-esc="shipment.name"/>
+                        </div>
+                    </div>
+                    
+                    <h3><i class="fa fa-info-circle"></i> Vessel Information</h3>
+
+                    <div class="info-item">
+                        <span class="info-label">Location:</span>
+                        <span id="live_location_name" class="info-value">Fetching...</span>
+                    </div>
+                    
+                    <div class="info-item">
+                        <span class="info-label">Vessel:</span>
+                        <span id="live_vessel" class="info-value"><t t-esc="shipment.vessel_name or 'N/A'"/></span>
+                    </div>
+                    
+                    <div class="info-item">
+                        <span class="info-label">Status:</span>
+                        <span class="info-value">
+                            <span id="live_status" t-attf-class="tracking-status-badge #{shipment.tracking_status or 'not-started'}">
+                                <t t-esc="(shipment.tracking_status or 'not_started').replace('_', ' ').upper()"/>
+                            </span>
+                        </span>
+                    </div>
+                    
+                    <div class="info-item">
+                        <span class="info-label">Speed:</span>
+                        <span id="live_speed" class="info-value">
+                            <t t-if="shipment.current_speed">
+                                <t t-esc="'%.1f' % shipment.current_speed"/> knots
+                            </t>
+                            <t t-else="">0 knots</t>
+                        </span>
+                    </div>
+                    
+                    <div class="info-item">
+                        <span class="info-label">Course:</span>
+                        <span id="live_course" class="info-value">
+                            <t t-if="shipment.current_course">
+                                <t t-esc="'%.0f' % shipment.current_course"/>°
+                            </t>
+                            <t t-else="">0°</t>
+                        </span>
+                    </div>
+                    
+                    <div class="info-item">
+                        <span class="info-label">Latitude:</span>
+                        <span id="live_position_lat" class="info-value">
+                            <t t-if="shipment.current_latitude">
+                                <t t-esc="'%.6f' % shipment.current_latitude"/>
+                            </t>
+                            <t t-else="">0.0</t>
+                        </span>
+                    </div>
+                    
+                    <div class="info-item">
+                        <span class="info-label">Longitude:</span>
+                        <span id="live_position_lon" class="info-value">
+                            <t t-if="shipment.current_longitude">
+                                <t t-esc="'%.6f' % shipment.current_longitude"/>
+                            </t>
+                            <t t-else="">0.0</t>
+                        </span>
+                    </div>
+                    
+                    <div class="info-item">
+                        <span class="info-label">Last Update:</span>
+                        <span id="live_update" class="info-value">
+                            <t t-if="shipment.last_position_update">
+                                <t t-esc="shipment.last_position_update"/>
+                            </t>
+                            <t t-else="">Never</t>
+                        </span>
+                    </div>
+                    
+                    <div class="info-item">
+                        <span class="info-label">Route:</span>
+                        <span class="info-value">
+                            <t t-esc="shipment.port_of_loading or 'N/A'"/><t t-esc="' → '"/> 
+                            <t t-esc="shipment.port_of_entry or 'N/A'"/> 
+                        </span>
+                    </div>
+                </div>
+                
+                <!-- Map Panel -->
+                <div class="map-container">
+                    <!-- The LeafletTrackingWidget will be rendered here -->
+                    <div id="leaflet_widget_container" 
+                         style="height: 100%; width: 100%;"
+                         t-att-data-shipment-id="shipment.id"
+                         t-att-data-lat="shipment.current_latitude or '0'"
+                         t-att-data-lon="shipment.current_longitude or '0'">
+                        <div id="tracking_map" style="height: 100%; width: 100%;"/>
+                    </div>
+                </div>
+            </div>
+
+            <script type="text/javascript"><![CDATA[
+                console.log('Leaflet tracking script started');
+                document.addEventListener('DOMContentLoaded', function() {
+                    console.log('DOM Content Loaded');
+                    
+                    // Wait for Leaflet to be loaded
+                    function waitForLeaflet(callback) {
+                        if (window.L) {
+                            console.log('Leaflet library found');
+                            callback();
+                        } else {
+                            console.log('Waiting for Leaflet...');
+                            setTimeout(function() { waitForLeaflet(callback); }, 100);
+                        }
+                    }
+
+                    waitForLeaflet(function() {
+                        var container = document.getElementById('leaflet_widget_container');
+                        if (!container) {
+                            console.error('Leaflet container not found!');
+                            return;
+                        }
+                        var shipmentId = parseInt(container.getAttribute('data-shipment-id'));
+                        var initialLat = parseFloat(container.getAttribute('data-lat')) || 0;
+                        var initialLon = parseFloat(container.getAttribute('data-lon')) || 0;
+
+                        console.log('Shipment ID:', shipmentId);
+                        console.log('Initial coordinates:', initialLat, initialLon);
+                        console.log('Container found:', !!container);
+                        console.log('LeafletTrackingWidget available:', typeof window.LeafletTrackingWidget);
+
+                        if (container && window.LeafletTrackingWidget) {
+                            console.log('Creating Leaflet widget...');
+                            var leafletWidget = new window.LeafletTrackingWidget(container, {
+                                shipment_id: shipmentId,
+                                latitude: initialLat,
+                                longitude: initialLon,
+                                zoom: 10,
+                            });
+                            console.log('Leaflet widget created');
+                        } else {
+                            console.error('Container or LeafletTrackingWidget not found');
+                            console.error('Container:', container);
+                            console.error('Widget:', window.LeafletTrackingWidget);
+                        }
+                    });
+                });
+            ]]></script>
+        </t>
+    </template>
+</odoo>

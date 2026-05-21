@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="print_employee_badge_inherit"
+              name="Employee Badge - Add Fields"
+              inherit_id="hr.print_employee_badge">
+
+        <!-- 1. Add Department right after Job Title -->
+        <xpath expr="//td[span[@t-out='employee.job_id.name']]/.." position="after">
+            <tr>
+                <td>
+                    <strong>Department:</strong>
+                    <span style="font-size: 10pt; color: #555555;"
+                          t-out="employee.department_id.name or ''"/>
+                </td>
+            </tr>
+        </xpath>
+
+        <!-- 2. Add Employee ID / Identification Number above the barcode -->
+        <xpath expr="//td[span[@t-out='employee.job_id.name']]/.." position="before">
+            <tr>
+                <td style="padding: 6pt 0; text-align: center;">
+                     <strong>Employee ID:</strong>
+                    <span style="font-size: 11pt; font-weight: bold; letter-spacing: 1px;"
+                          t-out="employee.emp_id or employee.barcode or employee.id"/>
+                </td>
+            </tr>
+        </xpath>
+
+        <!-- 3. (Optional) Add Work Email or Phone at the very bottom, still above barcode -->
+    <xpath expr="//tr[td/div[@t-field='employee.barcode']]" position="before">
+        <tr>
+            <td style="text-align: left; font-size: 9pt; color: #444;">
+                <div>
+                    <strong>Email:</strong>
+                    <span t-if="employee.work_email" t-out="employee.work_email"/>
+                    <span t-if="not employee.work_email">N/A</span>
+                </div>
+                <div>
+                    <strong>Phone:</strong>
+                    <span t-if="employee.work_phone" t-out="employee.work_phone"/>
+                    <span t-if="not employee.work_phone">N/A</span>
+                </div>
+            </td>
+        </tr>
+    </xpath>
+        <!-- ======================================== -->
+        <!-- 2. ADD BACK SIDE AFTER EACH FRONT CARD -->
+        <!-- ======================================== -->
+
+        <!-- This targets the exact front card container that exists in all Odoo versions -->
+<xpath expr="//div[contains(@style, 'width: 243pt') and contains(@style, 'height: 153pt')]" position="after">
+
+    <!-- MINIMAL EMPLOYEE BACK SIDE -->
+    <div style="display:inline-block; width:243pt; height:153pt; margin:5pt;
+                background:#1e293b; color:white; padding:16pt; box-sizing:border-box;
+                border-radius:10pt; text-align:center; font-family:Arial,sans-serif;
+                page-break-inside:avoid;">
+
+        <div style="font-size:14pt; font-weight:bold; margin-bottom:12pt;">
+            <t t-out="employee.name"/>
+        </div>
+
+        <div style="font-size:10pt; line-height:1.6;">
+<!--            <t t-out="employee.street or ''"/>-->
+<!--            <t t-if="employee.street2"><br/><t t-out="employee.address_home_id.street2"/></t>-->
+<!--            <br/>-->
+<!--            <t t-out="employee.city or ''"/>-->
+<!--            <t t-if="employee.state_id">, <t t-out="employee.address_home_id.state_id.name"/></t>-->
+<!--            <t t-if="employee.zip"> <t t-out="employee.address_home_id.zip"/></t>-->
+<!--            <t t-if="employee.country_id"><br/><t t-out="employee.address_home_id.country_id.name"/></t>-->
+        </div>
+
+        <div style="margin-top:14pt; font-size:10pt;">
+            <strong>Emergency:</strong><br/>
+            <t t-out="employee.emergency_contact or '—'"/><br/>
+            <t t-out="employee.emergency_phone or '—'"/>
+        </div>
+
+        <div style="position:absolute; bottom:12pt; left:0; right:0; font-size:9pt; opacity:0.8;">
+            Valid until:
+        </div>
+
+    </div>
+</xpath>
+
+    </template>
+</odoo>

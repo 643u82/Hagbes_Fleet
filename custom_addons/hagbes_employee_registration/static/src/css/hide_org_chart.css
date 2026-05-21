@@ -1,0 +1,4 @@
+Completely hide the Organization Chart block
+div#o_employee_right {
+    display: none !important;
+}

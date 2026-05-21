@@ -1,0 +1,149 @@
+<odoo>
+
+    <record id="view_account_journal_entry_tree" model="ir.ui.view">
+        <field name="name">account.journal.entry.tree</field>
+        <field name="model">account.journal.entry</field>
+        <field name="arch" type="xml">
+            <tree><field name='name'/><field name='date'/><field name='amount'/></tree>
+        </field>
+    </record>
+    <record id="view_{model_id}_form" model="ir.ui.view">
+        <field name="name">{model}.form</field>
+        <field name="model">{model}</field>
+        <field name="arch" type="xml">
+            <form><sheet><group><field name='name'/><field name='date'/><field name='amount'/></group></sheet></form>
+        </field>
+    </record>
+    <record id="action_{model_id}" model="ir.actions.act_window">
+        <field name="name">{menus[model][1]}</field>
+        <field name="res_model">{model}</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <menuitem id="{menus[model][0]}" name="{menus[model][1]}" parent="{menus[model][2]}" action="action_{model_id}"/>
+
+    <record id="view_account_journal_item_tree" model="ir.ui.view">
+        <field name="name">account.journal.item.tree</field>
+        <field name="model">account.journal.item</field>
+        <field name="arch" type="xml">
+            <tree><field name='name'/><field name='entry_id'/><field name='amount'/></tree>
+        </field>
+    </record>
+    <record id="view_{model_id}_form" model="ir.ui.view">
+        <field name="name">{model}.form</field>
+        <field name="model">{model}</field>
+        <field name="arch" type="xml">
+            <form><sheet><group><field name='name'/><field name='entry_id'/><field name='amount'/></group></sheet></form>
+        </field>
+    </record>
+    <record id="action_{model_id}" model="ir.actions.act_window">
+        <field name="name">{menus[model][1]}</field>
+        <field name="res_model">{model}</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <menuitem id="{menus[model][0]}" name="{menus[model][1]}" parent="{menus[model][2]}" action="action_{model_id}"/>
+
+    <record id="view_account_asset_tree" model="ir.ui.view">
+        <field name="name">account.asset.tree</field>
+        <field name="model">account.asset</field>
+        <field name="arch" type="xml">
+            <tree><field name='name'/><field name='value'/><field name='depreciation_value'/></tree>
+        </field>
+    </record>
+    <record id="view_{model_id}_form" model="ir.ui.view">
+        <field name="name">{model}.form</field>
+        <field name="model">{model}</field>
+        <field name="arch" type="xml">
+            <form><sheet><group><field name='name'/><field name='value'/><field name='depreciation_value'/></group></sheet></form>
+        </field>
+    </record>
+    <record id="action_{model_id}" model="ir.actions.act_window">
+        <field name="name">{menus[model][1]}</field>
+        <field name="res_model">{model}</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <menuitem id="{menus[model][0]}" name="{menus[model][1]}" parent="{menus[model][2]}" action="action_{model_id}"/>
+
+    <record id="view_account_loan_tree" model="ir.ui.view">
+        <field name="name">account.loan.tree</field>
+        <field name="model">account.loan</field>
+        <field name="arch" type="xml">
+            <tree><field name='name'/><field name='amount'/><field name='interest_rate'/></tree>
+        </field>
+    </record>
+    <record id="view_{model_id}_form" model="ir.ui.view">
+        <field name="name">{model}.form</field>
+        <field name="model">{model}</field>
+        <field name="arch" type="xml">
+            <form><sheet><group><field name='name'/><field name='amount'/><field name='interest_rate'/></group></sheet></form>
+        </field>
+    </record>
+    <record id="action_{model_id}" model="ir.actions.act_window">
+        <field name="name">{menus[model][1]}</field>
+        <field name="res_model">{model}</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <menuitem id="{menus[model][0]}" name="{menus[model][1]}" parent="{menus[model][2]}" action="action_{model_id}"/>
+
+    <record id="view_account_reconcile_tree" model="ir.ui.view">
+        <field name="name">account.reconcile.tree</field>
+        <field name="model">account.reconcile</field>
+        <field name="arch" type="xml">
+            <tree><field name='name'/><field name='date'/></tree>
+        </field>
+    </record>
+    <record id="view_{model_id}_form" model="ir.ui.view">
+        <field name="name">{model}.form</field>
+        <field name="model">{model}</field>
+        <field name="arch" type="xml">
+            <form><sheet><group><field name='name'/><field name='date'/></group></sheet></form>
+        </field>
+    </record>
+    <record id="action_{model_id}" model="ir.actions.act_window">
+        <field name="name">{menus[model][1]}</field>
+        <field name="res_model">{model}</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <menuitem id="{menus[model][0]}" name="{menus[model][1]}" parent="{menus[model][2]}" action="action_{model_id}"/>
+
+    <record id="view_account_lock_date_tree" model="ir.ui.view">
+        <field name="name">account.lock.date.tree</field>
+        <field name="model">account.lock.date</field>
+        <field name="arch" type="xml">
+            <tree><field name='name'/><field name='lock_date'/></tree>
+        </field>
+    </record>
+    <record id="view_{model_id}_form" model="ir.ui.view">
+        <field name="name">{model}.form</field>
+        <field name="model">{model}</field>
+        <field name="arch" type="xml">
+            <form><sheet><group><field name='name'/><field name='lock_date'/></group></sheet></form>
+        </field>
+    </record>
+    <record id="action_{model_id}" model="ir.actions.act_window">
+        <field name="name">{menus[model][1]}</field>
+        <field name="res_model">{model}</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <menuitem id="{menus[model][0]}" name="{menus[model][1]}" parent="{menus[model][2]}" action="action_{model_id}"/>
+
+    <record id="view_account_tax_return_tree" model="ir.ui.view">
+        <field name="name">account.tax.return.tree</field>
+        <field name="model">account.tax.return</field>
+        <field name="arch" type="xml">
+            <tree><field name='name'/><field name='period'/><field name='amount'/></tree>
+        </field>
+    </record>
+    <record id="view_{model_id}_form" model="ir.ui.view">
+        <field name="name">{model}.form</field>
+        <field name="model">{model}</field>
+        <field name="arch" type="xml">
+            <form><sheet><group><field name='name'/><field name='period'/><field name='amount'/></group></sheet></form>
+        </field>
+    </record>
+    <record id="action_{model_id}" model="ir.actions.act_window">
+        <field name="name">{menus[model][1]}</field>
+        <field name="res_model">{model}</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <menuitem id="{menus[model][0]}" name="{menus[model][1]}" parent="{menus[model][2]}" action="action_{model_id}"/>
+</odoo>

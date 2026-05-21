@@ -1,0 +1,81 @@
+<odoo>
+    <!-- Actions must be defined before menuitems that reference them in the same file -->
+
+    <!-- Action for Customers -->
+    <record id="action_workshop_customers" model="ir.actions.act_window">
+        <field name="name">Workshop Customers</field>
+        <field name="res_model">res.partner</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('customer_rank','>',0)]</field>
+        <field name="context">{'default_customer_rank': 1}</field>
+    </record>
+
+    <!-- Action for Workshop Quotations -->
+    <record id="action_workshop_quotations" model="ir.actions.act_window">
+        <field name="name">Workshop Quotations</field>
+        <field name="res_model">sale.order</field>
+        <field name="view_mode">list,kanban,form,calendar,pivot,graph,activity</field>
+        <field name="domain">[('workshop_order_id', '!=', False)]</field>
+        <field name="context">{}</field>
+        <field name="help" type="html">
+          <p class="o_view_nocontent_smiling_face">
+            Create a new quotation from a Job Order!
+          </p><p>
+            You will only see quotations linked to Workshop Jobs here.
+          </p>
+        </field>
+    </record>
+
+    <!-- Action for MRCV Approvals in Approval Module -->
+    <record id="action_approval_mrcv" model="ir.actions.act_window">
+        <field name="name">MRCV Approvals</field>
+        <field name="res_model">approval.request</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('res_model', '=', 'mrcv.header'), ('approver_ids', 'in', [uid]), ('status', '=', 'pending')]</field>
+        <field name="context">{}</field>
+    </record>
+
+    <!-- Action for MRV Approvals in Approval Module -->
+    <record id="action_approval_mrv" model="ir.actions.act_window">
+        <field name="name">MRV Approvals</field>
+        <field name="res_model">approval.request</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('res_model', '=', 'mrv.header'), ('approver_ids', 'in', [uid]), ('status', '=', 'pending')]</field>
+        <field name="context">{}</field>
+    </record>
+
+    <!-- Root Menu -->
+    <menuitem id="menu_workshop_root" name="Workshop" sequence="10" web_icon="hagbes_workshop_management,static/description/icon.png"/>
+
+    <!-- Keep workshop approvals reachable even if the external approval root menu XML ID is missing. -->
+    <menuitem id="menu_approval_workshop" name="Workshop Approvals" parent="menu_workshop_root" sequence="50"/>
+    <menuitem id="menu_approval_mrcv" name="MRCV Approvals" parent="menu_approval_workshop" action="action_approval_mrcv" sequence="10"/>
+    <menuitem id="menu_approval_mrv" name="MRV Approvals" parent="menu_approval_workshop" action="action_approval_mrv" sequence="20"/>
+
+    <!-- Operations Menu -->
+    <menuitem id="menu_workshop_operations" name="Operations" parent="menu_workshop_root" sequence="10"/>
+    <menuitem id="menu_workshop_order" name="Job Orders" parent="menu_workshop_operations" action="action_workshop_order" sequence="10"/>
+    <menuitem id="menu_workshop_mrcv" name="MRCVs" parent="menu_workshop_operations" action="action_mrcv_header" sequence="20"/>
+    <menuitem id="menu_workshop_mrv" name="MRVs" parent="menu_workshop_operations" action="action_mrv_header" sequence="30"/>
+    <menuitem id="menu_workshop_quotations" name="Quotations" parent="menu_workshop_operations" action="action_workshop_quotations" sequence="35"/>
+    <menuitem id="menu_workshop_task" name="Tasks" parent="menu_workshop_operations" action="action_workshop_task" sequence="40"/>
+
+    <!-- Master Data Menu -->
+    <menuitem id="menu_workshop_master_data" name="Master Data" parent="menu_workshop_root" sequence="20"/>
+    <menuitem id="menu_workshop_vehicle" name="Vehicles" parent="menu_workshop_master_data" action="action_workshop_vehicle" sequence="10"/>
+    <menuitem id="menu_workshop_customers" name="Customers" parent="menu_workshop_master_data" action="action_workshop_customers" sequence="20"/>
+
+    <!-- Maintenance Menu -->
+    <menuitem id="menu_workshop_maintenance" name="Maintenance" parent="menu_workshop_root" sequence="30"/>
+    <menuitem id="workshop_pm_menu" name="Preventive Maintenance" parent="menu_workshop_maintenance" sequence="10"/>
+    <menuitem id="workshop_pm_chart_menu" name="Charts" parent="workshop_pm_menu" action="workshop_pm_chart_action" sequence="10"/>
+
+    <!-- Configuration Menu -->
+    <menuitem id="menu_workshop_config" name="Configuration" parent="menu_workshop_root" sequence="100"/>
+    <menuitem id="menu_vehicle_category" name="Vehicle Categories" parent="menu_workshop_config" action="action_vehicle_category" sequence="10"/>
+    <menuitem id="menu_vehicle_category_type" name="Vehicle Category Types" parent="menu_workshop_config" action="action_vehicle_category_type" sequence="20"/>
+    <menuitem id="menu_vehicle_make" name="Vehicle Makes" parent="menu_workshop_config" action="action_vehicle_make" sequence="30"/>
+    <menuitem id="menu_workshop_model" name="Vehicle Models" parent="menu_workshop_config" action="action_workshop_model" sequence="40"/>
+    <menuitem id="menu_workshop_accessory" name="Accessories" parent="menu_workshop_config" action="action_workshop_accessory" sequence="50"/>
+
+</odoo>

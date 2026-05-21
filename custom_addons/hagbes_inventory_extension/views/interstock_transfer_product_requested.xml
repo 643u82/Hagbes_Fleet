@@ -1,0 +1,11 @@
+<record id="view_request_items_tree" model="ir.ui.view">
+    <field name="name">request.items.tree</field>
+    <field name="model">request.items</field>
+    <field name="arch" type="xml">
+        <tree>
+            <field name="product_id"/>
+            <field name="quantity"/>
+            <field name="uom_id"/>
+        </tree>
+    </field>
+</record>

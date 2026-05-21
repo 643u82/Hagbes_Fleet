@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_purchase_request_document">
+        <t t-call="web.external_layout">
+            <t t-set="o" t-value="o.with_context(lang=o.vendor_id.lang)"/>
+            <t t-set="address">
+                <div t-field="o.vendor_id"
+                    t-options='{"widget": "contact", "fields": ["address", "name", "phone", "email"], "no_marker": True}'/>
+                <p t-if="o.vendor_id.vat"><t t-out="o.company_id.account_fiscal_country_id.vat_label or 'Tax ID'"/>: <span t-field="o.vendor_id.vat"/></p>
+            </t>
+            <div class="page">
+                <div class="oe_structure"/>
+
+                <h2 class="mt-4">Request for Quotation <span t-field="o.name"/></h2>
+
+                <div id="informations" class="row mt-4 mb-4">
+                    <div t-if="o.vendor_ref" class="col-3 bm-2" name="vendor_ref">
+                        <strong>Vendor Reference:</strong>
+                        <p t-field="o.vendor_ref" class="m-0"/>
+                    </div>
+                    <div t-if="o.request_date" class="col-3 bm-2" name="date_req">
+                        <strong>Request Date:</strong>
+                        <p t-field="o.request_date" class="m-0"/>
+                    </div>
+                </div>
+
+                <table class="table table-sm o_main_table table-borderless mt-4">
+                    <thead style="display: table-row-group">
+                        <tr>
+                            <th name="th_description"><strong>Description</strong></th>
+                            <th name="th_expected_date" class="text-center"><strong>Expected Date</strong></th>
+                            <th name="th_quantity" class="text-end"><strong>Qty</strong></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <t t-foreach="o.request_line_ids" t-as="order_line">
+                            <tr>
+                                <td id="product">
+                                    <span t-field="order_line.product_id.name"/>
+                                    <t t-if="order_line.description">
+                                        <br/>
+                                        <span t-esc="order_line.description"/>
+                                    </t>
+                                </td>
+                                <td class="text-center">
+                                    <span t-field="order_line.required_date"/>
+                                </td>
+                                <td class="text-end">
+                                    <span t-field="order_line.quantity"/>
+                                    <span t-field="order_line.uom_id.name" groups="uom.group_uom"/>
+                                </td>
+                            </tr>
+                        </t>
+                    </tbody>
+                </table>
+
+                <p t-field="o.notes" class="mt-4"/>
+
+                <div class="oe_structure"/>
+            </div>
+        </t>
+    </template>
+
+    <template id="report_purchase_request">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="hagbes_procurement_management.report_purchase_request_document" t-lang="o.vendor_id.lang"/>
+            </t>
+        </t>
+    </template>
+
+    <record id="action_report_purchase_request" model="ir.actions.report">
+        <field name="name">Request for Quotation</field>
+        <field name="model">purchase.request</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">hagbes_procurement_management.report_purchase_request</field>
+        <field name="report_file">hagbes_procurement_management.report_purchase_request</field>
+        <field name="print_report_name">'RFQ - %s' % (object.name)</field>
+        <field name="binding_model_id" ref="hagbes_procurement_management.model_purchase_request"/>
+        <field name="binding_type">report</field>
+    </record>
+</odoo>

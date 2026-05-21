@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- ============================================================
+             FLEET MANAGEMENT ACCESS CONTROL
+             ============================================================ -->
+
+        <!-- Fleet Management Module Category -->
+        <record id="module_category_fleet_management" model="ir.module.category">
+            <field name="name">Fleet Management</field>
+            <field name="description">Fleet Management Roles</field>
+            <field name="sequence">25</field>
+        </record>
+
+        <!-- Fleet Requester - Base level (Self-service requests only) -->
+        <record id="group_fleet_requester" model="res.groups">
+            <field name="name">Requester</field>
+            <field name="category_id" ref="module_category_fleet_management"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+            <field name="comment">Can create and manage own fleet service requests.</field>
+        </record>
+
+        <!-- Department Manager - Approval authority only (Non-overlapping with Operations) -->
+        <record id="group_dept_manager" model="res.groups">
+            <field name="name">Department Manager</field>
+            <field name="category_id" ref="module_category_fleet_management"/>
+            <field name="implied_ids" eval="[(4, ref('group_fleet_requester'))]"/>
+            <field name="comment">Can review and approve department-level requests.</field>
+        </record>
+
+        <!-- Fleet Operator (FMO) - Operational execution -->
+        <record id="group_fmo" model="res.groups">
+            <field name="name">Fleet Operator</field>
+            <field name="category_id" ref="module_category_fleet_management"/>
+            <field name="implied_ids" eval="[(4, ref('group_fleet_requester'))]"/>
+            <field name="comment">Can manage vehicle assignments, allocations, and trip execution.</field>
+        </record>
+
+        <!-- Fleet Manager - Full operational oversight -->
+        <record id="group_fleet_manager" model="res.groups">
+            <field name="name">Fleet Manager</field>
+            <field name="category_id" ref="module_category_fleet_management"/>
+            <field name="implied_ids" eval="[(4, ref('group_fmo'))]"/>
+            <field name="comment">Full oversight of fleet operations and reporting.</field>
+        </record>
+
+        <!-- Property Manager - Read Only Oversight -->
+        <record id="group_property_manager" model="res.groups">
+            <field name="name">Property Manager (Audit)</field>
+            <field name="category_id" ref="module_category_fleet_management"/>
+            <field name="implied_ids" eval="[(4, ref('group_fleet_requester'))]"/>
+            <field name="comment">Audit-level read access to fleet data.</field>
+        </record>
+
+        <!-- Fleet Admin - Module System Control (Emergency Override) -->
+        <record id="group_fleet_admin" model="res.groups">
+            <field name="name">Fleet Admin</field>
+            <field name="category_id" ref="module_category_fleet_management"/>
+            <field name="implied_ids" eval="[(4, ref('group_fleet_manager')), (4, ref('group_dept_manager'))]"/>
+            <field name="users" eval="[(4, ref('base.user_root')), (4, ref('base.user_admin'))]"/>
+            <field name="comment">Technical configuration and module administration.</field>
+        </record>
+
+    </data>
+</odoo>

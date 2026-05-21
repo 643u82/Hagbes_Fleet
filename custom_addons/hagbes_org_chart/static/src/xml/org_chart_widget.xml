@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<templates xml:space="preserve">
+  <!-- Top-level component template -->
+  <t t-name="custom_org_chart_extension.JobOrgChart">
+  <div class="o_job_org_chart">
+    <div class="mb-3 d-flex gap-2">
+      <button type="button" class="btn btn-primary mb-4" t-on-click="onCreateJob" groups="hr.group_hr_user">New Job</button>
+      <button type="button" class="btn btn-primary mb-4" t-on-click="onImportJobs" groups="hr.group_hr_user">Import Jobs</button>
+    </div>
+
+    <div class="org-chart-layout">
+      <!-- 🟦 Orphans column -->
+      <t t-if="state.orphanNodes &amp;&amp; state.orphanNodes.length">
+        <div class="orphans-column">
+          <h6 class="text-muted mb-2 text-center">Assistant Manging Directors</h6>
+          <div class="orphan-list d-flex flex-column align-items-center gap-2">
+            <t t-foreach="state.orphanNodes" t-as="orphan" t-key="orphan.slot_id">
+              <t t-call="custom_org_chart_extension.JobOrgChartNode">
+                <t t-set="node" t-value="orphan"/>
+              </t>
+            </t>
+          </div>
+        </div>
+      </t>
+
+      <!-- 🟩 Main org chart -->
+      <div t-ref="chartContainer" class="org-chart-inner-container">
+        <div t-ref="zoomWrapper" class="org-chart-zoom-wrapper">
+          <div class="org-chart-root">
+            <t t-foreach="state.nodes || []" t-as="node" t-key="node.slot_id">
+              <t t-call="custom_org_chart_extension.JobOrgChartNode">
+                <t t-set="node" t-value="node"/>
+              </t>
+            </t>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</t>
+
+
+
+
+
+  <!-- Recursive node template -->
+  <t t-name="custom_org_chart_extension.JobOrgChartNode">
+    <div class="org-node-wrapper o_treeEntry" t-att-class="node.is_root ? 'root' : ''">
+      <div class="org-node" t-on-click="onNodeClick.bind(this, node)">
+          <div class="edit-icon" t-on-click.stop="() => onEditClick(node)" groups="hr.group_hr_user" >✏️</div>
+
+        <!-- If filled -->
+   <t t-if="!node.vacant">
+    <t t-if="node.employee_photo_url">
+    <div class="org-avatar" t-attf-style="background-image: url('#{node.employee_photo_url}');">
+    </div>
+   </t>
+   <t t-else="">
+    <div class="org-avatar">
+      <img src="/custom_org_chart_extension/static/src/img/default_avatar.png"
+           style="width: 100%; height: 100%; object-fit: cover; border-radius: inherit;"/>
+    </div>
+  </t>
+
+    <div class="org-name"><t t-esc="node.employee_name"/></div>
+    <div class="org-job-title"><t t-esc="node.job_name"/></div>
+    <div class="org-dept-comp">
+     <small><t t-esc="node.department"/> | <t t-esc="node.company"/></small>
+    </div>
+  </t>
+
+<!-- If vacant -->
+    <t t-else="">
+      <div class="org-avatar bg-secondary d-flex align-items-center justify-content-center text-white">
+        ?
+      </div>
+      <div class="org-name">No employee assigned</div>
+      <div class="org-job-title"><t t-esc="node.job_name"/></div>
+      <div class="org-dept-comp">
+        <small><t t-esc="node.department"/> | <t t-esc="node.company"/></small>
+      </div>
+    </t>
+   </div>
+
+      <t t-if="node.children.length">
+      <div class="org-node-footer mt-1 d-flex justify-content-center align-items-center">
+       <button
+         type="button"
+         class="toggle-children-count btn btn-sm btn-outline-primary d-flex align-items-center"
+         t-att-class="{'expanded': !collapsedNodeSet.has(node.job_id + '_' + (node.employee_id || 'vacant'))}"
+         t-on-click="toggleCollapse.bind(this, node)">
+         <t t-if="collapsedNodeSet.has(node.job_id + '_' + (node.employee_id || 'vacant'))">
+        <!-- Collapsed state: show right arrow before -->
+         <span>▶ <t t-esc="node.children.length"/> <t t-esc="node.children.length === 1 ? 'position' : 'positions'"/></span>
+         </t>
+         <t t-else="">
+        <!-- Expanded state: show down arrow before -->
+         <span>▼ <t t-esc="node.children.length"/> <t t-esc="node.children.length === 1 ? 'position' : 'positions'"/></span>
+         </t>
+       </button>
+      </div>
+    </t>
+      <!-- Recurse if this node has children -->
+      <div class="org-children" t-if='node.children.length &amp;&amp; !collapsedNodeSet.has(node.job_id + "_" + (node.employee_id || "vacant"))'>
+        <t t-foreach="node.children || []" t-as="child" t-key="child.slot_id">
+          <t t-call="custom_org_chart_extension.JobOrgChartNode">
+            <t t-set="node" t-value="child"/>
+          </t>
+        </t>
+      </div>
+    </div>
+  </t>
+</templates>

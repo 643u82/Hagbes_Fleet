@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Bank Process List View -->
+    <record id="view_foreign_bank_process_tree" model="ir.ui.view">
+        <field name="name">foreign.bank.process.list</field>
+        <field name="model">foreign.bank.process</field>
+        <field name="arch" type="xml">
+            <list string="Foreign Bank Processes">
+                <field name="name"/>
+                <field name="purchase_request_id"/>
+                <field name="purchase_order_id" optional="show"/>
+                <field name="process_date"/>
+                <field name="supplier_id" readonly="1"/>
+                <field name="payment_term" widget="badge"/>
+                <field name="amount" widget="monetary"/>
+                <field name="currency_id" column_invisible="1"/>
+                <field name="state" widget="badge"/>
+                <field name="days_in_process"/>
+                <field name="lc_cad_tt_no"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_foreign_bank_process_search" model="ir.ui.view">
+        <field name="name">foreign.bank.process.search</field>
+        <field name="model">foreign.bank.process</field>
+        <field name="arch" type="xml">
+            <search string="Bank Process Search">
+                <field name="name"/>
+                <field name="purchase_request_id"/>
+                <field name="purchase_order_id"/>
+                <field name="supplier_id" readonly="1"/>
+                <field name="lc_cad_tt_no"/>
+                
+                <filter string="TT Payments" name="filter_tt" domain="[('payment_term', '=', 'tt')]"/>
+                <filter string="CAD Payments" name="filter_cad" domain="[('payment_term', '=', 'cad')]"/>
+                <filter string="LC Payments" name="filter_lc" domain="[('payment_term', '=', 'lc')]"/>
+                
+                <separator/>
+                <filter string="In Progress" name="filter_in_progress" 
+                        domain="[('state', 'not in', ['completed', 'cancelled'])]"/>
+                <filter string="Completed" name="filter_completed" domain="[('state', '=', 'completed')]"/>
+                
+                <group expand="0" string="Group By">
+                    <filter string="Payment Method" name="group_payment_term" context="{'group_by': 'payment_term'}"/>
+                    <filter string="Status" name="group_state" context="{'group_by': 'state'}"/>
+                    <filter string="Supplier" name="group_supplier" context="{'group_by': 'supplier_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Bank Process Form View -->
+    <record id="view_foreign_bank_process_form" model="ir.ui.view">
+        <field name="name">foreign.bank.process.form</field>
+        <field name="model">foreign.bank.process</field>
+        <field name="arch" type="xml">
+            <form string="Procurement Follow-up">
+                <header>
+                    <button name="action_waiting_currency" string="Waiting Currency" type="object"
+                             class="oe_highlight" invisible="state != 'order_info'"/>
+                    <button name="action_under_bank_process" string="Under Bank Process" type="object"
+                             class="oe_highlight" invisible="state != 'waiting_currency'"/>
+                    <button name="action_waiting_shipment" string="Waiting Shipment" type="object"
+                             invisible="state != 'under_bank_process'"/>
+                    <button name="action_document_handover" string="Document Hand Over" type="object"
+                             class="oe_highlight" invisible="state != 'waiting_shipment'"/>
+                    <button name="action_documents_at_bank" string="Documents at Bank" type="object"
+                             invisible="state != 'document_handover'"/>
+                    <button name="action_under_customs" string="Under Customs" type="object"
+                             invisible="state != 'documents_at_bank'"/>
+                    <button name="action_cleared_delivered" string="Cleared &amp; Delivered" type="object"
+                             invisible="state != 'under_customs'"/>
+                    <button name="action_complete" string="Complete" type="object"
+                             class="oe_highlight" invisible="state != 'cleared_delivered'"/>
+                    <button name="action_cancel" string="Cancel" type="object"
+                             invisible="state in ['completed','cancelled']"/>
+                    <field name="state" widget="statusbar"
+                            statusbar_visible="order_info,waiting_currency,under_bank_process,waiting_shipment,document_handover,documents_at_bank,under_customs,cleared_delivered,completed"/>
+                </header>
+                
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_transit_processes"
+                                type="object"
+                                class="oe_stat_button"
+                                icon="fa-truck"
+                                invisible="transit_process_count == 0">
+                            <field name="transit_process_count" widget="statinfo" string="Transit Processes"/>
+                        </button>
+                    </div>
+                    <field name="transit_process_count" invisible="1"/>
+
+
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+
+                    <!-- Purchase Order Info at Top -->
+                    <group>
+                        <group>
+                            <field name="purchase_request_id" options="{'no_create': True}"/>
+                            <field name="purchase_order_id" options="{'no_create': True}" invisible="not purchase_request_id"/>
+                            <field name="supplier_id" readonly="1"/>
+                            <field name="currency_id"/>
+                        </group>
+                        <group>
+                            <field name="amount" widget="monetary"/>
+                            <field name="payment_term"/>
+                            <field name="process_date"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <!-- Order Information Tab -->
+                        <page string="Order Information" name="order_info">
+                            <group>
+                                <group>
+                                    <field name="delivery_method"/>
+                                    <field name="mode_of_transport"/>
+                                    <field name="order_for"/>
+                                </group>
+                            </group>
+                            
+                            <group string="Customers">
+                                <field name="customer_ids" nolabel="1">
+                                    <list editable="bottom">
+                                        <field name="customer"/>
+                                        <field name="contract_no"/>
+                                        <field name="deadline_date"/>
+                                    </list>
+                                </field>
+                            </group>
+                        </page>
+
+                        <!-- Waiting For Foreign Currency Tab -->
+                        <page string="Waiting For Foreign Curr." name="waiting_currency">
+                            <group string="Waiting For Foreign Curr.">
+                                <field name="pfi_ids" nolabel="1">
+                                    <list editable="bottom">
+                                        <field name="pfi_number"/>
+                                        <field name="pfi_date"/>
+                                        <field name="pfi_date_submit_to_bank"/>
+                                        <field name="date_sub_to_bank"/>
+                                        <field name="bank"/>
+                                        <field name="bank_req_no"/>
+                                        <field name="remark"/>
+                                    </list>
+                                </field>
+                            </group>
+                        </page>
+
+                        <!-- Under Bank Process Tab -->
+                        <page string="Under Bank Process" name="under_bank_process">
+                            <group string="Under Bank Process">
+                                <field name="fc_allocation_date"/>
+                                <field name="bank_name"/>
+                                <field name="bank_remark"/>
+                            </group>
+                            
+                            <group string="Bank Allocations">
+                                <field name="bank_allocation_ids" nolabel="1">
+                                    <list editable="bottom">
+                                        <field name="bank_id"/>
+                                        <field name="currency_id" column_invisible="1"/>
+                                        <field name="allocated_amount" widget="monetary"/>
+                                        <field name="currency_value"/>
+                                        <field name="status" widget="badge" decoration-info="status=='allocated'" decoration-warning="status=='pending'" decoration-success="status=='used'"/>
+                                        <field name="remark"/>
+                                    </list>
+                                </field>
+                            </group>
+                        </page>
+
+                        <!-- Waiting For Shipment Tab -->
+                        <page string="Waiting For Shipment" name="waiting_shipment">
+                            <group string="Waiting For Shipment">
+                                <field name="lc_cad_tt_date"/>
+                                <field name="lc_cad_tt_no"/>
+                                <field name="shipment_remark"/>
+                            </group>
+                            
+                            <group string="LC Tracking" invisible="payment_term != 'lc'">
+                                <field name="lc_tracking_ids" nolabel="1">
+                                    <list editable="bottom">
+                                        <field name="lc_number"/>
+                                        <field name="lc_issue_date"/>
+                                        <field name="lc_date_of_shipment"/>
+                                        <field name="negotiation_expiry_date"/>
+                                        <field name="insurance_before_lc"/>
+                                        <field name="lc_amount" widget="monetary"/>
+                                        <field name="currency_id" column_invisible="1"/>
+                                        <field name="issuing_bank"/>
+                                        <field name="advising_bank"/>
+                                        <field name="lc_status" widget="badge"/>
+                                        <field name="remarks"/>
+                                    </list>
+                                </field>
+                            </group>
+                        </page>
+
+                        <!-- Document Hand Over Tab -->
+                        <page string="Document Hand Over" name="document_handover">
+                            <group string="Document Hand Over">
+                                <group>
+                                    <label for="bl_awb_dhl_no" string="BL No." invisible="delivery_method != 'sea'"/>
+                                    <label for="bl_awb_dhl_no" string="AWB No." invisible="delivery_method != 'air'"/>
+                                    <label for="bl_awb_dhl_no" string="Tracking No." invisible="delivery_method not in ['sea', 'air']"/>
+                                    <div class="o_row"><field name="bl_awb_dhl_no"/></div>
+                                    <field name="bl_awb_dhl_date"/>
+                                    <field name="copy_docu_deli_to_tf"/>
+                                </group>
+                                <group>
+                                    <field name="gross_weight"/>
+                                    <field name="no_of_package_container"/>
+                                </group>
+                            </group>
+                            <group>
+                                <field name="transit_remark"/>
+                            </group>
+                            
+                            <group string="Shipment &amp; Tracking">
+                                <field name="shipment_id"
+                                       domain="[('purchase_order_id', '=', purchase_order_id)]"
+                                       context="{'default_purchase_order_id': purchase_order_id, 'default_carrier_id': supplier_id}"
+                                       options="{'no_create': True, 'no_create_edit': True}"/>
+                            </group>
+                        </page>
+
+                        <!-- Document At Bank Tab -->
+                        <page string="Document At Bank" name="documents_at_bank">
+                            <group string="Document At Bank">
+                                <field name="document_arrival_date"/>
+                                <field name="document_type_received"/>
+                                <field name="freight_invoice_settled_on"/>
+                                <field name="document_bank_remark"/>
+                            </group>
+                        </page>
+
+                        <!-- Under Customs Process Tab -->
+                        <page string="Under Customs Process / Settlement" name="under_customs">
+                            <group string="Under Customs Process / Settlement">
+                                <group>
+                                    <field name="doc_collected_from_bank"/>
+                                    <field name="original_doc_deli_to_tf"/>
+                                    <field name="customs_remark"/>
+                                </group>
+                                <group>
+                                    <field name="settlement_date"/>
+                                    <field name="settlement_rate"/>
+                                    <field name="freight_amount"/>
+                                    <field name="customs_amount"/>
+                                </group>
+                            </group>
+                        </page>
+
+                        <!-- Cleared And Delivered Tab -->
+                        <page string="Cleared And Delivered" name="cleared_delivered">
+                            <group>
+                                <field name="completion_date"/>
+                                <field name="notes"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                
+              
+            </form>
+        </field>
+    </record>
+ 
+    <record id="action_foreign_bank_process" model="ir.actions.act_window">
+        <field name="name">Bank Processes</field>
+        <field name="res_model">foreign.bank.process</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_filter_in_progress': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No bank processes found!
+            </p>
+            <p>
+                Create bank processes from approved purchase requests.
+            </p>
+        </field>
+    </record>
+</odoo>

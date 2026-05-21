@@ -1,0 +1,159 @@
+<templates xml:space="preserve">
+    <t t-name="custom_financial_reports.ProfitLossReport">
+        <div class="o_action account_report h-100 d-flex flex-column overflow-hidden">
+            <!-- CONTROL PANEL -->
+            <div class="o_control_panel d-flex flex-column gap-3 px-3 pt-2 pb-3 border-bottom">
+                <div class="o_control_panel_main d-flex flex-wrap flex-lg-nowrap justify-content-between align-items-lg-start gap-2 gap-lg-3 flex-grow-1">
+                    
+                    <!-- Breadcrumbs -->
+                    <div class="o_control_panel_breadcrumbs d-flex align-items-center gap-1 order-0 h-lg-100">
+                        <div class="o_control_panel_main_buttons d-flex gap-1 d-empty-none d-print-none">
+                            <button class="btn text-nowrap btn-primary" t-on-click="printPdf">PDF</button>
+                            <button class="btn text-nowrap btn-secondary" t-on-click="exportXlsx">XLSX</button>
+                        </div>
+                        <div class="o_breadcrumb d-flex gap-1 text-truncate">
+                            <div class="o_last_breadcrumb_item active d-flex fs-4 min-w-0 align-items-center">
+                                <span class="min-w-0 text-truncate">Profit and Loss</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Filters (Same as Balance Sheet) -->
+                    <div class="o_control_panel_actions d-empty-none d-flex align-items-center justify-content-start justify-content-lg-around order-2 order-lg-1 w-100 mw-100 w-lg-auto">
+                        <div class="d-flex gap-1">
+                            <Dropdown>
+                                <button class="btn btn-secondary o-dropdown dropdown-toggle">
+                                     <i class="fa fa-calendar me-1"/>
+                                    <t t-if="state.date_filter === 'month'">
+                                        <t t-esc="state.date_from.toFormat('MMMM yyyy')"/>
+                                    </t>
+                                    <t t-elif="state.date_filter === 'quarter'">
+                                        <t t-esc="state.date_from.toFormat('MMM')"/> - <t t-esc="state.date_to.toFormat('MMM yyyy')"/>
+                                    </t>
+                                    <t t-elif="state.date_filter === 'year'">
+                                        <t t-esc="state.date_from.toFormat('yyyy')"/>
+                                    </t>
+                                    <t t-else="">
+                                        Custom
+                                    </t>
+                                </button>
+                                <t t-set-slot="content">
+                                    <div class="p-2">
+                                        <DateTimePicker value="state.date_to" onSelect="(d) => this.onDateChanged(d)"/>
+                                    </div>
+                                </t>
+                            </Dropdown>
+
+                            <Dropdown>
+                                <button class="btn btn-secondary o-dropdown dropdown-toggle">
+                                    <i class="fa fa-percent me-1"/>
+                                    <span>Comparison: </span>
+                                    <span t-if="state.comparison_option == 'no_comparison'">None</span>
+                                    <span t-if="state.comparison_option == 'previous_period'">Previous Period</span>
+                                    <span t-if="state.comparison_option == 'same_last_year'">Previous Year</span>
+                                    <span t-if="state.comparison_option == 'custom'">Specific Date</span>
+                                </button>
+                                <t t-set-slot="content">
+                                    <DropdownItem onSelected="() => this.onComparisonOptionChanged('no_comparison')" class="state.comparison_option === 'no_comparison' ? 'selected' : ''">No Comparison</DropdownItem>
+                                    <DropdownItem onSelected="() => this.onComparisonOptionChanged('previous_period')" class="state.comparison_option === 'previous_period' ? 'selected' : ''">Previous Period</DropdownItem>
+                                    <DropdownItem onSelected="() => this.onComparisonOptionChanged('same_last_year')" class="state.comparison_option === 'same_last_year' ? 'selected' : ''">Same Period Last Year</DropdownItem>
+                                    <DropdownItem onSelected="() => this.onComparisonOptionChanged('custom')" class="state.comparison_option === 'custom' ? 'selected' : ''">Specific Date</DropdownItem>
+                                    <div t-if="state.comparison_option === 'custom'" class="p-2 border-top">
+                                        <DateTimePicker value="state.comparison_date" onSelect="(d) => this.onComparisonDateChanged(d)"/>
+                                    </div>
+                                </t>
+                            </Dropdown>
+
+                            <Dropdown>
+                                <button class="btn btn-secondary o-dropdown dropdown-toggle">
+                                    <i class="fa fa-book me-1"/>
+                                    <t t-if="state.journal_ids.length === 0">All Journals</t>
+                                    <t t-else="">Journals (<t t-esc="state.journal_ids.length"/>)</t>
+                                </button>
+                                <t t-set-slot="content">
+                                    <t t-foreach="state.journals" t-as="journal" t-key="journal.id">
+                                        <DropdownItem onSelected="() => this.onJournalChanged(journal.id)">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" t-att-checked="state.journal_ids.includes(journal.id)"/>
+                                                <label class="form-check-label"><t t-esc="journal.code"/> - <t t-esc="journal.name"/></label>
+                                            </div>
+                                        </DropdownItem>
+                                    </t>
+                                </t>
+                            </Dropdown>
+
+                            <Dropdown>
+                                <button class="btn btn-secondary o-dropdown dropdown-toggle">
+                                    <i class="fa fa-sliders me-1"/> Options
+                                </button>
+                                <t t-set-slot="content">
+                                    <DropdownItem onSelected="() => this.onTargetMoveChanged(state.target_move !== 'posted')">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" t-att-checked="state.target_move === 'posted'"/>
+                                            <label class="form-check-label">Posted Entries Only</label>
+                                        </div>
+                                    </DropdownItem>
+                                </t>
+                            </Dropdown>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- REPORT CONTENT -->
+            <div class="o_content flex-grow-1 overflow-auto bg-light">
+                <div class="p-4 d-flex justify-content-center">
+                    <div class="bg-white shadow-sm border p-4 w-100" style="max-width: 1140px;">
+                        
+                        <div class="text-center mb-4" t-if="state.data">
+                            <h2 class="m-0 fw-bold"><t t-esc="state.data.company_name"/></h2>
+                            <h4 class="text-muted">Profit and Loss</h4>
+                            <div class="text-muted">As of <t t-esc="formatDate(state.data.date_to)"/></div>
+                        </div>
+
+                        <table class="table table-sm table-hover table-borderless" t-if="state.data">
+                            <thead class="border-bottom">
+                                <tr>
+                                    <th style="width: 40%;">Description</th>
+                                    <th style="width: 10%;" class="text-center">Notes</th>
+                                    <th class="column_header text-end pb-2"><t t-esc="formatDate(state.data.date_to)"/></th>
+                                    <t t-if="state.data.has_comparison">
+                                        <th class="column_header text-end pb-2"><t t-esc="formatDate(state.data.date_to_cmp)"/></th>
+                                    </t>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Helper to render rows -->
+                                <t t-set="d" t-value="state.data.current"/>
+                                <t t-set="p" t-value="state.data.prev"/>
+                                
+                                <tr><td>Sales Income</td><td class="text-center">18</td><td class="text-end"><t t-esc="formatCurrency(d.sales_income)"/></td><td class="text-end" t-if="state.data.has_comparison"><t t-esc="formatCurrency(p.sales_income)"/></td></tr>
+                                <tr><td>Cost of sales</td><td class="text-center">19</td><td class="text-end text-danger">(<t t-esc="formatCurrency(d.cost_of_sales)"/>)</td><td class="text-end text-danger" t-if="state.data.has_comparison">(<t t-esc="formatCurrency(p.cost_of_sales)"/>)</td></tr>
+                                <tr class="fw-bold border-top"><td>Gross profit</td><td></td><td class="text-end"><t t-esc="formatCurrency(d.gross_profit)"/></td><td class="text-end" t-if="state.data.has_comparison"><t t-esc="formatCurrency(p.gross_profit)"/></td></tr>
+                                
+                                <tr><td>Other income</td><td class="text-center">20</td><td class="text-end"><t t-esc="formatCurrency(d.other_income)"/></td><td class="text-end" t-if="state.data.has_comparison"><t t-esc="formatCurrency(p.other_income)"/></td></tr>
+                                <tr><td>Selling &amp; Distribution expenses</td><td class="text-center">21</td><td class="text-end text-danger">(<t t-esc="formatCurrency(d.selling_expenses)"/>)</td><td class="text-end text-danger" t-if="state.data.has_comparison">(<t t-esc="formatCurrency(p.selling_expenses)"/>)</td></tr>
+                                <tr><td>General and administrative expenses</td><td class="text-center">22</td><td class="text-end text-danger">(<t t-esc="formatCurrency(d.ga_expenses)"/>)</td><td class="text-end text-danger" t-if="state.data.has_comparison">(<t t-esc="formatCurrency(p.ga_expenses)"/>)</td></tr>
+                                
+                                <tr class="fw-bold border-top"><td>Operating profit</td><td></td><td class="text-end"><t t-esc="formatCurrency(d.operating_profit)"/></td><td class="text-end" t-if="state.data.has_comparison"><t t-esc="formatCurrency(p.operating_profit)"/></td></tr>
+                                
+                                <tr><td>Finance Income</td><td></td><td class="text-end"><t t-esc="formatCurrency(d.finance_income)"/></td><td class="text-end" t-if="state.data.has_comparison"><t t-esc="formatCurrency(p.finance_income)"/></td></tr>
+                                <tr><td>Finance costs</td><td class="text-center">23</td><td class="text-end text-danger">(<t t-esc="formatCurrency(d.finance_costs)"/>)</td><td class="text-end text-danger" t-if="state.data.has_comparison">(<t t-esc="formatCurrency(p.finance_costs)"/>)</td></tr>
+                                
+                                <tr class="fw-bold border-top"><td>Profit before business income tax</td><td></td><td class="text-end"><t t-esc="formatCurrency(d.profit_before_tax)"/></td><td class="text-end" t-if="state.data.has_comparison"><t t-esc="formatCurrency(p.profit_before_tax)"/></td></tr>
+                                
+                                <tr><td>Business income tax expense</td><td class="text-center">24.3</td><td class="text-end text-danger">(<t t-esc="formatCurrency(d.income_tax_expense)"/>)</td><td class="text-end text-danger" t-if="state.data.has_comparison">(<t t-esc="formatCurrency(p.income_tax_expense)"/>)</td></tr>
+                                
+                                <tr class="fw-bold border-top border-bottom"><td>Profit for the year</td><td></td><td class="text-end"><t t-esc="formatCurrency(d.profit_for_year)"/></td><td class="text-end" t-if="state.data.has_comparison"><t t-esc="formatCurrency(p.profit_for_year)"/></td></tr>
+                                
+                                <tr><td>Other comprehensive income</td><td></td><td class="text-end">0.00</td><td class="text-end" t-if="state.data.has_comparison">0.00</td></tr>
+                                
+                                <tr class="fw-bold border-top border-dark border-2"><td>Total comprehensive (loss) income for the year</td><td></td><td class="text-end"><t t-esc="formatCurrency(d.profit_for_year)"/></td><td class="text-end" t-if="state.data.has_comparison"><t t-esc="formatCurrency(p.profit_for_year)"/></td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </t>
+</templates>

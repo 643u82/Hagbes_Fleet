@@ -1,0 +1,56 @@
+<odoo>
+    <record id="view_leave_update_wizard_form" model="ir.ui.view">
+      <field name="name">leave.update.wizard.form</field>
+      <field name="model">leave.update.wizard</field>
+      <field name="arch" type="xml">
+        <form string="Update Leave Data">
+            <sheet>
+                <group string="Employee Info" colspan="4">
+                  <group>
+                    <field name="emp_id"/>
+                    <field name="hired_date"/>
+                    <field name="work_phone"/>
+                  </group>
+                  <group>
+                    <field name="email"/>
+                    <field name="job_id" options="{'no_open': True}"/>
+                    <field name="branch"/>
+
+                  </group>
+                </group>
+                <group string="Leave Info" colspan="4">
+                 <group>
+                    <field name="date_from"/>
+                    <field name="date_to"/>
+                 </group>
+                 <group>
+                    <field name="number_of_days"/>
+                    <field name="holiday_status_id" options="{'no_open': True}"/>
+                </group>
+               </group>
+
+               <group string="Leave Balances" colspan="4">
+                <group>
+                    <field name="year_2_balance"/>
+                    <field name="year_1_balance"/>
+                </group>
+                <group>
+                    <field name="current_year_balance"/>
+                    <field name="total_balance"/>
+                </group>
+               </group>
+
+                <group string="Salary Deduction" colspan="2">
+                    <field name="deduct_from_salary" widget="radio"/>
+                    <field name="salary_days_to_deduct"/>
+                </group>
+
+                <footer>
+                    <button string="Update" type="object" name="action_update_leave" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </sheet>
+        </form>
+      </field>
+    </record>
+</odoo>

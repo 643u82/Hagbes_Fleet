@@ -1,0 +1,32 @@
+<odoo>
+  <record id="seq_mrcv_header" model="ir.sequence">
+    <field name="name">MRCV Header</field>
+    <field name="code">mrcv.header</field>
+    <field name="prefix">MRCV-%(y)s-</field> <!-- e.g., MRCV-24- -->
+    <field name="padding">5</field>
+    <field name="number_next">1</field>
+    <field name="number_increment">1</field>
+    <field name="implementation">no_gap</field>
+    <field name="use_date_range">True</field> <!-- This enables yearly reset -->
+  </record>
+    <record id="seq_mrv_header" model="ir.sequence">
+        <field name="name">MRV Header</field>
+        <field name="code">mrv.header</field>
+        <field name="prefix">MRV-%(y)s-</field> <!-- e.g., MRCV-24- -->
+        <field name="padding">5</field>
+        <field name="number_next">1</field>
+        <field name="number_increment">1</field>
+        <field name="implementation">no_gap</field>
+        <field name="use_date_range">True</field> <!-- This enables yearly reset -->
+  </record>
+  <record id="seq_workshop_order" model="ir.sequence">
+        <field name="name">Workshop Order Sequence</field>
+        <field name="code">workshop.order</field>
+        <field name="prefix">JO-%(y)s</field>
+        <field name="padding">5</field>
+        <field name="number_next">1</field>
+        <field name="number_increment">1</field>
+        <field name="implementation">no_gap</field>
+        <field name="use_date_range">True</field> <!-- This enables yearly reset -->
+  </record>
+</odoo>

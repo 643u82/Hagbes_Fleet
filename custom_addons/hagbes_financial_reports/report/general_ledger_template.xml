@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_general_ledger">
+        <t t-call="web.html_container">
+            <t t-call="web.basic_layout">
+
+                <!-- HEADER -->
+                <div class="mb-4">
+                    <div class="row">
+                        <div class="col-6">
+                            <img t-if="company.logo"
+                                 t-att-src="image_data_uri(company.logo)"
+                                 style="max-height:55px; margin-bottom:10px;"/>
+
+                            <div style="font-size:13px; line-height:1.6;">
+                                <div style="font-weight:600;" t-esc="company.name"/>
+                                <div t-if="company.country_id"
+                                     t-esc="company.country_id.name"/>
+                                <div t-if="company.vat">
+                                    Tax ID: <span t-esc="company.vat"/>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-6 text-end">
+                            <h2 style="font-size:30px; font-weight:700; margin:0;">
+                                General Ledger
+                            </h2>
+                            <div style="margin-top:5px; font-size:13px; color:#666;">
+                                <span t-esc="data['date_from']" t-options="{'widget': 'date'}"/> - 
+                                <span t-esc="data['date_to']" t-options="{'widget': 'date'}"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+<div class="page">
+
+    <style>
+        .gl-wrapper {
+            font-size: 12px;
+            color: #2f2f2f;
+        }
+
+        /* PERIOD BAR */
+        .gl-period {
+            background: #dfe3e8;
+            padding: 8px 0;
+            text-align: center;
+            font-weight: 600;
+            margin: 18px 0 12px 0;
+        }
+
+        /* TABLE-LIKE LAYOUT (PDF SAFE) */
+        .gl-row {
+            display: table;
+            width: 100%;
+            table-layout: fixed;
+        }
+
+        .gl-cell {
+            display: table-cell;
+            padding: 6px 6px;
+            vertical-align: middle;
+        }
+
+        .col-date   { width: 15%; }
+        .col-partner{ width: 35%; }
+        .col-debit  { width: 15%; text-align: right; }
+        .col-credit { width: 15%; text-align: right; }
+        .col-balance{ width: 20%; text-align: right; }
+
+        /* Header labels */
+        .gl-header {
+            font-weight: 600;
+            color: #555;
+            padding-bottom: 6px;
+        }
+
+        /* Account section */
+        .account-row {
+            font-weight: 600;
+            border-top: 1px solid #bfbfbf;
+            padding-top: 10px;
+        }
+
+        /* Move lines */
+        .line-row {
+            border-bottom: 1px solid #eeeeee;
+        }
+
+        /* Total */
+        .gl-total {
+            font-weight: 600;
+            border-top: 1px solid #bfbfbf;
+            padding-top: 10px;
+        }
+
+        .muted {
+            color: #9ca3af;
+        }
+    </style>
+
+    <div class="gl-wrapper">
+
+        <!-- PERIOD -->
+        <div class="gl-period">
+            <span t-esc="data['date_to']"
+                  t-options="{'widget':'date','format':'MMM yyyy'}"/>
+        </div>
+
+        <!-- COLUMN HEADERS -->
+        <div class="gl-row gl-header">
+            <div class="gl-cell col-date">Date</div>
+            <div class="gl-cell col-partner">Partner</div>
+            <div class="gl-cell col-debit">Debit</div>
+            <div class="gl-cell col-credit">Credit</div>
+            <div class="gl-cell col-balance">Balance</div>
+        </div>
+
+        <t t-set="total_debit" t-value="0"/>
+        <t t-set="total_credit" t-value="0"/>
+
+        <t t-foreach="data['accounts']" t-as="account">
+
+            <!-- ACCOUNT HEADER -->
+            <div class="gl-row account-row">
+                <div class="gl-cell col-date">
+                    <span t-esc="account['code']"/>
+                </div>
+                <div class="gl-cell col-partner">
+                    <span t-esc="account['name']"/>
+                </div>
+                <div class="gl-cell col-debit">
+                    <span t-esc="account['debit']"
+                          t-options="{'widget':'monetary',
+                                      'display_currency':company.currency_id}"/>
+                </div>
+                <div class="gl-cell col-credit">
+                    <span t-esc="account['credit']"
+                          t-options="{'widget':'monetary',
+                                      'display_currency':company.currency_id}"/>
+                </div>
+                <div class="gl-cell col-balance">
+                    <span t-esc="account['balance']"
+                          t-options="{'widget':'monetary',
+                                      'display_currency':company.currency_id}"/>
+                </div>
+            </div>
+
+            <!-- MOVE LINES -->
+            <t t-foreach="account['move_lines']" t-as="line">
+
+                <t t-set="total_debit"
+                   t-value="total_debit + line['debit']"/>
+                <t t-set="total_credit"
+                   t-value="total_credit + line['credit']"/>
+
+                <div class="gl-row line-row">
+                    <div class="gl-cell col-date">
+                        <span t-esc="line['date']"
+                              t-options="{'widget':'date'}"/>
+                    </div>
+                    <div class="gl-cell col-partner">
+                        <span t-esc="line['partner_name']"/>
+                    </div>
+                    <div class="gl-cell col-debit">
+                        <span t-esc="line['debit']"
+                              t-options="{'widget':'monetary',
+                                          'display_currency':company.currency_id}"/>
+                    </div>
+                    <div class="gl-cell col-credit">
+                        <span t-esc="line['credit']"
+                              t-options="{'widget':'monetary',
+                                          'display_currency':company.currency_id}"/>
+                    </div>
+                    <div class="gl-cell col-balance">
+                        <span t-esc="line['balance']"
+                              t-options="{'widget':'monetary',
+                                          'display_currency':company.currency_id}"/>
+                    </div>
+                </div>
+
+            </t>
+
+        </t>
+
+        <!-- TOTAL -->
+        <div class="gl-row gl-total">
+            <div class="gl-cell col-date"></div>
+            <div class="gl-cell col-partner">
+                Total General Ledger
+            </div>
+            <div class="gl-cell col-debit">
+                <span t-esc="total_debit"
+                      t-options="{'widget':'monetary',
+                                  'display_currency':company.currency_id}"/>
+            </div>
+            <div class="gl-cell col-credit">
+                <span t-esc="total_credit"
+                      t-options="{'widget':'monetary',
+                                  'display_currency':company.currency_id}"/>
+            </div>
+            <div class="gl-cell col-balance muted">
+                0.00
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+
+
+
+                <!-- FOOTER -->
+                <div class="footer">
+                    <div class="text-center"
+                         style="font-size:10px; color:#777; border-top:1px solid #eee; padding-top:8px;">
+                        Page <span class="page"/> of <span class="topage"/>
+                    </div>
+                </div>
+            </t>
+        </t>
+    </template>
+
+    <record id="action_report_general_ledger" model="ir.actions.report">
+        <field name="name">General Ledger</field>
+        <field name="model">report.custom_financial_reports.report_general_ledger</field>
+        <field name="report_type">qweb-pdf</field>
+        <!-- <field name="report_name">custom_financial_reports.report_general_ledger</field> -->
+        <field name="print_report_name">
+    "'General Ledger - %s - %s' % (data.get('date_from',''), data.get('date_to',''))"
+</field>
+
+        <field name="report_file">custom_financial_reports.report_general_ledger</field>
+        <field name="binding_model_id" eval="False"/>
+    </record>
+</odoo>
