@@ -30,6 +30,42 @@ class IrConfigParam(models.TransientModel):
         string='Is Approval Installed',
         compute='_compute_is_approval_installed'
     )
+    fleet_maintenance_warning_km = fields.Float(
+        string='Maintenance Warning KM',
+        config_parameter='fleet.maintenance.warning_km',
+        default=7500.0,
+        help='KM threshold for warning status'
+    )
+    fleet_maintenance_due_km = fields.Float(
+        string='Maintenance Due KM',
+        config_parameter='fleet.maintenance.due_km',
+        default=10000.0,
+        help='KM threshold for due status'
+    )
+    fleet_maintenance_overdue_km = fields.Float(
+        string='Maintenance Overdue KM',
+        config_parameter='fleet.maintenance.overdue_km',
+        default=15000.0,
+        help='KM threshold for overdue status'
+    )
+    fleet_maintenance_warning_days = fields.Integer(
+        string='Maintenance Warning Days',
+        config_parameter='fleet.maintenance.warning_days',
+        default=90,
+        help='Days threshold for warning status'
+    )
+    fleet_maintenance_due_days = fields.Integer(
+        string='Maintenance Due Days',
+        config_parameter='fleet.maintenance.due_days',
+        default=120,
+        help='Days threshold for due status'
+    )
+    fleet_maintenance_overdue_days = fields.Integer(
+        string='Maintenance Overdue Days',
+        config_parameter='fleet.maintenance.overdue_days',
+        default=180,
+        help='Days threshold for overdue status'
+    )
 
     def _compute_is_approval_installed(self):
         for rec in self:

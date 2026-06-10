@@ -1,0 +1,240 @@
+HAGBES FLEET MANAGEMENT REPORTING MODULE AUDIT EVIDENCE
+========================================================
+
+1. FLEET UTILIZATION REPORT
+---------------------------
+- Model Name: fleet.utilization.report
+- File Path: models/fleet_utilization_report.py
+- _auto = False: Used (for SQL View)
+- Fields:
+    * vehicle_id (Many2one)
+    * plate_number (Char)
+    * company_id (Many2one)
+    * vehicle_status (Selection)
+    * trip_count (Integer)
+    * total_distance (Float)
+    * avg_distance (Float)
+    * last_trip_date (Date)
+    * odometer (Float)
+    * last_service_date (Date)
+    * last_service_km (Float)
+    * wear_since_service (Float)
+- SQL View Definition:
+    """
+    CREATE OR REPLACE VIEW fleet_utilization_report AS (
+        SELECT 
+            v.id as id,
+            v.id as vehicle_id,
+            v.plate_number as plate_number,
+            v.company_id as company_id,
+            v.status as vehicle_status,
+            COUNT(t.id) as trip_count,
+            SUM(COALESCE(t.actual_distance, 0)) as total_distance,
+            CASE 
+                WHEN COUNT(t.id) > 0 THEN SUM(COALESCE(t.actual_distance, 0)) / COUNT(t.id)
+                ELSE 0 
+            END as avg_distance,
+            MAX(t.return_date) as last_trip_date,
+            -- State Layer: Current Odometer
+            MAX(COALESCE(t.km_at_end_actual, 0)) as odometer,
+            -- Usage Layer: Wear tracking
+            ls.last_service_date,
+            MAX(CASE 
+                WHEN ls.last_service_date IS NOT NULL AND t.return_date <= ls.last_service_date 
+                THEN COALESCE(t.km_at_end_actual, 0) 
+                ELSE 0 
+            END) as last_service_km,
+            SUM(CASE 
+                WHEN ls.last_service_date IS NULL OR t.return_date > ls.last_service_date 
+                THEN COALESCE(t.actual_distance, 0) 
+                ELSE 0 
+            END) as wear_since_service
+        FROM 
+            hagbes_fleet_vehicle v
+        LEFT JOIN 
+            fleet_trip t ON v.id = t.vehicle_id AND t.state = 'completed'
+        LEFT JOIN (
+            SELECT vehicle_id, MAX(service_date) as last_service_date
+            FROM hagbes_fleet_maintenance
+            WHERE state = 'completed'
+            GROUP BY vehicle_id
+        ) ls ON v.id = ls.vehicle_id
+        GROUP BY 
+            v.id, v.plate_number, v.company_id, v.status, ls.last_service_date
+    )
+    """
+- XML IDs:
+    * Tree View: hagbes_fleet.view_fleet_utilization_report_tree
+    * Pivot View: hagbes_fleet.view_fleet_utilization_report_pivot
+    * Graph View: hagbes_fleet.view_fleet_utilization_report_graph
+    * Search View: hagbes_fleet.view_fleet_utilization_report_search
+    * Window Action: hagbes_fleet.action_fleet_utilization_report
+    * Menu Item: hagbes_fleet.menu_fleet_utilization_report
+    * PDF Report: hagbes_fleet.action_report_fleet_utilization
+- Pivot View Definition:
+    <pivot string="Fleet Utilization Analysis" display_quantity="true" sample="1">
+        <field name="company_id" type="row"/>
+        <field name="total_distance" type="measure"/>
+        <field name="trip_count" type="measure"/>
+        <field name="avg_distance" type="measure"/>
+    </pivot>
+- Graph View Definition:
+    <graph string="Utilization by Branch" type="bar" sample="1">
+        <field name="company_id"/>
+        <field name="total_distance" type="measure"/>
+    </graph>
+- Action & Menu Definition:
+    <record id="action_fleet_utilization_report" model="ir.actions.act_window">
+        <field name="name">Fleet Utilization</field>
+        <field name="res_model">fleet.utilization.report</field>
+        <field name="view_mode">list,pivot,graph</field>
+    </record>
+    <menuitem id="menu_fleet_utilization_report"
+              name="Utilization Analysis"
+              parent="menu_fleet_reports"
+              action="action_fleet_utilization_report"
+              sequence="10"/>
+
+2. VEHICLE AVAILABILITY REPORT
+------------------------------
+- Model Name: fleet.availability.report
+- File Path: models/fleet_availability_report.py
+- _auto = False: Used (for SQL View)
+- Fields:
+    * vehicle_id (Many2one)
+    * plate_number (Char)
+    * company_id (Many2one)
+    * vehicle_status (Selection)
+    * driver_name (Char)
+    * last_trip_date (Date)
+    * days_idle (Integer)
+    * current_trip_id (Many2one)
+    * maintenance_status (Char)
+- SQL View Definition:
+    """
+    CREATE OR REPLACE VIEW fleet_availability_report AS (
+        WITH last_trips AS (
+            SELECT DISTINCT ON (vehicle_id) 
+                vehicle_id, 
+                return_date,
+                id as trip_id
+            FROM fleet_trip 
+            WHERE state = 'completed'
+            ORDER BY vehicle_id, return_date DESC, id DESC
+        ),
+        current_trips AS (
+            SELECT DISTINCT ON (vehicle_id)
+                vehicle_id,
+                id as trip_id
+            FROM fleet_trip
+            WHERE state IN ('started')
+            ORDER BY vehicle_id, id DESC
+        ),
+        active_maintenance AS (
+            SELECT DISTINCT ON (vehicle_id)
+                vehicle_id,
+                service_type as maintenance_name
+            FROM hagbes_fleet_maintenance
+            WHERE state = 'active'
+            ORDER BY vehicle_id, id DESC
+        )
+        SELECT 
+            v.id as id,
+            v.id as vehicle_id,
+            v.plate_number as plate_number,
+            v.company_id as company_id,
+            v.status as vehicle_status,
+            v.driver as driver_name,
+            lt.return_date as last_trip_date,
+            CASE 
+                WHEN lt.return_date IS NOT NULL THEN CURRENT_DATE - lt.return_date
+                ELSE 999 
+            END as days_idle,
+            ct.trip_id as current_trip_id,
+            am.maintenance_name as maintenance_status
+        FROM 
+            hagbes_fleet_vehicle v
+        LEFT JOIN last_trips lt ON v.id = lt.vehicle_id
+        LEFT JOIN current_trips ct ON v.id = ct.vehicle_id
+        LEFT JOIN active_maintenance am ON v.id = am.vehicle_id
+    )
+    """
+- XML IDs:
+    * Tree View: hagbes_fleet.view_fleet_availability_report_tree
+    * Pivot View: hagbes_fleet.view_fleet_availability_report_pivot
+    * Graph View: hagbes_fleet.view_fleet_availability_report_graph
+    * Search View: hagbes_fleet.view_fleet_availability_report_search
+    * Window Action: hagbes_fleet.action_fleet_availability_report
+    * Menu Item: hagbes_fleet.menu_fleet_availability_report
+    * PDF Report: hagbes_fleet.action_report_fleet_availability
+- Pivot View Definition:
+    <pivot string="Availability Analysis" sample="1">
+        <field name="company_id" type="row"/>
+        <field name="vehicle_status" type="col"/>
+        <field name="days_idle" type="measure"/>
+    </pivot>
+- Graph View Definition:
+    <graph string="Availability Distribution" type="pie" sample="1">
+        <field name="vehicle_status"/>
+    </graph>
+- Action & Menu Definition:
+    <record id="action_fleet_availability_report" model="ir.actions.act_window">
+        <field name="name">Vehicle Availability</field>
+        <field name="res_model">fleet.availability.report</field>
+        <field name="view_mode">list,pivot,graph</field>
+    </record>
+    <menuitem id="menu_fleet_availability_report"
+              name="Availability Analysis"
+              parent="menu_fleet_reports"
+              action="action_fleet_availability_report"
+              sequence="20"/>
+
+3. TRIP SUMMARY REPORT
+----------------------
+- Model Name: fleet.trip
+- File Path: models/fleet_trip.py
+- _auto = False: No
+- Fields Exposed (PDF):
+    * name, allocation_date, vehicle_id, plate_number, driver_name, allocated_by, state, planned_route_distance, actual_distance, distance_difference, distance_difference_pct, requisition_ids, start_location, actual_start_place, actual_destination, return_date, combined_purpose, combined_destination, combined_travellers
+- XML IDs:
+    * Tree View: hagbes_fleet.view_fleet_trip_tree
+    * Search View: hagbes_fleet.view_fleet_trip_search (NOT FOUND, using default or inherited)
+    * Window Action: hagbes_fleet.action_fleet_trip
+    * Menu Item: hagbes_fleet.menu_fleet_trips
+    * PDF Report: hagbes_fleet.action_report_fleet_trip_summary
+
+4. VEHICLE REQUISITION REPORT
+-----------------------------
+- Model Name: fleet.requisition
+- File Path: models/fleet_requisition.py
+- _auto = False: No
+- Fields Exposed (PDF):
+    * name, date_of_request, request_by, department_id, destination, purpose, date_from, date_to, traveller_count, traveller, traveller_names, vehicle_id, dept_approved_by, dept_approved_date, assigned_by, assigned_date
+- XML IDs:
+    * Tree View: hagbes_fleet.view_fleet_requisition_tree
+    * Search View: hagbes_fleet.view_fleet_requisition_search
+    * Window Action: hagbes_fleet.action_fleet_requisition
+    * Menu Item: hagbes_fleet.menu_fleet_requisitions
+    * PDF Report: hagbes_fleet.action_report_fleet_requisition
+
+5. MAINTENANCE HISTORY (PARTIAL)
+--------------------------------
+- Model Name: hagbes.fleet.maintenance
+- File Path: models/fleet_maintenance.py
+- _auto = False: No
+- Fields: vehicle_id, service_type, service_date, cost, product_id, state
+- XML IDs:
+    * Tree View: hagbes_fleet.view_fleet_maintenance_tree
+    * Window Action: hagbes_fleet.action_fleet_maintenance
+    * Menu Item: hagbes_fleet.menu_fleet_maintenance (NOT FOUND, verified menu_fleet_operations exists)
+
+6. VEHICLE ALLOCATION (PARTIAL)
+-------------------------------
+- Model Name: hagbes.fleet.allocation
+- File Path: models/fleet_allocation.py
+- _auto = False: No
+- Fields: name, request_id, vehicle_id, driver_id, allocation_date, return_date, planned_distance, state
+- XML IDs:
+    * Tree View: hagbes_fleet.view_fleet_allocation_tree
+    * Window Action: hagbes_fleet.action_fleet_allocation
+    * Menu Item: hagbes_fleet.menu_fleet_allocations

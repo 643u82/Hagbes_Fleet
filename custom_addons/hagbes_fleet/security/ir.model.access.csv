@@ -1,8 +1,9 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_hagbes_fleet_vehicle_requester,hagbes.fleet.vehicle.requester,model_hagbes_fleet_vehicle,hagbes_fleet.group_fleet_requester,1,0,0,0
-access_hagbes_fleet_vehicle_dept_manager,hagbes.fleet.vehicle.dept.manager,model_hagbes_fleet_vehicle,hagbes_fleet.group_dept_manager,1,0,0,0
+access_hagbes_fleet_vehicle_requester,hagbes.fleet.vehicle.requester,model_hagbes_fleet_vehicle,hagbes_fleet.group_fleet_requester,0,0,0,0
+access_hagbes_fleet_vehicle_dept_manager,hagbes.fleet.vehicle.dept.manager,model_hagbes_fleet_vehicle,hagbes_fleet.group_dept_manager,0,0,0,0
 access_hagbes_fleet_vehicle_fmo,hagbes.fleet.vehicle.fmo,model_hagbes_fleet_vehicle,hagbes_fleet.group_fmo,1,1,1,0
 access_hagbes_fleet_vehicle_manager,hagbes.fleet.vehicle.manager,model_hagbes_fleet_vehicle,hagbes_fleet.group_fleet_manager,1,1,1,0
+access_hagbes_fleet_vehicle_property_manager,hagbes.fleet.vehicle.property.manager,model_hagbes_fleet_vehicle,hagbes_fleet.group_property_manager,1,0,0,0
 access_hagbes_fleet_vehicle_admin,hagbes.fleet.vehicle.admin,model_hagbes_fleet_vehicle,hagbes_fleet.group_fleet_admin,1,1,1,1
 
 access_hagbes_fleet_assign_requester,hagbes.fleet.assign.requester,model_hagbes_fleet_vehicle_assign,hagbes_fleet.group_fleet_requester,1,0,0,0
@@ -57,6 +58,24 @@ access_hagbes_fleet_discrepancy_admin,hagbes.fleet.discrepancy.admin,model_hagbe
 access_hagbes_fleet_vehicle_status_log_fmo,hagbes.fleet.vehicle.status.log.fmo,model_hagbes_fleet_vehicle_status_log,hagbes_fleet.group_fmo,1,1,1,0
 access_hagbes_fleet_vehicle_status_log_manager,hagbes.fleet.vehicle.status.log.manager,model_hagbes_fleet_vehicle_status_log,hagbes_fleet.group_fleet_manager,1,1,1,0
 access_hagbes_fleet_vehicle_status_log_admin,hagbes.fleet.vehicle.status.log.admin,model_hagbes_fleet_vehicle_status_log,hagbes_fleet.group_fleet_admin,1,1,1,1
+access_fleet_utilization_report_manager,fleet.utilization.report.manager,model_fleet_utilization_report,hagbes_fleet.group_fleet_manager,1,0,0,0
+access_fleet_utilization_report_fmo,fleet.utilization.report.fmo,model_fleet_utilization_report,hagbes_fleet.group_fmo,1,0,0,0
+access_fleet_utilization_report_admin,fleet.utilization.report.admin,model_fleet_utilization_report,hagbes_fleet.group_fleet_admin,1,0,0,0
+access_fleet_availability_report_manager,fleet.availability.report.manager,model_fleet_availability_report,hagbes_fleet.group_fleet_manager,1,0,0,0
+access_fleet_availability_report_fmo,fleet.availability.report.fmo,model_fleet_availability_report,hagbes_fleet.group_fmo,1,0,0,0
+access_fleet_availability_report_admin,fleet.availability.report.admin,model_fleet_availability_report,hagbes_fleet.group_fleet_admin,1,0,0,0
+access_fleet_maintenance_history_report_manager,fleet.maintenance.history.report.manager,model_fleet_maintenance_history_report,hagbes_fleet.group_fleet_manager,1,0,0,0
+access_fleet_maintenance_history_report_fmo,fleet.maintenance.history.report.fmo,model_fleet_maintenance_history_report,hagbes_fleet.group_fmo,1,0,0,0
+access_fleet_maintenance_history_report_admin,fleet.maintenance.history.report.admin,model_fleet_maintenance_history_report,hagbes_fleet.group_fleet_admin,1,0,0,0
+access_fleet_allocation_report_manager,fleet.allocation.report.manager,model_fleet_allocation_report,hagbes_fleet.group_fleet_manager,1,0,0,0
+access_fleet_allocation_report_fmo,fleet.allocation.report.fmo,model_fleet_allocation_report,hagbes_fleet.group_fmo,1,0,0,0
+access_fleet_allocation_report_admin,fleet.allocation.report.admin,model_fleet_allocation_report,hagbes_fleet.group_fleet_admin,1,0,0,0
+access_fleet_maintenance_due_report_manager,fleet.maintenance.due.report.manager,model_fleet_maintenance_due_report,hagbes_fleet.group_fleet_manager,1,0,0,0
+access_fleet_maintenance_due_report_fmo,fleet.maintenance.due.report.fmo,model_fleet_maintenance_due_report,hagbes_fleet.group_fmo,1,0,0,0
+access_fleet_maintenance_due_report_admin,fleet.maintenance.due.report.admin,model_fleet_maintenance_due_report,hagbes_fleet.group_fleet_admin,1,0,0,0
+access_fleet_dashboard_manager,fleet.dashboard.manager,model_fleet_dashboard,hagbes_fleet.group_fleet_manager,1,0,0,0
+access_fleet_dashboard_fmo,fleet.dashboard.fmo,model_fleet_dashboard,hagbes_fleet.group_fmo,1,0,0,0
+access_fleet_dashboard_admin,fleet.dashboard.admin,model_fleet_dashboard,hagbes_fleet.group_fleet_admin,1,0,0,0
 
 access_hagbes_fleet_allocation_append_fmo,hagbes.fleet.allocation.append.fmo,model_hagbes_fleet_allocation_append,hagbes_fleet.group_fmo,1,1,1,0
 access_hagbes_fleet_allocation_append_manager,hagbes.fleet.allocation.append.manager,model_hagbes_fleet_allocation_append,hagbes_fleet.group_fleet_manager,1,1,1,0

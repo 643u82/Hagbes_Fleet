@@ -31,7 +31,8 @@ class HagbesFleetVehicle(models.Model, ApprovalIntegrationMixin):
         ('electric', 'Electric'),
         ('hybrid', 'Hybrid'),
     ], string='Fuel Type', required=True)
-    acquisition_date = fields.Date(string='Acquisition Date', required=True, index=True)
+    acquisition_date = fields.Date(string='Acquisition Date', index=True)
+    color = fields.Char(string='Color', index=True)
     cost = fields.Float(string='Acquisition Cost')
     status = fields.Selection([
         ('available', 'Available'),
@@ -52,6 +53,12 @@ class HagbesFleetVehicle(models.Model, ApprovalIntegrationMixin):
         ('work', 'Work Vehicle'),
         ('managerial', 'Managerial Vehicle'),
     ], string='Vehicle Type', default='work')
+
+    odometer = fields.Float(
+        string='Current Odometer',
+        compute='_compute_odometer',
+        help='Latest odometer reading from completed trips.'
+    )
 
     assignment_ids = fields.One2many('hagbes.fleet.vehicle.assign', 'vehicle_id', string='Assignments')
     maintenance_ids = fields.One2many('hagbes.fleet.maintenance', 'vehicle_id', string='Maintenance Records')
@@ -84,6 +91,15 @@ class HagbesFleetVehicle(models.Model, ApprovalIntegrationMixin):
                 rec.status = 'assigned'
             else:
                 rec.status = 'available'
+
+    def _compute_odometer(self):
+        """Compute the current odometer from the latest completed trip."""
+        for rec in self:
+            last_trip = self.env['fleet.trip'].search([
+                ('vehicle_id', '=', rec.id),
+                ('state', '=', 'completed')
+            ], order='return_date desc, id desc', limit=1)
+            rec.odometer = last_trip.km_at_end_actual if last_trip else 0.0
 
     @api.model_create_multi
     def create(self, vals_list):

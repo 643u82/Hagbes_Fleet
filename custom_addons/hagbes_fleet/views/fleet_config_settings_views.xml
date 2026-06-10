@@ -25,6 +25,18 @@
                             <button name="action_sync_approval_data" type="object" string="Sync Approval Configuration" class="btn-primary"/>
                         </setting>
                     </block>
+                    <block title="Maintenance Due Thresholds">
+                        <setting string="KM Thresholds">
+                            <field name="fleet_maintenance_warning_km"/>
+                            <field name="fleet_maintenance_due_km"/>
+                            <field name="fleet_maintenance_overdue_km"/>
+                        </setting>
+                        <setting string="Days Thresholds">
+                            <field name="fleet_maintenance_warning_days"/>
+                            <field name="fleet_maintenance_due_days"/>
+                            <field name="fleet_maintenance_overdue_days"/>
+                        </setting>
+                    </block>
                     <block title="Approval Status" invisible="is_approval_installed">
                         <setting string="Approval Strategy" help="Approval workflows are currently disabled because the hagbes_approval_workflow module is not installed.">
                             <div class="text-muted">

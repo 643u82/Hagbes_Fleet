@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Maintenance History Views -->
+    <record id="view_fleet_maintenance_history_report_tree" model="ir.ui.view">
+        <field name="name">fleet.maintenance.history.report.tree</field>
+        <field name="model">fleet.maintenance.history.report</field>
+        <field name="arch" type="xml">
+            <list string="Maintenance History Analysis" create="false" edit="false">
+                <field name="vehicle_id"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <field name="service_type"/>
+                <field name="service_date"/>
+                <field name="total_cost" sum="Total Cost"/>
+                <field name="maintenance_count" sum="Total Count"/>
+                <field name="state" widget="badge"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_fleet_maintenance_history_report_pivot" model="ir.ui.view">
+        <field name="name">fleet.maintenance.history.report.pivot</field>
+        <field name="model">fleet.maintenance.history.report</field>
+        <field name="arch" type="xml">
+            <pivot string="Maintenance History Analysis" sample="1">
+                <field name="company_id" type="row"/>
+                <field name="service_type" type="col"/>
+                <field name="maintenance_count" type="measure"/>
+                <field name="total_cost" type="measure"/>
+                <field name="avg_cost" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="view_fleet_maintenance_history_report_graph" model="ir.ui.view">
+        <field name="name">fleet.maintenance.history.report.graph</field>
+        <field name="model">fleet.maintenance.history.report</field>
+        <field name="arch" type="xml">
+            <graph string="Maintenance Cost by Type" type="bar" sample="1">
+                <field name="service_type"/>
+                <field name="total_cost" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="view_fleet_maintenance_history_report_search" model="ir.ui.view">
+        <field name="name">fleet.maintenance.history.report.search</field>
+        <field name="model">fleet.maintenance.history.report</field>
+        <field name="arch" type="xml">
+            <search string="Maintenance History Analysis">
+                <field name="vehicle_id"/>
+                <field name="company_id"/>
+                <filter string="Completed" name="completed" domain="[('state', '=', 'completed')]"/>
+                <filter string="Preventive" name="preventive" domain="[('service_type', '=', 'preventive')]"/>
+                <filter string="Corrective" name="corrective" domain="[('service_type', '=', 'corrective')]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Vehicle" name="group_vehicle" context="{'group_by':'vehicle_id'}"/>
+                    <filter string="Branch" name="group_branch" context="{'group_by':'company_id'}"/>
+                    <filter string="Service Type" name="group_type" context="{'group_by':'service_type'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_fleet_maintenance_history_report" model="ir.actions.act_window">
+        <field name="name">Maintenance History Analysis</field>
+        <field name="res_model">fleet.maintenance.history.report</field>
+        <field name="view_mode">list,pivot,graph</field>
+        <field name="search_view_id" ref="view_fleet_maintenance_history_report_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No maintenance history data found.
+            </p>
+        </field>
+    </record>
+
+    <!-- Vehicle Allocation Views -->
+    <record id="view_fleet_allocation_report_tree" model="ir.ui.view">
+        <field name="name">fleet.allocation.report.tree</field>
+        <field name="model">fleet.allocation.report</field>
+        <field name="arch" type="xml">
+            <list string="Vehicle Allocation Analysis" create="false" edit="false">
+                <field name="vehicle_id"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <field name="driver_id"/>
+                <field name="allocation_count" sum="Total Allocations"/>
+                <field name="active_allocations" sum="Total Active"/>
+                <field name="total_planned_distance" sum="Total Planned KM"/>
+                <field name="last_allocation_date"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_fleet_allocation_report_pivot" model="ir.ui.view">
+        <field name="name">fleet.allocation.report.pivot</field>
+        <field name="model">fleet.allocation.report</field>
+        <field name="arch" type="xml">
+            <pivot string="Vehicle Allocation Analysis" sample="1">
+                <field name="vehicle_id" type="row"/>
+                <field name="company_id" type="col"/>
+                <field name="allocation_count" type="measure"/>
+                <field name="total_planned_distance" type="measure"/>
+                <field name="avg_planned_distance" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="view_fleet_allocation_report_graph" model="ir.ui.view">
+        <field name="name">fleet.allocation.report.graph</field>
+        <field name="model">fleet.allocation.report</field>
+        <field name="arch" type="xml">
+            <graph string="Allocations by Vehicle" type="bar" sample="1">
+                <field name="vehicle_id"/>
+                <field name="allocation_count" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="view_fleet_allocation_report_search" model="ir.ui.view">
+        <field name="name">fleet.allocation.report.search</field>
+        <field name="model">fleet.allocation.report</field>
+        <field name="arch" type="xml">
+            <search string="Vehicle Allocation Analysis">
+                <field name="vehicle_id"/>
+                <field name="company_id"/>
+                <field name="driver_id"/>
+                <filter string="Has Active Allocations" name="active" domain="[('active_allocations', '>', 0)]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Vehicle" name="group_vehicle" context="{'group_by':'vehicle_id'}"/>
+                    <filter string="Branch" name="group_branch" context="{'group_by':'company_id'}"/>
+                    <filter string="Driver" name="group_driver" context="{'group_by':'driver_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_fleet_allocation_report" model="ir.actions.act_window">
+        <field name="name">Vehicle Allocation Analysis</field>
+        <field name="res_model">fleet.allocation.report</field>
+        <field name="view_mode">list,pivot,graph</field>
+        <field name="search_view_id" ref="view_fleet_allocation_report_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No allocation data found.
+            </p>
+        </field>
+    </record>
+
+    <!-- Maintenance Due Views -->
+    <record id="view_fleet_maintenance_due_report_tree" model="ir.ui.view">
+        <field name="name">fleet.maintenance.due.report.tree</field>
+        <field name="model">fleet.maintenance.due.report</field>
+        <field name="arch" type="xml">
+            <list string="Maintenance Due Analysis" create="false" edit="false">
+                <field name="vehicle_id"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <field name="current_odometer"/>
+                <field name="last_service_date"/>
+                <field name="days_since_service"/>
+                <field name="km_since_service"/>
+                <field name="due_status" widget="badge"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_fleet_maintenance_due_report_pivot" model="ir.ui.view">
+        <field name="name">fleet.maintenance.due.report.pivot</field>
+        <field name="model">fleet.maintenance.due.report</field>
+        <field name="arch" type="xml">
+            <pivot string="Maintenance Due Analysis" sample="1">
+                <field name="company_id" type="row"/>
+                <field name="due_status" type="col"/>
+                <field name="id" type="measure" string="Vehicle Count"/>
+                <field name="km_since_service" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="view_fleet_maintenance_due_report_graph" model="ir.ui.view">
+        <field name="name">fleet.maintenance.due.report.graph</field>
+        <field name="model">fleet.maintenance.due.report</field>
+        <field name="arch" type="xml">
+            <graph string="Vehicles by Due Status" type="pie" sample="1">
+                <field name="due_status"/>
+                <field name="id" type="measure" string="Vehicle Count"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="view_fleet_maintenance_due_report_search" model="ir.ui.view">
+        <field name="name">fleet.maintenance.due.report.search</field>
+        <field name="model">fleet.maintenance.due.report</field>
+        <field name="arch" type="xml">
+            <search string="Maintenance Due Analysis">
+                <field name="vehicle_id"/>
+                <field name="company_id"/>
+                <filter string="Due" name="due" domain="[('due_status', '=', 'due')]"/>
+                <filter string="Overdue" name="overdue" domain="[('due_status', '=', 'overdue')]"/>
+                <filter string="Warning" name="warning" domain="[('due_status', '=', 'warning')]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Vehicle" name="group_vehicle" context="{'group_by':'vehicle_id'}"/>
+                    <filter string="Branch" name="group_branch" context="{'group_by':'company_id'}"/>
+                    <filter string="Due Status" name="group_status" context="{'group_by':'due_status'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_fleet_maintenance_due_report" model="ir.actions.act_window">
+        <field name="name">Maintenance Due Analysis</field>
+        <field name="res_model">fleet.maintenance.due.report</field>
+        <field name="view_mode">list,pivot,graph</field>
+        <field name="search_view_id" ref="view_fleet_maintenance_due_report_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No maintenance due data found.
+            </p>
+        </field>
+    </record>
+</odoo>

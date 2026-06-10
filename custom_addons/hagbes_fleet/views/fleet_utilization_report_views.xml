@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- List View -->
+    <record id="view_fleet_utilization_report_tree" model="ir.ui.view">
+        <field name="name">fleet.utilization.report.tree</field>
+        <field name="model">fleet.utilization.report</field>
+        <field name="arch" type="xml">
+            <list string="Fleet Utilization" create="false" edit="false">
+                <field name="vehicle_id"/>
+                <field name="plate_number"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <field name="odometer" string="Odometer"/>
+                <field name="last_service_date"/>
+                <field name="last_service_km"/>
+                <field name="wear_since_service" string="Wear Since Service"/>
+                <field name="trip_count" sum="Total Trips"/>
+                <field name="total_distance" sum="Total Distance"/>
+                <field name="avg_distance" avg="Avg Distance"/>
+                <field name="last_trip_date"/>
+                <field name="vehicle_status" widget="badge" 
+                       decoration-success="vehicle_status == 'available'"
+                       decoration-warning="vehicle_status == 'assigned'"
+                       decoration-danger="vehicle_status == 'maintenance'"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Pivot View (KPI Engine) -->
+    <record id="view_fleet_utilization_report_pivot" model="ir.ui.view">
+        <field name="name">fleet.utilization.report.pivot</field>
+        <field name="model">fleet.utilization.report</field>
+        <field name="arch" type="xml">
+            <pivot string="Fleet Utilization Analysis" display_quantity="true" sample="1">
+                <field name="company_id" type="row"/>
+                <field name="total_distance" type="measure"/>
+                <field name="trip_count" type="measure"/>
+                <field name="avg_distance" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <!-- Graph View -->
+    <record id="view_fleet_utilization_report_graph" model="ir.ui.view">
+        <field name="name">fleet.utilization.report.graph</field>
+        <field name="model">fleet.utilization.report</field>
+        <field name="arch" type="xml">
+            <graph string="Utilization by Branch" type="bar" sample="1">
+                <field name="company_id"/>
+                <field name="total_distance" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="view_fleet_utilization_report_search" model="ir.ui.view">
+        <field name="name">fleet.utilization.report.search</field>
+        <field name="model">fleet.utilization.report</field>
+        <field name="arch" type="xml">
+            <search string="Utilization Analysis">
+                <field name="vehicle_id"/>
+                <field name="plate_number"/>
+                <filter string="Active Vehicles" name="active" domain="[('trip_count', '>', 0)]"/>
+                <filter string="Idle Vehicles" name="idle" domain="[('trip_count', '=', 0)]"/>
+                <separator/>
+                <filter string="In Service" name="in_service" domain="[('vehicle_status', 'in', ('available', 'assigned'))]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Branch" name="group_branch" context="{'group_by':'company_id'}"/>
+                    <filter string="Status" name="group_status" context="{'group_by':'vehicle_status'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_fleet_utilization_report" model="ir.actions.act_window">
+        <field name="name">Fleet Utilization</field>
+        <field name="res_model">fleet.utilization.report</field>
+        <field name="view_mode">list,pivot,graph</field>
+        <field name="search_view_id" ref="view_fleet_utilization_report_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No data for utilization analysis.
+            </p>
+        </field>
+    </record>
+</odoo>

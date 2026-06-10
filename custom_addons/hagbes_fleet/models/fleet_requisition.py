@@ -221,22 +221,38 @@ class FleetRequisition(models.Model):
     )
 
     # ─── Vehicle Assignment ───────────────────────────────────────────────────
+    # Note: Department Managers (group_dept_manager) are deliberately NOT in
+    # the groups list below, so these fields are hidden from approvers. The
+    # requester (group_fleet_requester) keeps visibility of the assigned
+    # vehicle once the request moves past the dept-approval stage.
     vehicle_id = fields.Many2one(
         'hagbes.fleet.vehicle',
         string='Vehicle',
         tracking=True,
         copy=False,
         index=True,
+        groups='hagbes_fleet.group_fleet_requester,'
+               'hagbes_fleet.group_fmo,'
+               'hagbes_fleet.group_fleet_manager,'
+               'hagbes_fleet.group_fleet_admin',
     )
     vehicle_plate_number = fields.Char(
         string='Plate Number',
         related='vehicle_id.plate_number',
         readonly=True,
+        groups='hagbes_fleet.group_fleet_requester,'
+               'hagbes_fleet.group_fmo,'
+               'hagbes_fleet.group_fleet_manager,'
+               'hagbes_fleet.group_fleet_admin',
     )
     vehicle_driver_name = fields.Char(
         string='Driver',
         related='vehicle_id.driver',
         readonly=True,
+        groups='hagbes_fleet.group_fleet_requester,'
+               'hagbes_fleet.group_fmo,'
+               'hagbes_fleet.group_fleet_manager,'
+               'hagbes_fleet.group_fleet_admin',
     )
     assigned_by = fields.Many2one(
         'res.users',
@@ -529,115 +545,64 @@ class FleetRequisition(models.Model):
             rec.message_post(body=_('Vehicle assignment initiated.'))
 
     def action_fmo_approve(self):
-        """FMO: Dispatch vehicle for official travel by triggering allocation dispatch."""
+        """FMO: Dispatch vehicle for official travel by triggering allocation dispatch.
+        
+        This action now redirects the user to the Fleet Allocation form with pre-filled data.
+        """
         self.ensure_one()
         if self.state != 'assigned':
             raise UserError(_('Only assigned requisitions can be dispatched.'))
         
+        # Check if an allocation already exists for this requisition
         allocation = self.env['hagbes.fleet.allocation'].search([
             ('request_id', '=', self.id),
-            ('state', 'in', ('assigned', 'draft')),
+            ('state', 'not in', ('completed', 'cancelled')),
         ], limit=1)
         
-        if not allocation:
-            raise UserError(_('No active vehicle allocation found for this requisition. Please ensure a vehicle has been assigned and allocated first.'))
+        if allocation:
+            # If an allocation exists, open it
+            return {
+                'name': _('Fleet Allocation'),
+                'type': 'ir.actions.act_window',
+                'res_model': 'hagbes.fleet.allocation',
+                'res_id': allocation.id,
+                'view_mode': 'form',
+                'target': 'current',
+            }
+
+        # Otherwise, prepare context to create a new allocation with pre-filled data
+        ctx = {
+            'default_request_id': self.id,
+            'default_vehicle_id': self.vehicle_id.id if self.vehicle_id else False,
+            'default_company_id': self.company_id.id,
+            'default_allocation_date': self.date_from or fields.Datetime.now(),
+            'default_return_date': self.date_to,
+        }
         
-        # ─────────────────────────────────────────────────────────────────────
-        # Pre-dispatch: Copy requisition fields into the allocation
-        # ─────────────────────────────────────────────────────────────────────
-        allocation_fields = set(allocation._fields.keys())
-        allocation_vals = {}
-        skipped_fields = []
+        # Try to find the driver from the vehicle or traveller
+        if self.vehicle_id and self.vehicle_id.driver:
+            # Search for employee by name (case-insensitive)
+            driver = self.env['hr.employee'].search([('name', '=ilike', self.vehicle_id.driver.strip())], limit=1)
+            if driver:
+                ctx['default_driver_id'] = driver.id
+            else:
+                # If not found by full name, try searching within the name
+                driver = self.env['hr.employee'].search([('name', 'ilike', self.vehicle_id.driver.strip())], limit=1)
+                if driver:
+                    ctx['default_driver_id'] = driver.id
+        
+        if 'default_driver_id' not in ctx and self.traveller:
+            employee = self.traveller.employee_id
+            if employee and 'driver' in (employee.job_id.name or '').lower():
+                ctx['default_driver_id'] = employee.id
 
-        # vehicle_id (exists on both models)
-        if 'vehicle_id' in allocation_fields:
-            allocation_vals['vehicle_id'] = self.vehicle_id.id if self.vehicle_id else False
-        else:
-            skipped_fields.append('vehicle_id')
-
-        # date_from → allocation_date
-        if 'allocation_date' in allocation_fields:
-            allocation_vals['allocation_date'] = self.date_from
-        else:
-            skipped_fields.append('allocation_date (from date_from)')
-
-        # date_to → return_date
-        if 'return_date' in allocation_fields:
-            allocation_vals['return_date'] = self.date_to
-        else:
-            skipped_fields.append('return_date (from date_to)')
-
-        # traveller (res.users) → driver_id (hr.employee via traveller.employee_id)
-        if 'driver_id' in allocation_fields:
-            employee = self.traveller.employee_id if self.traveller else False
-            allocation_vals['driver_id'] = employee.id if employee else False
-        else:
-            skipped_fields.append('driver_id (from traveller.employee_id)')
-
-        # destination — does NOT exist on allocation; skip
-        if 'destination' in allocation_fields:
-            allocation_vals['destination'] = self.destination
-        else:
-            skipped_fields.append('destination')
-
-        # purpose — does NOT exist on allocation; skip
-        if 'purpose' in allocation_fields:
-            allocation_vals['purpose'] = self.purpose
-        else:
-            skipped_fields.append('purpose')
-
-        # department_id — does NOT exist on allocation; skip
-        if 'department_id' in allocation_fields:
-            allocation_vals['department_id'] = self.department_id.id
-        else:
-            skipped_fields.append('department_id')
-
-        # traveller_count — does NOT exist on allocation; skip
-        if 'traveller_count' in allocation_fields:
-            allocation_vals['traveller_count'] = self.traveller_count
-        else:
-            skipped_fields.append('traveller_count')
-
-        # traveller_names — does NOT exist on allocation; skip
-        if 'traveller_names' in allocation_fields:
-            allocation_vals['traveller_names'] = self.traveller_names
-        else:
-            skipped_fields.append('traveller_names')
-
-        # Apply the writable values to the allocation (only what its model supports)
-        if allocation_vals:
-            allocation.with_context(allow_workflow=True).write(allocation_vals)
-
-        # Log skipped fields as a chatter comment on the requisition
-        if skipped_fields:
-            self.message_post(
-                body=_(
-                    'The following requisition fields were not copied to the allocation '
-                    'because they do not exist on the hagbes.fleet.allocation model:\n'
-                    '• %s\n'
-                    'Consider adding these fields to hagbes.fleet.allocation if they need to '
-                    'be tracked on the allocation record.'
-                ) % '\n• '.join(skipped_fields)
-            )
-
-        # ─────────────────────────────────────────────────────────────────────
-        # Dispatch
-        # ─────────────────────────────────────────────────────────────────────
-        if allocation.state == 'draft':
-            allocation.action_assign_vehicle()
-
-        allocation.action_dispatch_vehicle()
-
-        # ─────────────────────────────────────────────────────────────────────
-        # Post-dispatch: Navigate to the allocation form instead of the trip
-        # ─────────────────────────────────────────────────────────────────────
         return {
             'name': _('Fleet Allocation'),
             'type': 'ir.actions.act_window',
             'res_model': 'hagbes.fleet.allocation',
-            'res_id': allocation.id,
             'view_mode': 'form',
             'target': 'current',
+            'context': ctx,
         }
 
     # =========================================================================

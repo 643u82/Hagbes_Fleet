@@ -98,14 +98,6 @@
                         </page>
                     </notebook>
                 </sheet>
-                <notebook>
-                    <page string="Activities">
-                        <field name="activity_ids" widget="mail_activity"/>
-                    </page>
-                    <page string="Messages">
-                        <field name="message_ids" widget="mail_thread"/>
-                    </page>
-                </notebook>
             </form>
         </field>
     </record>

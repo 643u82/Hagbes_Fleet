@@ -63,6 +63,44 @@
                   sequence="35"
                   groups="hagbes_fleet.group_fmo,hagbes_fleet.group_fleet_manager,hagbes_fleet.group_fleet_admin"/>
 
+        <menuitem id="menu_fleet_utilization_report"
+                  name="Utilization Analysis"
+                  parent="menu_fleet_reports"
+                  action="action_fleet_utilization_report"
+                  sequence="10"/>
+
+        <menuitem id="menu_fleet_availability_report"
+                  name="Availability Analysis"
+                  parent="menu_fleet_reports"
+                  action="action_fleet_availability_report"
+                  sequence="20"/>
+
+        <menuitem id="menu_fleet_maintenance_history_report"
+                  name="Maintenance History Analysis"
+                  parent="menu_fleet_reports"
+                  action="action_fleet_maintenance_history_report"
+                  sequence="30"/>
+
+        <menuitem id="menu_fleet_allocation_report"
+                  name="Vehicle Allocation Analysis"
+                  parent="menu_fleet_reports"
+                  action="action_fleet_allocation_report"
+                  sequence="40"/>
+
+        <menuitem id="menu_fleet_maintenance_due_report"
+                  name="Maintenance Due Analysis"
+                  parent="menu_fleet_reports"
+                  action="action_fleet_maintenance_due_report"
+                  sequence="50"/>
+
+        <!-- Fleet Dashboard -->
+        <menuitem id="menu_fleet_dashboard"
+                  name="Dashboard"
+                  parent="menu_fleet_root"
+                  action="action_fleet_dashboard"
+                  sequence="5"
+                  groups="hagbes_fleet.group_fmo,hagbes_fleet.group_fleet_manager,hagbes_fleet.group_fleet_admin"/>
+
         <!-- Operations -->
         <menuitem id="menu_fleet_operations"
                   name="Operations"

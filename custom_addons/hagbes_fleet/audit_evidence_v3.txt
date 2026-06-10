@@ -1,0 +1,218 @@
+HAGBES FLEET MANAGEMENT ANALYTICS IMPLEMENTATION AUDIT (V3)
+========================================================
+
+1. MAINTENANCE DUE ANALYTICS REPORT
+-----------------------------------
+File: models/fleet_maintenance_due_report.py
+-----------------------------------
+Model Class:
+class FleetMaintenanceDueReport(models.Model):
+    _name = 'fleet.maintenance.due.report'
+    _description = 'Maintenance Due Analysis'
+    _auto = False
+    _order = 'due_status desc, km_since_service desc'
+
+Fields Definition:
+    vehicle_id = fields.Many2one('hagbes.fleet.vehicle', string='Vehicle', readonly=True)
+    company_id = fields.Many2one('res.company', string='Branch', readonly=True)
+    current_odometer = fields.Float(string='Current Odometer', readonly=True)
+    last_service_date = fields.Date(string='Last Service Date', readonly=True)
+    last_service_km = fields.Float(string='Last Service KM', readonly=True)
+    wear_since_service = fields.Float(string='Wear Since Service (KM)', readonly=True)
+    days_since_service = fields.Integer(string='Days Since Last Service', readonly=True)
+    km_since_service = fields.Float(string='KM Since Last Service', readonly=True)
+    due_status = fields.Selection([
+        ('normal', 'Normal'),
+        ('warning', 'Warning'),
+        ('due', 'Due'),
+        ('overdue', 'Overdue'),
+    ], string='Due Status', readonly=True)
+
+SQL View Definition & init() Method:
+    def init(self):
+        tools.drop_view_if_exists(self.env.cr, self._table)
+        self.env.cr.execute("""
+            CREATE OR REPLACE VIEW %s AS (
+                WITH last_service AS (
+                    SELECT 
+                        m.vehicle_id,
+                        MAX(m.service_date) AS last_service_date,
+                        MAX(m.service_date) FILTER (WHERE m.state = 'completed') AS last_completed_service_date
+                    FROM hagbes_fleet_maintenance m
+                    GROUP BY m.vehicle_id
+                ),
+                last_completed_service_km AS (
+                    SELECT 
+                        m.vehicle_id,
+                        m.service_date,
+                        COALESCE(t.km_at_end_actual, 0) AS service_km
+                    FROM hagbes_fleet_maintenance m
+                    LEFT JOIN fleet_trip t ON m.vehicle_id = t.vehicle_id AND t.state = 'completed'
+                    WHERE m.state = 'completed'
+                ),
+                latest_service_km AS (
+                    SELECT 
+                        vehicle_id,
+                        service_km
+                    FROM last_completed_service_km
+                    WHERE (vehicle_id, service_date) IN (
+                        SELECT vehicle_id, MAX(service_date)
+                        FROM last_completed_service_km
+                        GROUP BY vehicle_id
+                    )
+                ),
+                vehicle_utilization AS (
+                    SELECT 
+                        v.id AS vehicle_id,
+                        v.company_id,
+                        COALESCE(ur.odometer, 0) AS current_odometer,
+                        COALESCE(ur.wear_since_service, 0) AS wear_since_service,
+                        ur.last_service_date
+                    FROM hagbes_fleet_vehicle v
+                    LEFT JOIN fleet_utilization_report ur ON v.id = ur.vehicle_id
+                )
+                SELECT 
+                    vh.vehicle_id AS id,
+                    vh.vehicle_id,
+                    vh.company_id,
+                    vh.current_odometer,
+                    vh.last_service_date,
+                    COALESCE(lsk.service_km, 0) AS last_service_km,
+                    vh.wear_since_service,
+                    CASE 
+                        WHEN vh.last_service_date IS NOT NULL THEN CURRENT_DATE - vh.last_service_date
+                        ELSE 9999
+                    END AS days_since_service,
+                    CASE 
+                        WHEN vh.last_service_date IS NOT NULL THEN vh.current_odometer - COALESCE(lsk.service_km, 0)
+                        ELSE vh.current_odometer
+                    END AS km_since_service,
+                    CASE 
+                        WHEN vh.current_odometer - COALESCE(lsk.service_km, 0) >= 15000 
+                             OR (vh.last_service_date IS NOT NULL AND CURRENT_DATE - vh.last_service_date >= 180)
+                            THEN 'overdue'
+                        WHEN vh.current_odometer - COALESCE(lsk.service_km, 0) >= 10000 
+                             OR (vh.last_service_date IS NOT NULL AND CURRENT_DATE - vh.last_service_date >= 120)
+                            THEN 'due'
+                        WHEN vh.current_odometer - COALESCE(lsk.service_km, 0) >= 7500 
+                             OR (vh.last_service_date IS NOT NULL AND CURRENT_DATE - vh.last_service_date >= 90)
+                            THEN 'warning'
+                        ELSE 'normal'
+                    END AS due_status
+                FROM vehicle_utilization vh
+                LEFT JOIN latest_service_km lsk ON vh.vehicle_id = lsk.vehicle_id
+            )
+        """ % self._table)
+
+2. FLEET OPERATIONS DASHBOARD
+------------------------------
+File: models/fleet_dashboard.py
+------------------------------
+Model Class:
+class FleetDashboard(models.Model):
+    _name = 'fleet.dashboard'
+    _description = 'Fleet Operations Dashboard'
+    _auto = False
+
+Fields Definition:
+    total_vehicles = fields.Integer(string='Total Vehicles', readonly=True)
+    available_vehicles = fields.Integer(string='Available Vehicles', readonly=True)
+    allocated_vehicles = fields.Integer(string='Allocated Vehicles', readonly=True)
+    in_maintenance_vehicles = fields.Integer(string='Vehicles In Maintenance', readonly=True)
+    out_of_service_vehicles = fields.Integer(string='Out Of Service Vehicles', readonly=True)
+    total_fleet_distance = fields.Float(string='Total Fleet Distance (KM)', readonly=True)
+    average_distance = fields.Float(string='Average Distance (KM)', readonly=True)
+    total_trips = fields.Integer(string='Total Trips', readonly=True)
+    total_maintenance_events = fields.Integer(string='Total Maintenance Events', readonly=True)
+    total_maintenance_cost = fields.Float(string='Total Maintenance Cost', readonly=True)
+    vehicles_due = fields.Integer(string='Vehicles Due', readonly=True)
+    vehicles_overdue = fields.Integer(string='Vehicles Overdue', readonly=True)
+    active_allocations = fields.Integer(string='Active Allocations', readonly=True)
+    allocation_count = fields.Integer(string='Allocation Count', readonly=True)
+
+SQL View Definition & init() Method:
+    def init(self):
+        self.env.cr.execute("""
+            CREATE OR REPLACE VIEW %s AS (
+                SELECT 
+                    1 AS id,
+                    COUNT(v.id) AS total_vehicles,
+                    SUM(CASE WHEN v.status = 'available' THEN 1 ELSE 0 END) AS available_vehicles,
+                    SUM(CASE WHEN v.status = 'assigned' THEN 1 ELSE 0 END) AS allocated_vehicles,
+                    SUM(CASE WHEN v.status = 'maintenance' THEN 1 ELSE 0 END) AS in_maintenance_vehicles,
+                    SUM(CASE WHEN v.status = 'out_of_service' THEN 1 ELSE 0 END) AS out_of_service_vehicles,
+                    COALESCE(SUM(ur.total_distance), 0) AS total_fleet_distance,
+                    COALESCE(AVG(ur.avg_distance), 0) AS average_distance,
+                    COALESCE(SUM(ur.trip_count), 0) AS total_trips,
+                    COALESCE(COUNT(mr.id), 0) AS total_maintenance_events,
+                    COALESCE(SUM(mr.total_cost), 0) AS total_maintenance_cost,
+                    COALESCE(SUM(CASE WHEN mdr.due_status IN ('due', 'warning') THEN 1 ELSE 0 END), 0) AS vehicles_due,
+                    COALESCE(SUM(CASE WHEN mdr.due_status = 'overdue' THEN 1 ELSE 0 END), 0) AS vehicles_overdue,
+                    COALESCE(SUM(ar.active_allocations), 0) AS active_allocations,
+                    COALESCE(SUM(ar.allocation_count), 0) AS allocation_count
+                FROM hagbes_fleet_vehicle v
+                LEFT JOIN fleet_utilization_report ur ON v.id = ur.vehicle_id
+                LEFT JOIN fleet_maintenance_history_report mr ON v.id = mr.vehicle_id
+                LEFT JOIN fleet_maintenance_due_report mdr ON v.id = mdr.vehicle_id
+                LEFT JOIN fleet_allocation_report ar ON v.id = ar.vehicle_id
+            )
+        """ % self._table)
+
+3. ANALYTICS REPORT VIEWS & ACTIONS
+------------------------------------
+File: views/fleet_analytics_report_views.xml
+------------------------------------
+Maintenance Due Tree View: hagbes_fleet.view_fleet_maintenance_due_report_tree
+Maintenance Due Pivot View: hagbes_fleet.view_fleet_maintenance_due_report_pivot
+Maintenance Due Graph View: hagbes_fleet.view_fleet_maintenance_due_report_graph
+Maintenance Due Search View: hagbes_fleet.view_fleet_maintenance_due_report_search
+Maintenance Due Action: hagbes_fleet.action_fleet_maintenance_due_report
+
+Fleet Dashboard Views File:
+File: views/fleet_dashboard_views.xml
+Dashboard Form View: hagbes_fleet.view_fleet_dashboard_form
+Dashboard Action: hagbes_fleet.action_fleet_dashboard
+
+4. PDF REPORT TEMPLATES
+------------------------
+File: reports/fleet_analytics_pdf_reports.xml
+Maintenance Due PDF Template: hagbes_fleet.report_maintenance_due
+Maintenance Due PDF Action: hagbes_fleet.action_report_maintenance_due_analysis
+
+5. MENU DEFINITIONS
+-------------------
+File: views/fleet_menu.xml
+Maintenance Due Analysis Menu: hagbes_fleet.menu_fleet_maintenance_due_report
+Fleet Dashboard Menu: hagbes_fleet.menu_fleet_dashboard
+
+6. SECURITY ACCESS
+-------------------
+File: security/ir.model.access.csv
+access_fleet_maintenance_due_report_manager,fleet.maintenance.due.report.manager,model_fleet_maintenance_due_report,hagbes_fleet.group_fleet_manager,1,0,0,0
+access_fleet_maintenance_due_report_fmo,fleet.maintenance.due.report.fmo,model_fleet_maintenance_due_report,hagbes_fleet.group_fmo,1,0,0,0
+access_fleet_maintenance_due_report_admin,fleet.maintenance.due.report.admin,model_fleet_maintenance_due_report,hagbes_fleet.group_fleet_admin,1,0,0,0
+access_fleet_dashboard_manager,fleet.dashboard.manager,model_fleet_dashboard,hagbes_fleet.group_fleet_manager,1,0,0,0
+access_fleet_dashboard_fmo,fleet.dashboard.fmo,model_fleet_dashboard,hagbes_fleet.group_fmo,1,0,0,0
+access_fleet_dashboard_admin,fleet.dashboard.admin,model_fleet_dashboard,hagbes_fleet.group_fleet_admin,1,0,0,0
+
+7. INTEGRATION CHECK
+---------------------
+File: __manifest__.py
+Added views/fleet_dashboard_views.xml to data[]
+Added reports/fleet_analytics_pdf_reports.xml was already added
+
+File: models/__init__.py
+Added fleet_maintenance_due_report
+Added fleet_dashboard
+
+IMPLEMENTATION STATUS
+=====================
+IMPLEMENTED:
+- Maintenance Due Analytics Report (Model, Views, PDF, Menu, Security)
+- Fleet Operations Dashboard (Model, Views, Menu, Security)
+
+PARTIALLY IMPLEMENTED:
+- None
+
+MISSING:
+- None

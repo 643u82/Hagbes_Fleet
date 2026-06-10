@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Utilization PDF Report Template -->
+        <template id="report_fleet_utilization">
+            <t t-call="web.html_container">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <div class="header">
+                            <h2 class="text-center">Fleet Utilization Summary</h2>
+                            <p class="text-center">Report Generated on <span t-esc="context_today().strftime('%d/%m/%Y')"/></p>
+                        </div>
+
+                        <div class="section" style="margin-top: 20px;">
+                            <table class="table table-sm o_main_table table-bordered">
+                                <thead style="background-color: #f5f5f5;">
+                                    <tr>
+                                        <th>Vehicle</th>
+                                        <th>Plate Number</th>
+                                        <th>Branch</th>
+                                        <th class="text-end">Trip Count</th>
+                                        <th class="text-end">Total KM</th>
+                                        <th class="text-end">Avg KM</th>
+                                        <th>Last Trip</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-foreach="docs" t-as="o">
+                                        <tr>
+                                            <td><span t-field="o.vehicle_id.name"/></td>
+                                            <td><span t-field="o.plate_number"/></td>
+                                            <td><span t-field="o.company_id.name"/></td>
+                                            <td class="text-end"><span t-field="o.trip_count"/></td>
+                                            <td class="text-end"><span t-field="o.total_distance" t-options='{"widget": "float", "precision": 2}'/></td>
+                                            <td class="text-end"><span t-field="o.avg_distance" t-options='{"widget": "float", "precision": 2}'/></td>
+                                            <td><span t-field="o.last_trip_date"/></td>
+                                            <td><span t-field="o.vehicle_status"/></td>
+                                        </tr>
+                                    </t>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- KPI Summary Section -->
+                        <div class="row mt-4" style="page-break-inside: avoid;">
+                            <div class="col-4">
+                                <div style="border: 1px solid #ddd; padding: 10px; text-align: center;">
+                                    <h5>Total Vehicles</h5>
+                                    <h3><t t-esc="len(docs)"/></h3>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div style="border: 1px solid #ddd; padding: 10px; text-align: center;">
+                                    <h5>Active Vehicles</h5>
+                                    <h3><t t-esc="len(docs.filtered(lambda x: x.trip_count > 0))"/></h3>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div style="border: 1px solid #ddd; padding: 10px; text-align: center;">
+                                    <h5>Total KM Traveled</h5>
+                                    <h3><t t-esc="sum(docs.mapped('total_distance'))"/></h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </template>
+
+        <!-- Report Action -->
+        <record id="action_report_fleet_utilization" model="ir.actions.report">
+            <field name="name">Fleet Utilization Summary</field>
+            <field name="model">fleet.utilization.report</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">hagbes_fleet.report_fleet_utilization</field>
+            <field name="print_report_name">'Utilization Summary - %s' % (context_today().strftime('%Y-%m-%d'))</field>
+            <field name="binding_model_id" ref="model_fleet_utilization_report"/>
+            <field name="binding_type">report</field>
+        </record>
+    </data>
+</odoo>

@@ -133,12 +133,20 @@
                             <field name="fmo_approved_date" readonly="1" string="FMO Approval Date" invisible="state not in ['assigned', 'dispatched', 'completed']"/>
                         </group>
                         <group>
-                            <field name="vehicle_id" 
-                                   readonly="state in ['assigned', 'dispatched', 'completed']" 
+                            <!-- Vehicle info: visible only after FMO/Fleet has assigned the vehicle.
+                                 Department managers reviewing a submitted request see no vehicle info;
+                                 once approved (state=assigned or later), the assigned vehicle becomes
+                                 visible to everyone. This enforces clean role separation. -->
+                            <field name="vehicle_id"
+                                   readonly="state in ['assigned', 'dispatched', 'completed']"
                                    options="{'no_create': True}"
-                                   groups="hagbes_fleet.group_fmo,hagbes_fleet.group_fleet_manager,hagbes_fleet.group_fleet_admin"/>
-                            <field name="vehicle_plate_number" readonly="1"/>
-                            <field name="vehicle_driver_name" readonly="1"/>
+                                   invisible="state == 'submitted'"/>
+                            <field name="vehicle_plate_number"
+                                   readonly="1"
+                                   invisible="state == 'submitted'"/>
+                            <field name="vehicle_driver_name"
+                                   readonly="1"
+                                   invisible="state == 'submitted'"/>
                         </group>
                     </group>
 
@@ -172,7 +180,6 @@
                     <field name="can_allocate" invisible="1"/>
                     <field name="can_cancel" invisible="1"/>
                 </sheet>
-
             </form>
         </field>
     </record>

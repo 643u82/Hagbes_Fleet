@@ -18,3 +18,9 @@ from . import fleet_discrepancy
 from . import fleet_vehicle_status_log
 from . import fleet_allocation_append
 from . import approval_integration
+from . import fleet_utilization_report
+from . import fleet_availability_report
+from . import fleet_maintenance_history_report
+from . import fleet_allocation_report
+from . import fleet_maintenance_due_report
+from . import fleet_dashboard

@@ -12,6 +12,7 @@
                 <field name="plate_number"/>
                 <field name="driver"/>
                 <field name="gps" widget="badge" decoration-success="gps == 'Yes'"/>
+                <field name="odometer" string="Odometer"/>
                 <field name="status"/>
                 <field name="vehicle_type"/>
                 <field name="company_id" groups="base.group_multi_company"/>
@@ -47,6 +48,7 @@
                             <field name="model"/>
                             <field name="brand"/>
                             <field name="year"/>
+                            <field name="color"/>
                         </group>
                         <group string="Technical Details">
                             <field name="engine_number"/>
@@ -61,6 +63,7 @@
                         <group string="Operations">
                             <field name="driver"/>
                             <field name="status"/>
+                            <field name="odometer"/>
                             <field name="company_id" groups="base.group_multi_company"/>
                         </group>
                         <group string="Acquisition">

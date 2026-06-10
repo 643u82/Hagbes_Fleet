@@ -8,6 +8,15 @@ log/
 /odoo
 /data
 /venv
+/venv_311
+/venv_win
+*.json
+*.csv
+*.xls
+*.xlsx
+*.sql
+*.pyc
+__pycache__/
 odoo/__pycache__
 odoo/.pytest_cache
 *.log

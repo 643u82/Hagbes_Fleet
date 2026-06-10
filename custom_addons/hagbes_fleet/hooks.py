@@ -19,7 +19,26 @@ def post_init_hook(env):
         for vehicle in vehicles_to_init:
             vehicle._compute_status()
             
-    # 2. Check if hagbes_approval_workflow is installed and load its data
+    # 2. Initialize default configuration parameters (Idempotent)
+    _logger.info("Initializing default configuration parameters.")
+    config_params = {
+        'fleet.approval.master_enabled': 'True',
+        'fleet.approval.maintenance_threshold': '10000.0',
+        'fleet.approval.enable_assignment': 'True',
+        'fleet.approval.enable_disposal': 'True',
+        'fleet.maintenance.warning_km': '7500.0',
+        'fleet.maintenance.due_km': '10000.0',
+        'fleet.maintenance.overdue_km': '15000.0',
+        'fleet.maintenance.warning_days': '90',
+        'fleet.maintenance.due_days': '120',
+        'fleet.maintenance.overdue_days': '180',
+    }
+    for key, value in config_params.items():
+        if not env['ir.config_parameter'].sudo().get_param(key):
+            env['ir.config_parameter'].sudo().set_param(key, value)
+            _logger.info("Set default config parameter: %s = %s", key, value)
+
+    # 3. Check if hagbes_approval_workflow is installed and load its data
     approval_module = env['ir.module.module'].search([('name', '=', 'hagbes_approval_workflow'), ('state', '=', 'installed')])
     if approval_module:
         _logger.info("hagbes_approval_workflow detected. Loading fleet approval data...")

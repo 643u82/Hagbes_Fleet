@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <template id="report_fleet_availability">
+            <t t-call="web.html_container">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <div class="header">
+                            <h2 class="text-center">Vehicle Availability Summary</h2>
+                            <p class="text-center">Branch: <span t-esc="res_company.name"/> | Date: <span t-esc="context_today().strftime('%d/%m/%Y')"/></p>
+                        </div>
+
+                        <!-- KPI Summary -->
+                        <div class="row mt-4 mb-4">
+                            <div class="col-3">
+                                <div style="border: 1px solid #ddd; padding: 10px; text-align: center;">
+                                    <h6>Total Fleet</h6>
+                                    <h4><t t-esc="len(docs)"/></h4>
+                                </div>
+                            </div>
+                            <div class="col-3">
+                                <div style="border: 1px solid #ddd; padding: 10px; text-align: center; color: green;">
+                                    <h6>Available</h6>
+                                    <h4><t t-esc="len(docs.filtered(lambda x: x.vehicle_status == 'available'))"/></h4>
+                                </div>
+                            </div>
+                            <div class="col-3">
+                                <div style="border: 1px solid #ddd; padding: 10px; text-align: center; color: orange;">
+                                    <h6>Assigned</h6>
+                                    <h4><t t-esc="len(docs.filtered(lambda x: x.vehicle_status == 'assigned'))"/></h4>
+                                </div>
+                            </div>
+                            <div class="col-3">
+                                <div style="border: 1px solid #ddd; padding: 10px; text-align: center; color: red;">
+                                    <h6>Maintenance</h6>
+                                    <h4><t t-esc="len(docs.filtered(lambda x: x.vehicle_status == 'maintenance'))"/></h4>
+                                </div>
+                            </div>
+                        </div>
+
+                        <table class="table table-sm table-bordered">
+                            <thead style="background-color: #f8f9fa;">
+                                <tr>
+                                    <th>Vehicle</th>
+                                    <th>Plate</th>
+                                    <th>Branch</th>
+                                    <th>Status</th>
+                                    <th>Driver</th>
+                                    <th class="text-center">Idle Days</th>
+                                    <th>Last Trip</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="docs" t-as="o">
+                                    <tr>
+                                        <td><span t-field="o.vehicle_id.name"/></td>
+                                        <td><span t-field="o.plate_number"/></td>
+                                        <td><span t-field="o.company_id.name"/></td>
+                                        <td>
+                                            <span t-if="o.vehicle_status == 'available'" class="badge badge-success">Available</span>
+                                            <span t-if="o.vehicle_status == 'assigned'" class="badge badge-warning">Assigned</span>
+                                            <span t-if="o.vehicle_status == 'maintenance'" class="badge badge-danger">Maintenance</span>
+                                            <span t-if="o.vehicle_status not in ('available', 'assigned', 'maintenance')" t-field="o.vehicle_status"/>
+                                        </td>
+                                        <td><span t-field="o.driver_name"/></td>
+                                        <td class="text-center" t-attf-style="color: #{'red' if o.days_idle > 7 else 'black'}">
+                                            <span t-field="o.days_idle"/>
+                                        </td>
+                                        <td><span t-field="o.last_trip_date"/></td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+
+                        <div class="mt-4">
+                            <p><strong>Note:</strong> Vehicles with Idle Days > 7 are highlighted in red for management review.</p>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </template>
+
+        <record id="action_report_fleet_availability" model="ir.actions.report">
+            <field name="name">Vehicle Availability Summary</field>
+            <field name="model">fleet.availability.report</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">hagbes_fleet.report_fleet_availability</field>
+            <field name="print_report_name">'Availability Summary - %s' % (context_today().strftime('%Y-%m-%d'))</field>
+            <field name="binding_model_id" ref="model_fleet_availability_report"/>
+            <field name="binding_type">report</field>
+        </record>
+    </data>
+</odoo>
