@@ -53,6 +53,19 @@ class HagbesFleetVehicle(models.Model, ApprovalIntegrationMixin):
         ('work', 'Work Vehicle'),
         ('managerial', 'Managerial Vehicle'),
     ], string='Vehicle Type', default='work')
+    
+    vehicle_usage_type = fields.Selection([
+        ('operational', 'Operational Vehicle'),
+        ('managerial', 'Managerial Vehicle'),
+        ('owner', 'Owner Vehicle'),
+    ], string='Vehicle Usage Type', default='operational', tracking=True, index=True)
+    
+    is_assignable = fields.Boolean(
+        string='Is Assignable',
+        compute='_compute_is_assignable',
+        store=True,
+        help='True if the vehicle can be assigned to duties/trips/requisitions'
+    )
 
     odometer = fields.Float(
         string='Current Odometer',
@@ -100,6 +113,11 @@ class HagbesFleetVehicle(models.Model, ApprovalIntegrationMixin):
                 ('state', '=', 'completed')
             ], order='return_date desc, id desc', limit=1)
             rec.odometer = last_trip.km_at_end_actual if last_trip else 0.0
+
+    @api.depends('vehicle_usage_type')
+    def _compute_is_assignable(self):
+        for rec in self:
+            rec.is_assignable = rec.vehicle_usage_type == 'operational'
 
     @api.model_create_multi
     def create(self, vals_list):

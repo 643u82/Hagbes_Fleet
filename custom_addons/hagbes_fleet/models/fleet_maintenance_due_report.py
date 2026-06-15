@@ -85,24 +85,35 @@ class FleetMaintenanceDueReport(models.Model):
                         ur.last_service_date
                     FROM hagbes_fleet_vehicle v
                     LEFT JOIN fleet_utilization_report ur ON v.id = ur.vehicle_id
+                ),
+                base_data AS (
+                    SELECT 
+                        vh.vehicle_id AS id,
+                        vh.vehicle_id,
+                        vh.company_id,
+                        vh.current_odometer,
+                        vh.last_service_date,
+                        COALESCE(lsk.service_km, 0) AS last_service_km,
+                        vh.wear_since_service,
+                        CASE 
+                            WHEN vh.last_service_date IS NOT NULL THEN CURRENT_DATE - vh.last_service_date
+                            ELSE 9999
+                        END AS days_since_service,
+                        CASE 
+                            WHEN vh.last_service_date IS NOT NULL THEN vh.current_odometer - COALESCE(lsk.service_km, 0)
+                            ELSE vh.current_odometer
+                        END AS km_since_service
+                    FROM vehicle_utilization vh
+                    LEFT JOIN latest_service_km lsk ON vh.vehicle_id = lsk.vehicle_id
                 )
                 SELECT 
-                    vh.vehicle_id AS id,
-                    vh.vehicle_id,
-                    vh.company_id,
-                    vh.current_odometer,
-                    vh.last_service_date,
-                    COALESCE(lsk.service_km, 0) AS last_service_km,
-                    vh.wear_since_service,
+                    *,
                     CASE 
-                        WHEN vh.last_service_date IS NOT NULL THEN CURRENT_DATE - vh.last_service_date
-                        ELSE 9999
-                    END AS days_since_service,
-                    CASE 
-                        WHEN vh.last_service_date IS NOT NULL THEN vh.current_odometer - COALESCE(lsk.service_km, 0)
-                        ELSE vh.current_odometer
-                    END AS km_since_service
-                FROM vehicle_utilization vh
-                LEFT JOIN latest_service_km lsk ON vh.vehicle_id = lsk.vehicle_id
+                        WHEN km_since_service >= 15000 OR days_since_service >= 180 THEN 'overdue'
+                        WHEN km_since_service >= 10000 OR days_since_service >= 120 THEN 'due'
+                        WHEN km_since_service >= 7500 OR days_since_service >= 90 THEN 'warning'
+                        ELSE 'normal'
+                    END AS due_status
+                FROM base_data
             )
         """ % self._table)

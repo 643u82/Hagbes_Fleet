@@ -22,6 +22,7 @@
         'data/ir_sequence_data.xml',
         'data/fleet_approval_flows.xml',
         'data/ir_cron.xml',
+        'data/fleet_kpi_cron.xml',
         'views/hr_employee_views.xml',
         'views/fleet_config_settings_views.xml',
         'views/fleet_vehicle_views.xml',
@@ -29,6 +30,7 @@
         'views/fleet_availability_report_views.xml',
         'views/fleet_analytics_report_views.xml',
         'views/fleet_dashboard_views.xml',
+        'views/fleet_driver_kpi_views.xml',
         'views/fleet_vehicle_assign_views.xml',
         'views/fleet_maintenance_views.xml',
         'views/fleet_trip_views.xml',
@@ -52,9 +54,9 @@
     'installable': True,
     'application': True,
     'post_init_hook': 'post_init_hook',
-    'assets': {
-        'web.assets_backend': [
-            'hagbes_fleet/static/src/css/fleet_layout_fix.css',
-        ],
-    },
+    # 'assets': {
+    #     'web.assets_backend': [
+    #         'hagbes_fleet/static/src/css/fleet_layout_fix.css',
+    #     ],
+    # },
 }

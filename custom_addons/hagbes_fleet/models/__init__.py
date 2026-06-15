@@ -24,3 +24,5 @@ from . import fleet_maintenance_history_report
 from . import fleet_allocation_report
 from . import fleet_maintenance_due_report
 from . import fleet_dashboard
+from . import fleet_driver_kpi
+from . import fleet_kpi_engine
