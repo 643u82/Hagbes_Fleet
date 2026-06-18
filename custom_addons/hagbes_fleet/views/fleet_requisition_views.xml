@@ -62,7 +62,7 @@
 
                     <field name="state"
                            widget="statusbar"
-                           statusbar_visible="draft,submitted,dept_approved,assigned,dispatched,completed,rejected"/>
+                           statusbar_visible="draft,submitted,dept_approved,assigned,completed,rejected"/>
                 </header>
 
                 <sheet>

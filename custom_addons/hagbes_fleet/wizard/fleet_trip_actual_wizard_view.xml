@@ -6,12 +6,12 @@
         <field name="arch" type="xml">
             <form string="Record Actual Trip Data">
                 <group>
-                    <group>
-                        <field name="trip_id" readonly="1"/>
-                        <field name="return_date"/>
-                        <field name="return_time" widget="float_time"/>
-                        <field name="signed_by"/>
-                    </group>
+            <group>
+                <field name="trip_id" readonly="1"/>
+                <field name="return_date"/>
+                <field name="return_time" widget="float_time"/>
+                <field name="signed_by"/>
+            </group>
                     <group>
                         <field name="actual_start_place"/>
                         <field name="actual_destination"/>
@@ -25,6 +25,14 @@
                     <group>
                         <field name="transport_km"/>
                     </group>
+                </group>
+                <group string="Additional Places">
+                    <field name="additional_place_ids" widget="one2many_list">
+                        <list editable="bottom">
+                            <field name="place_name"/>
+                            <field name="km_used"/>
+                        </list>
+                    </field>
                 </group>
                 <group string="Discrepancies">
                     <field name="discrepancy_reason" placeholder="Explain any gap or distance variance..."/>

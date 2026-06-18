@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+
     <record id="view_fleet_trip_form" model="ir.ui.view">
         <field name="name">fleet.trip.form</field>
         <field name="model">fleet.trip</field>
@@ -8,6 +9,7 @@
                 <header>
                     <button name="action_start_trip" string="Start Trip" type="object" class="oe_highlight" invisible="state != 'draft'"/>
                     <button name="action_record_actual_data" string="Record Return Data" type="object" class="oe_highlight" invisible="state != 'started'"/>
+                    <button name="action_reset_to_draft" string="Reset to Draft" type="object" groups="hagbes_fleet.group_fleet_admin" invisible="state == 'draft'"/>
                     <button name="action_cancel_trip" string="Cancel Trip" type="object" groups="hagbes_fleet.group_fleet_admin" invisible="state not in ['draft', 'started']"/>
                     <field name="state" widget="statusbar" statusbar_visible="draft,started,completed"/>
                 </header>
@@ -52,12 +54,11 @@
                             </div>
                         </group>
                     </group>
-                    <notebook>
-                        <page string="Actual Data" invisible="state == 'planning'">
+                    <group string="Actual Data" invisible="state == 'planning'">
                             <group>
                                 <group string="Return Info">
                                     <field name="return_date"/>
-                                    <field name="return_time" widget="float_time"/>
+                                    <field name="return_time"/>
                                     <field name="actual_start_place"/>
                                     <field name="actual_destination"/>
                                     <field name="signed_by"/>
@@ -70,6 +71,14 @@
                                     <field name="prev_trip_km_end"/>
                                 </group>
                             </group>
+                            <group string="Additional Places">
+                                <field name="additional_place_ids" widget="one2many_list">
+                                    <list editable="bottom">
+                                        <field name="place_name"/>
+                                        <field name="km_used"/>
+                                    </list>
+                                </field>
+                            </group>
                             <group string="Discrepancy Details">
                                 <group>
                                     <field name="distance_difference"/>
@@ -79,24 +88,7 @@
                                     <field name="discrepancy_reason"/>
                                 </group>
                             </group>
-                        </page>
-                        <page string="GPS Data" groups="hagbes_fleet.group_fmo,hagbes_fleet.group_fleet_admin">
-                            <group>
-                                <group string="GPS Readings">
-                                    <field name="gps_distance"/>
-                                    <field name="gps_km_at_end"/>
-                                    <field name="gps_fuel_at_end"/>
-                                    <field name="gps_fuel_consumed"/>
-                                </group>
-                                <group string="Analysis">
-                                    <field name="unauthorized_stops"/>
-                                </group>
-                            </group>
-                        </page>
-                        <page string="Requisitions">
-                            <field name="requisition_ids" readonly="1"/>
-                        </page>
-                    </notebook>
+                        </group>
                 </sheet>
             </form>
         </field>

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from odoo import models, fields, api, _
+from odoo.exceptions import ValidationError
 
 class FleetTripActualWizard(models.TransientModel):
     _name = 'fleet.trip.actual.wizard'
@@ -8,31 +9,89 @@ class FleetTripActualWizard(models.TransientModel):
 
     trip_id = fields.Many2one('fleet.trip', string='Trip', required=True)
     
-    return_date = fields.Date(string='Return Date', default=fields.Date.today, required=True)
-    return_time = fields.Float(string='Return Time', required=True)
+    return_date = fields.Date(string='Return Date', default=fields.Date.today(), required=True)
+    return_time = fields.Float(string='Return Time', default=lambda self: fields.Datetime.now().hour + fields.Datetime.now().minute/60, required=True)
     
-    actual_start_place = fields.Char(string='Actual Starting Place', required=True)
-    actual_destination = fields.Char(string='Actual Destination', required=True)
+    actual_start_place = fields.Char(string='Trip Origin', required=True)
+    actual_destination = fields.Char(string='Final Destination', required=True)
     
     km_at_start_actual = fields.Float(string='KM at Start (Actual Odo.)', required=True)
     km_at_end_actual = fields.Float(string='KM at End (Actual Odo.)', required=True)
     
-    transport_km = fields.Float(string='Transport KM', default=0.0)
+    transport_km = fields.Float(
+        string='Transport KM',
+        compute='_compute_transport_km',
+        store=True,
+        readonly=False,
+        default=0.0,
+    )
     signed_by = fields.Char(string='Signed By', required=True)
     
     discrepancy_reason = fields.Text(string='Discrepancy Reason')
+    
+    additional_place_ids = fields.One2many(
+        'fleet.trip.actual.wizard.additional.place',
+        'wizard_id',
+        string='Additional Places',
+    )
 
     @api.onchange('trip_id')
     def _onchange_trip_id(self):
         if self.trip_id:
             self.actual_start_place = self.trip_id.start_location
-            self.km_at_start_actual = self.trip_id.km_at_start
-            # Get previous trip's end KM if not set
-            if not self.km_at_start_actual:
+            # First, get the LATEST completed trip for the vehicle to use its end odometer
+            latest_completed_trip = False
+            if self.trip_id.vehicle_id:
+                latest_completed_trip = self.env['fleet.trip'].search([
+                    ('vehicle_id', '=', self.trip_id.vehicle_id.id),
+                    ('state', '=', 'completed'),
+                    ('km_at_end_actual', '>', 0),
+                ], order='id desc', limit=1)
+            
+            if latest_completed_trip:
+                # Use latest completed trip's end odometer
+                self.km_at_start_actual = latest_completed_trip.km_at_end_actual
+            # Next try the trip's prev_trip_km_end
+            elif self.trip_id.prev_trip_km_end:
                 self.km_at_start_actual = self.trip_id.prev_trip_km_end
+            # If none, get from vehicle
+            elif self.trip_id.vehicle_id:
+                self.km_at_start_actual = self.trip_id.vehicle_id.odometer or 0.0
+            else:
+                self.km_at_start_actual = 0.0
+            # Load existing additional places from trip
+            if self.trip_id.additional_place_ids:
+                additional_places = []
+                for place in self.trip_id.additional_place_ids:
+                    additional_places.append((0, 0, {
+                        'place_name': place.place_name,
+                        'km_used': place.km_used,
+                    }))
+                self.additional_place_ids = additional_places
+
+    @api.depends('km_at_start_actual', 'km_at_end_actual')
+    def _compute_transport_km(self):
+        for wizard in self:
+            if wizard.km_at_start_actual and wizard.km_at_end_actual:
+                wizard.transport_km = wizard.km_at_end_actual - wizard.km_at_start_actual
+            else:
+                wizard.transport_km = 0.0
 
     def action_confirm(self):
         self.ensure_one()
+        # Validate odometer values before proceeding
+        if self.km_at_end_actual < self.km_at_start_actual:
+            raise ValidationError(
+                _('End odometer (%s) must be greater than or equal to start odometer (%s).')
+                % (self.km_at_end_actual, self.km_at_start_actual)
+            )
+        # Prepare additional places data
+        additional_places = []
+        for place in self.additional_place_ids:
+            additional_places.append((0, 0, {
+                'place_name': place.place_name,
+                'km_used': place.km_used,
+            }))
         self.trip_id.write({
             'return_date': self.return_date,
             'return_time': self.return_time,
@@ -43,8 +102,18 @@ class FleetTripActualWizard(models.TransientModel):
             'transport_km': self.transport_km,
             'signed_by': self.signed_by,
             'discrepancy_reason': self.discrepancy_reason,
+            'additional_place_ids': additional_places,
         })
         self.trip_id.action_complete_trip()
         if self.trip_id.vehicle_id:
             self.trip_id.vehicle_id._compute_status()
         return {'type': 'ir.actions.act_window_close'}
+
+
+class FleetTripActualWizardAdditionalPlace(models.TransientModel):
+    _name = 'fleet.trip.actual.wizard.additional.place'
+    _description = 'Wizard Additional Place'
+
+    wizard_id = fields.Many2one('fleet.trip.actual.wizard', string='Wizard', required=True, ondelete='cascade')
+    place_name = fields.Char(string='Place Name', required=True)
+    km_used = fields.Float(string='KM Used', digits=(10, 2), required=True)

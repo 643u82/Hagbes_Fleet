@@ -169,6 +169,12 @@ class HagbesFleetAllocation(models.Model):
             if rec.driver_id and rec.driver_id.license_expiry and rec.driver_id.license_expiry < fields.Date.today():
                 raise ValidationError(_('Driver %s has an expired license (Expiry: %s).') % (rec.driver_id.name, rec.driver_id.license_expiry))
 
+    @api.onchange('vehicle_id')
+    def _onchange_vehicle_id(self):
+        """Stop auto-populating assigned odometer, leave blank for manual entry."""
+        # No auto-populate
+        pass
+
     @api.constrains('vehicle_id', 'state')
     def _check_unique_active_allocation(self):
         """
@@ -309,14 +315,14 @@ class HagbesFleetAllocation(models.Model):
             subtype_xmlid='mail.mt_note',
         )
         
-        # When transitioning to 'returned', update vehicle status to 'available'
-        if new_state == 'returned' and old_state == 'assigned':
+        # When transitioning to 'returned' or 'cancelled', update vehicle status
+        if new_state in ('returned', 'cancelled'):
             if self.vehicle_id:
                 # The vehicle status is computed based on active assignments/maintenance
                 # We don't directly set it, but we can trigger a recompute
                 self.vehicle_id._compute_status()
                 self.message_post(
-                    body=_('Vehicle %s has been returned and is now available.')
+                    body=_('Vehicle %s is now available.')
                     % self.vehicle_id.name,
                     subtype_xmlid='mail.mt_note',
                 )
@@ -326,11 +332,27 @@ class HagbesFleetAllocation(models.Model):
     # =========================================================================
 
     def action_assign_vehicle(self):
-        """Transition from draft to assigned."""
+        """Confirm assignment with validation, then create trip and navigate to start trip."""
         for rec in self:
             if rec.state != 'draft':
                 raise UserError(_('Only draft allocations can be assigned.'))
-            rec.write({'state': 'assigned'})
+            if not rec.vehicle_id:
+                raise UserError(_('Please assign a vehicle before confirming the assignment.'))
+            
+            # Transition state and create trip immediately
+            rec.action_dispatch_vehicle()
+            
+        # After dispatching, open the trip to start
+        if len(self) == 1:
+            trip = self.trip_id
+            return {
+                'name': _('Start Trip'),
+                'type': 'ir.actions.act_window',
+                'res_model': 'fleet.trip',
+                'view_mode': 'form',
+                'target': 'current',
+                'res_id': trip.id
+            }
         return True
 
     def action_dispatch_vehicle(self):
@@ -342,6 +364,19 @@ class HagbesFleetAllocation(models.Model):
         if self.state != 'assigned':
             raise UserError(_('Only assigned allocations can be dispatched.'))
         
+        # Get latest completed trip's end odometer for prev_trip_km_end
+        latest_completed_trip = self.env['fleet.trip'].search([
+            ('vehicle_id', '=', self.vehicle_id.id),
+            ('state', '=', 'completed'),
+            ('km_at_end_actual', '>', 0),
+        ], order='id desc', limit=1)
+        
+        prev_trip_km_end = 0.0
+        if latest_completed_trip:
+            prev_trip_km_end = latest_completed_trip.km_at_end_actual
+        elif self.vehicle_id.odometer:
+            prev_trip_km_end = self.vehicle_id.odometer
+        
         # Create Trip record
         trip_vals = {
             'allocation_id': self.id,
@@ -350,6 +385,8 @@ class HagbesFleetAllocation(models.Model):
             'allocated_by': self.env.user.id,
             'start_location': self.request_id.destination if hasattr(self.request_id, 'destination') else 'Office',
             'km_at_start': self.assigned_odometer,
+            'km_at_start_actual': prev_trip_km_end,
+            'prev_trip_km_end': prev_trip_km_end,
             'company_id': self.company_id.id,
             'requisition_ids': [(4, self.request_id.id)],
         }
@@ -402,6 +439,46 @@ class HagbesFleetAllocation(models.Model):
             rec.write({'state': 'completed'})
         return True
 
+    def action_cancel(self):
+        """Cancel allocation and update linked trip and vehicle status."""
+        for rec in self:
+            if rec.state in ('completed', 'cancelled'):
+                continue
+            rec.write({'state': 'cancelled'})
+            rec.message_post(body=_('Allocation cancelled.'))
+            
+            # Also cancel linked trip if it's not already completed or cancelled
+            if rec.trip_id and rec.trip_id.state not in ('completed', 'cancelled'):
+                rec.trip_id.write({'state': 'cancelled'})
+                rec.trip_id.message_post(body=_('Trip cancelled due to allocation cancellation.'))
+                
+            # Update vehicle's status
+            if rec.vehicle_id:
+                rec.vehicle_id._compute_status()
+        return True
+
+    def action_reset_to_draft(self):
+        """Reset allocation back to draft (admin only)."""
+        for rec in self:
+            if rec.state == 'draft':
+                raise UserError(_('Allocation is already in draft state.'))
+            if not self.env.user.has_group('hagbes_fleet.group_fleet_admin'):
+                raise UserError(_('Only Fleet Admin can reset allocations.'))
+            rec.write({
+                'state': 'draft',
+                'return_date': False,
+            })
+            rec.message_post(body=_('Allocation reset to draft.'))
+            
+            # Also reset linked trip to draft if it's not cancelled or completed
+            if rec.trip_id and rec.trip_id.state not in ('cancelled', 'completed'):
+                rec.trip_id.action_reset_to_draft()
+            
+            # Update vehicle's status
+            if rec.vehicle_id:
+                rec.vehicle_id._compute_status()
+        return True
+    
     def action_reset_to_assigned(self):
         """Reset allocation back to assigned (admin only)."""
         for rec in self:

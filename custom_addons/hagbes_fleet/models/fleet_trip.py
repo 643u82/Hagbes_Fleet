@@ -97,12 +97,19 @@ class FleetTrip(models.Model):
     # ─── Actual return data ───────────────────────────────────────────────────
     return_date = fields.Date(string='Return Date', copy=False)
     return_time = fields.Float(string='Return Time', copy=False)
-    actual_start_place = fields.Char(string='Actual Starting Place', copy=False)
-    actual_destination = fields.Char(string='Actual Destination', copy=False)
+    actual_start_place = fields.Char(string='Trip Origin', copy=False)
+    actual_destination = fields.Char(string='Final Destination', copy=False)
     signed_by = fields.Char(string='Signed By', copy=False)
     km_at_start_actual = fields.Float(string='KM at Start (Actual)', digits=(10, 2), copy=False)
     km_at_end_actual = fields.Float(string='KM at End (Actual)', digits=(10, 2), copy=False)
-    transport_km = fields.Float(string='Transport KM', digits=(10, 2), copy=False)
+    transport_km = fields.Float(
+        string='Transport KM',
+        digits=(10, 2),
+        compute='_compute_transport_km',
+        store=True,
+        readonly=False,
+        copy=False,
+    )
     prev_trip_km_end = fields.Float(
         string='Previous Trip End KM',
         digits=(10, 2),
@@ -156,6 +163,14 @@ class FleetTrip(models.Model):
     gps_fuel_at_end = fields.Float(string='GPS Fuel at End (L)', digits=(10, 2))
     gps_fuel_consumed = fields.Float(string='GPS Fuel Consumed (L)', digits=(10, 2))
     unauthorized_stops = fields.Text(string='Unauthorized Stops')
+    
+    # ─── Additional Places ───────────────────────────────────────────────────
+    additional_place_ids = fields.One2many(
+        'fleet.trip.additional.place',
+        'trip_id',
+        string='Additional Places',
+        copy=True,
+    )
 
     # ─── Report helpers ───────────────────────────────────────────────────────
     combined_purpose = fields.Text(
@@ -211,12 +226,13 @@ class FleetTrip(models.Model):
             else:
                 trip.fuel_for_route = 0.0
 
+
+
     @api.depends(
         'km_at_start_actual',
         'km_at_end_actual',
         'planned_route_distance',
         'prev_trip_km_end',
-        'transport_km',
     )
     def _compute_actual_metrics(self):
         for trip in self:
@@ -233,7 +249,9 @@ class FleetTrip(models.Model):
             else:
                 trip.distance_difference_pct = 0.0
 
-            expected_start = (trip.prev_trip_km_end or 0.0) + (trip.transport_km or 0.0)
+            # Now transport_km is computed, but for odometer gap,
+            # expected start is prev_trip_km_end (since transport km is now end - start)
+            expected_start = trip.prev_trip_km_end or 0.0
             if trip.km_at_start_actual:
                 trip.odometer_gap = trip.km_at_start_actual - expected_start
             else:
@@ -247,24 +265,32 @@ class FleetTrip(models.Model):
             trip.combined_purpose = '\n'.join(filter(None, reqs.mapped('purpose')))
             trip.combined_destination = '\n'.join(filter(None, reqs.mapped('destination')))
             trip.combined_travellers = '\n'.join(filter(None, reqs.mapped('traveller_names')))
+    
+    @api.depends('km_at_start_actual', 'km_at_end_actual')
+    def _compute_transport_km(self):
+        for trip in self:
+            if trip.km_at_start_actual and trip.km_at_end_actual:
+                trip.transport_km = trip.km_at_end_actual - trip.km_at_start_actual
+            else:
+                trip.transport_km = 0.0
 
     @api.onchange('allocation_id')
     def _onchange_allocation_id(self):
         """
-        Dynamically auto-populate trip information from the linked allocation
-        as soon as the allocation is selected or passed in context.
+        Dynamically auto-populate trip information from the linked allocation,
+        leaving odometer fields blank for manual entry.
         """
         if self.allocation_id:
             self.vehicle_id = self.allocation_id.vehicle_id
             self.company_id = self.allocation_id.company_id
             self.allocation_date = self.allocation_id.allocation_date
             self.planned_route_distance = self.allocation_id.planned_distance
-            self.km_at_start = self.allocation_id.assigned_odometer
+            # Leave km_at_start blank
             self.fuel_at_start = self.allocation_id.fuel_estimate
             if self.allocation_id.request_id:
                 self.requisition_ids = [(6, 0, [self.allocation_id.request_id.id])]
-            # Fetch previous trip km end if not set
-            if self.vehicle_id and not self.prev_trip_km_end:
+            # Fetch previous trip km end (for info), but leave km_at_start_actual blank
+            if self.vehicle_id:
                 last_trip = self.search([
                     ('vehicle_id', '=', self.vehicle_id.id),
                     ('state', '=', 'completed'),
@@ -272,22 +298,28 @@ class FleetTrip(models.Model):
                 ], order='id desc', limit=1)
                 if last_trip:
                     self.prev_trip_km_end = last_trip.km_at_end_actual
+                else:
+                    # If no previous trips, use vehicle's current odometer
+                    self.prev_trip_km_end = self.vehicle_id.odometer or 0.0
 
     @api.onchange('vehicle_id')
     def _onchange_vehicle_id(self):
         """
-        Dynamically fetch vehicle defaults (km per liter, odometer) on UI change.
+        Dynamically fetch vehicle defaults (km per liter), leave odometer fields blank.
         """
         if self.vehicle_id:
             self.km_per_liter = self.vehicle_id.kmperl or 10.0
-            if not self.prev_trip_km_end:
-                last_trip = self.search([
-                    ('vehicle_id', '=', self.vehicle_id.id),
-                    ('state', '=', 'completed'),
-                    ('km_at_end_actual', '>', 0),
-                ], order='id desc', limit=1)
-                if last_trip:
-                    self.prev_trip_km_end = last_trip.km_at_end_actual
+            # Get previous trip's end KM (for info), but leave km_at_start_actual blank
+            last_trip = self.search([
+                ('vehicle_id', '=', self.vehicle_id.id),
+                ('state', '=', 'completed'),
+                ('km_at_end_actual', '>', 0),
+            ], order='id desc', limit=1)
+            if last_trip:
+                self.prev_trip_km_end = last_trip.km_at_end_actual
+            else:
+                # If no previous trips, use vehicle's current odometer
+                self.prev_trip_km_end = self.vehicle_id.odometer or 0.0
 
     # ─── ORM ──────────────────────────────────────────────────────────────────
 
@@ -311,7 +343,7 @@ class FleetTrip(models.Model):
         vals.setdefault('company_id', allocation.company_id.id)
         vals.setdefault('allocation_date', allocation.allocation_date)
         vals.setdefault('planned_route_distance', allocation.planned_distance)
-        vals.setdefault('km_at_start', allocation.assigned_odometer)
+        # Leave km_at_start blank for manual entry
         vals.setdefault('fuel_at_start', allocation.fuel_estimate)
         if allocation.request_id:
             vals.setdefault('requisition_ids', [(4, allocation.request_id.id)])
@@ -334,6 +366,10 @@ class FleetTrip(models.Model):
             ], order='id desc', limit=1)
             if last_trip:
                 vals['prev_trip_km_end'] = last_trip.km_at_end_actual
+            else:
+                # If no previous trips, use vehicle's current odometer
+                vals['prev_trip_km_end'] = vehicle.odometer or 0.0
+        # Leave km_at_start_actual blank for manual entry
 
     # ─── Workflow actions ─────────────────────────────────────────────────────
 
@@ -364,7 +400,56 @@ class FleetTrip(models.Model):
                 raise UserError(_('Only draft or started trips can be cancelled.'))
             trip.write({'state': 'cancelled'})
             trip.message_post(body=_('Trip cancelled.'))
+            
+            # Update linked allocation if it exists
+            if trip.allocation_id and trip.allocation_id.state not in ('cancelled', 'completed', 'returned'):
+                trip.allocation_id.write({'state': 'cancelled'})
+                trip.allocation_id.message_post(body=_('Allocation cancelled due to trip cancellation.'))
+                
+            # Also update the vehicle's status by calling _compute_status
+            if trip.vehicle_id:
+                trip.vehicle_id._compute_status()
         return True
+
+    def action_reset_to_draft(self):
+        for trip in self:
+            if trip.state == 'draft':
+                raise UserError(_('Trip is already in draft state.'))
+            trip.write({
+                'state': 'draft',
+                # Clear actual data (optional, uncomment if needed:
+                # 'return_date': False,
+                # 'return_time': 0.0,
+                # 'actual_start_place': False,
+                # 'actual_destination': False,
+                # 'signed_by': False,
+                # 'km_at_end_actual': 0.0,
+                # 'transport_km': 0.0,
+                # 'discrepancy_status': 'none',
+                # 'discrepancy_reason': False,
+            })
+            trip.message_post(body=_('Trip reset to draft.'))
+            
+            # Update linked allocation to draft if it exists
+            if trip.allocation_id and trip.allocation_id.state not in ('draft', 'cancelled', 'completed'):
+                trip.allocation_id.write({'state': 'draft'})
+                trip.allocation_id.message_post(body=_('Allocation reset to draft due to trip reset.'))
+                
+            # Also update the vehicle's status by calling _compute_status
+            if trip.vehicle_id:
+                trip.vehicle_id._compute_status()
+        return True
+
+    @api.constrains('km_at_start_actual', 'km_at_end_actual')
+    def _check_odometer_values(self):
+        """Ensure end odometer is greater than or equal to start odometer."""
+        for trip in self:
+            if trip.km_at_start_actual and trip.km_at_end_actual:
+                if trip.km_at_end_actual < trip.km_at_start_actual:
+                    raise ValidationError(
+                        _('End odometer (%s) must be greater than or equal to start odometer (%s).')
+                        % (trip.km_at_end_actual, trip.km_at_start_actual)
+                    )
 
     def action_complete_trip(self):
         for trip in self:
@@ -372,6 +457,12 @@ class FleetTrip(models.Model):
                 raise UserError(_('Only started trips can be completed.'))
             if not trip.km_at_end_actual:
                 raise ValidationError(_('KM at end (actual) is required to complete the trip.'))
+            # Check odometer values before completing
+            if trip.km_at_end_actual < trip.km_at_start_actual:
+                raise ValidationError(
+                    _('End odometer (%s) must be greater than or equal to start odometer (%s).')
+                    % (trip.km_at_end_actual, trip.km_at_start_actual)
+                )
 
             discrepancy_status = 'none'
             if trip.odometer_gap_flag or abs(trip.distance_difference_pct) > 10.0:
@@ -381,8 +472,15 @@ class FleetTrip(models.Model):
                 'state': 'completed',
                 'discrepancy_status': discrepancy_status,
             })
-            if trip.allocation_id and trip.allocation_id.state == 'dispatched':
-                trip.allocation_id.write({'state': 'in_progress'})
+            # Update vehicle's odometer to the trip's end odometer
+            if trip.vehicle_id:
+                trip.vehicle_id.odometer = trip.km_at_end_actual
+            # Mark allocation as returned and then completed
+            if trip.allocation_id:
+                if trip.allocation_id.state in ['dispatched', 'in_progress']:
+                    trip.allocation_id.write({'state': 'returned'})
+                    # Then complete the allocation to make vehicle available
+                    trip.allocation_id.action_complete_allocation()
             for req in trip.requisition_ids:
                 if req.state == 'dispatched':
                     req.with_context(allow_workflow=True).write({'state': 'completed'})
@@ -399,3 +497,12 @@ class FleetTrip(models.Model):
             'domain': [('id', 'in', self.requisition_ids.ids)],
             'context': {'create': False},
         }
+
+
+class FleetTripAdditionalPlace(models.Model):
+    _name = 'fleet.trip.additional.place'
+    _description = 'Fleet Trip Additional Place'
+
+    trip_id = fields.Many2one('fleet.trip', string='Trip', required=True, ondelete='cascade')
+    place_name = fields.Char(string='Place Name', required=True)
+    km_used = fields.Float(string='KM Used', digits=(10, 2), required=True)

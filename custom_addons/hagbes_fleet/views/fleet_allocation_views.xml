@@ -31,12 +31,6 @@
                             class="btn-primary"
                             invisible="state != 'draft'"
                             groups="hagbes_fleet.group_fmo,hagbes_fleet.group_fleet_admin"/>
-                    <button name="action_dispatch_vehicle"
-                            type="object"
-                            string="Dispatch Vehicle"
-                            class="btn-primary"
-                            invisible="state != 'assigned'"
-                            groups="hagbes_fleet.group_fmo,hagbes_fleet.group_fleet_admin"/>
                     <button name="action_return_vehicle"
                             type="object"
                             string="Return Vehicle"
@@ -49,13 +43,25 @@
                             class="btn-success"
                             invisible="state != 'returned'"
                             groups="hagbes_fleet.group_fmo,hagbes_fleet.group_fleet_admin"/>
+                    <button name="action_reset_to_draft"
+                            type="object"
+                            string="Reset to Draft"
+                            class="btn-warning"
+                            invisible="state == 'draft'"
+                            groups="hagbes_fleet.group_fleet_admin"/>
                     <button name="action_reset_to_assigned"
                             type="object"
                             string="Reset to Assigned"
                             class="btn-warning"
                             invisible="state != 'returned'"
                             groups="hagbes_fleet.group_fleet_admin"/>
-                    <field name="state" widget="statusbar" statusbar_visible="draft,assigned,dispatched,in_progress,returned,completed"/>
+                    <button name="action_cancel"
+                            type="object"
+                            string="Cancel"
+                            class="btn-danger"
+                            invisible="state in ('completed', 'cancelled')"
+                            groups="hagbes_fleet.group_fmo,hagbes_fleet.group_fleet_admin"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,assigned,in_progress,returned,completed,cancelled"/>
                 </header>
                 <sheet>
                     <div class="oe_title">
@@ -78,30 +84,7 @@
                             <field name="trip_id" invisible="not trip_id"/>
                         </group>
                     </group>
-                    <notebook>
-                        <page string="Trip Logs" name="trip_logs">
-                            <field name="trip_log_ids">
-                                <list string="Trip Logs" editable="bottom">
-                                    <field name="start_time"/>
-                                    <field name="end_time"/>
-                                    <field name="start_odometer"/>
-                                    <field name="end_odometer"/>
-                                    <field name="actual_distance"/>
-                                    <field name="fuel_used"/>
-                                </list>
-                            </field>
-                        </page>
-                        <page string="Append Requests" name="append_requests">
-                            <field name="append_request_ids">
-                                <list string="Append Requests" editable="bottom">
-                                    <field name="additional_destination"/>
-                                    <field name="additional_distance"/>
-                                    <field name="reason"/>
-                                    <field name="create_date" string="Request Date"/>
-                                </list>
-                            </field>
-                        </page>
-                    </notebook>
+
                 </sheet>
             </form>
         </field>
