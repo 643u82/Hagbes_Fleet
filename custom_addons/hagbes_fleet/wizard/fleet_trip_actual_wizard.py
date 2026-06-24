@@ -3,15 +3,20 @@
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError
 
+
 class FleetTripActualWizard(models.TransientModel):
     _name = 'fleet.trip.actual.wizard'
     _description = 'Record Actual Trip Data'
 
     trip_id = fields.Many2one('fleet.trip', string='Trip', required=True)
-    
-    return_date = fields.Date(string='Return Date', default=fields.Date.today(), required=True)
-    return_time = fields.Float(string='Return Time', default=lambda self: fields.Datetime.now().hour + fields.Datetime.now().minute/60, required=True)
-    
+
+    # Single native datetime picker (no separate date/time floats)
+    actual_return_datetime = fields.Datetime(
+        string='Actual Return Date & Time',
+        required=True,
+        default=fields.Datetime.now,
+    )
+
     actual_start_place = fields.Char(string='Trip Origin', required=True)
     actual_destination = fields.Char(string='Final Destination', required=True)
     
@@ -25,7 +30,15 @@ class FleetTripActualWizard(models.TransientModel):
         readonly=False,
         default=0.0,
     )
-    signed_by = fields.Char(string='Signed By', required=True)
+    signed_by = fields.Char(string='Signed By', required=False, default=lambda self: self.env.user.name)
+
+    @api.model
+    def default_get(self, fields_list):
+        res = super().default_get(fields_list)
+        if 'signed_by' in fields_list and not res.get('signed_by'):
+            res['signed_by'] = self.env.user.name
+        return res
+
     
     discrepancy_reason = fields.Text(string='Discrepancy Reason')
     
@@ -34,6 +47,7 @@ class FleetTripActualWizard(models.TransientModel):
         'wizard_id',
         string='Additional Places',
     )
+
 
     @api.onchange('trip_id')
     def _onchange_trip_id(self):
@@ -92,9 +106,20 @@ class FleetTripActualWizard(models.TransientModel):
                 'place_name': place.place_name,
                 'km_used': place.km_used,
             }))
+        # Derive legacy Date/Time fields internally from a single datetime picker.
+        dt = self.actual_return_datetime
+        return_date = dt.date() if dt else False
+
+        # Legacy return_time is a Float representing hours.
+        # Example: 06:15 -> 6.25
+        return_time = 0.0
+        if dt:
+            return_time = (dt.hour + (dt.minute / 60.0) + (dt.second / 3600.0))
+
         self.trip_id.write({
-            'return_date': self.return_date,
-            'return_time': self.return_time,
+            'return_date': return_date,
+            'return_time': return_time,
+
             'actual_start_place': self.actual_start_place,
             'actual_destination': self.actual_destination,
             'km_at_start_actual': self.km_at_start_actual,
@@ -104,6 +129,7 @@ class FleetTripActualWizard(models.TransientModel):
             'discrepancy_reason': self.discrepancy_reason,
             'additional_place_ids': additional_places,
         })
+
         self.trip_id.action_complete_trip()
         if self.trip_id.vehicle_id:
             self.trip_id.vehicle_id._compute_status()

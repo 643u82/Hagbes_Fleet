@@ -54,9 +54,12 @@
     'installable': True,
     'application': True,
     'post_init_hook': 'post_init_hook',
-    # 'assets': {
-    #     'web.assets_backend': [
-    #         'hagbes_fleet/static/src/css/fleet_layout_fix.css',
-    #     ],
-    # },
+    'assets': {
+        'web.assets_backend': [
+            'hagbes_fleet/static/src/css/fleet_layout_fix.css',
+            'hagbes_fleet/static/src/dashboard/dashboard_fixed.js',
+            'hagbes_fleet/static/src/dashboard/dashboard.xml',
+        ],
+    },
 }
+

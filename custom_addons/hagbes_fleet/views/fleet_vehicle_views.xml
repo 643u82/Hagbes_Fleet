@@ -126,8 +126,9 @@
                                         <field name="fuel_type" widget="label_selection" options="{'classes': {'petrol': 'info', 'diesel': 'warning', 'electric': 'success', 'hybrid': 'primary'}}"/>
                                     </div>
                                     <div class="oe_kanban_bottom_right">
-                                        <field name="status" widget="label_selection" options="{'classes': {'available': 'success', 'assigned': 'warning', 'maintenance': 'danger', 'waiting_approval': 'info', 'out_of_service': 'secondary'}}"/>
+                                        <field name="status" widget="label_selection" options="{'classes': {'available': 'success', 'waiting_approval': 'info', 'assigned': 'warning', 'in_trip': 'primary', 'maintenance': 'danger', 'out_of_service': 'secondary'}}"/>
                                     </div>
+
                                 </div>
                             </div>
                         </div>

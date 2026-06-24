@@ -1,180 +1,13 @@
-<?xml version="1.0" encoding="utf-8"?>
+
 <odoo>
-    <!-- Fleet Dashboard Views -->
-    <record id="view_fleet_dashboard_form" model="ir.ui.view">
-        <field name="name">fleet.dashboard.form</field>
-        <field name="model">fleet.dashboard</field>
-        <field name="arch" type="xml">
-            <form string="Fleet Operations Dashboard" create="false" edit="false">
-                <sheet>
-                    <group>
-                        <group string="Fleet Overview">
-                            <group>
-                                <label for="total_vehicles" string="Total Vehicles"/>
-                                <div class="oe_stat_button">
-                                    <div class="o_stat_info">
-                                        <span class="o_stat_value" style="font-size:24px;font-weight:bold;">
-                                            <field name="total_vehicles"/>
-                                        </span>
-                                    </div>
-                                </div>
-                            </group>
-                            <group>
-                                <label for="available_vehicles" string="Available Vehicles"/>
-                                <div class="oe_stat_button">
-                                    <div class="o_stat_info">
-                                        <span class="o_stat_value" style="font-size:24px;font-weight:bold;color:green;">
-                                            <field name="available_vehicles"/>
-                                        </span>
-                                    </div>
-                                </div>
-                            </group>
-                            <group>
-                                <label for="allocated_vehicles" string="Allocated Vehicles"/>
-                                <div class="oe_stat_button">
-                                    <div class="o_stat_info">
-                                        <span class="o_stat_value" style="font-size:24px;font-weight:bold;color:orange;">
-                                            <field name="allocated_vehicles"/>
-                                        </span>
-                                    </div>
-                                </div>
-                            </group>
-                            <group>
-                                <label for="in_maintenance_vehicles" string="Vehicles In Maintenance"/>
-                                <div class="oe_stat_button">
-                                    <div class="o_stat_info">
-                                        <span class="o_stat_value" style="font-size:24px;font-weight:bold;color:red;">
-                                            <field name="in_maintenance_vehicles"/>
-                                        </span>
-                                    </div>
-                                </div>
-                            </group>
-                            <group>
-                                <label for="out_of_service_vehicles" string="Out Of Service"/>
-                                <div class="oe_stat_button">
-                                    <div class="o_stat_info">
-                                        <span class="o_stat_value" style="font-size:24px;font-weight:bold;color:gray;">
-                                            <field name="out_of_service_vehicles"/>
-                                        </span>
-                                    </div>
-                                </div>
-                            </group>
-                        </group>
-                    </group>
-                    <group>
-                        <group string="Utilization KPIs">
-                            <group>
-                                <label for="total_fleet_distance" string="Total Fleet Distance (KM)"/>
-                                <div class="oe_stat_button">
-                                    <div class="o_stat_info">
-                                        <span class="o_stat_value" style="font-size:20px;font-weight:bold;">
-                                            <field name="total_fleet_distance" widget="monetary" options="{'currency_field': False}"/>
-                                        </span>
-                                    </div>
-                                </div>
-                            </group>
-                            <group>
-                                <label for="average_distance" string="Average Distance (KM)"/>
-                                <div class="oe_stat_button">
-                                    <div class="o_stat_info">
-                                        <span class="o_stat_value" style="font-size:20px;font-weight:bold;">
-                                            <field name="average_distance" widget="monetary" options="{'currency_field': False}"/>
-                                        </span>
-                                    </div>
-                                </div>
-                            </group>
-                            <group>
-                                <label for="total_trips" string="Total Trips"/>
-                                <div class="oe_stat_button">
-                                    <div class="o_stat_info">
-                                        <span class="o_stat_value" style="font-size:20px;font-weight:bold;">
-                                            <field name="total_trips"/>
-                                        </span>
-                                    </div>
-                                </div>
-                            </group>
-                        </group>
-                        <group string="Maintenance KPIs">
-                            <group>
-                                <label for="total_maintenance_events" string="Total Maintenance Events"/>
-                                <div class="oe_stat_button">
-                                    <div class="o_stat_info">
-                                        <span class="o_stat_value" style="font-size:20px;font-weight:bold;">
-                                            <field name="total_maintenance_events"/>
-                                        </span>
-                                    </div>
-                                </div>
-                            </group>
-                            <group>
-                                <label for="total_maintenance_cost" string="Total Maintenance Cost"/>
-                                <div class="oe_stat_button">
-                                    <div class="o_stat_info">
-                                        <span class="o_stat_value" style="font-size:20px;font-weight:bold;">
-                                            <field name="total_maintenance_cost" widget="monetary"/>
-                                        </span>
-                                    </div>
-                                </div>
-                            </group>
-                            <group>
-                                <label for="vehicles_due" string="Vehicles Due For Service"/>
-                                <div class="oe_stat_button">
-                                    <div class="o_stat_info">
-                                        <span class="o_stat_value" style="font-size:20px;font-weight:bold;color:orange;">
-                                            <field name="vehicles_due"/>
-                                        </span>
-                                    </div>
-                                </div>
-                            </group>
-                            <group>
-                                <label for="vehicles_overdue" string="Vehicles Overdue"/>
-                                <div class="oe_stat_button">
-                                    <div class="o_stat_info">
-                                        <span class="o_stat_value" style="font-size:20px;font-weight:bold;color:red;">
-                                            <field name="vehicles_overdue"/>
-                                        </span>
-                                    </div>
-                                </div>
-                            </group>
-                        </group>
-                        <group string="Allocation KPIs">
-                            <group>
-                                <label for="active_allocations" string="Active Allocations"/>
-                                <div class="oe_stat_button">
-                                    <div class="o_stat_info">
-                                        <span class="o_stat_value" style="font-size:20px;font-weight:bold;color:blue;">
-                                            <field name="active_allocations"/>
-                                        </span>
-                                    </div>
-                                </div>
-                            </group>
-                            <group>
-                                <label for="allocation_count" string="Total Allocations"/>
-                                <div class="oe_stat_button">
-                                    <div class="o_stat_info">
-                                        <span class="o_stat_value" style="font-size:20px;font-weight:bold;">
-                                            <field name="allocation_count"/>
-                                        </span>
-                                    </div>
-                                </div>
-                            </group>
-                        </group>
-                    </group>
-                    <notebook>
-                        <page string="Reports">
-                            <group>
-                                <button name="%(action_fleet_utilization_report)d" type="action" string="Utilization Analysis" class="oe_link"/>
-                                <button name="%(action_fleet_availability_report)d" type="action" string="Availability Analysis" class="oe_link"/>
-                                <button name="%(action_fleet_maintenance_history_report)d" type="action" string="Maintenance History" class="oe_link"/>
-                                <button name="%(action_fleet_maintenance_due_report)d" type="action" string="Maintenance Due" class="oe_link"/>
-                                <button name="%(action_fleet_allocation_report)d" type="action" string="Allocation Analysis" class="oe_link"/>
-                            </group>
-                        </page>
-                    </notebook>
-                </sheet>
-            </form>
-        </field>
+    <!-- OWL client action wrapper for the Fleet Dashboard QWeb template -->
+    <record id="action_fleet_dashboard_owl" model="ir.actions.client">
+        <field name="name">Fleet Dashboard</field>
+        <!-- Must match the tag registered by JS (see static/src/dashboard/dashboard.js) -->
+        <field name="tag">hagbes_fleet.Dashboard</field>
     </record>
 
+    <!-- Keep the original external id used by menus/buttons as act_window to avoid XML ID type conflict -->
     <record id="action_fleet_dashboard" model="ir.actions.act_window">
         <field name="name">Fleet Operations Dashboard</field>
         <field name="res_model">fleet.dashboard</field>
@@ -186,3 +19,6 @@
         </field>
     </record>
 </odoo>
+
+
+

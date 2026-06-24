@@ -84,7 +84,8 @@ class FleetTrip(models.Model):
         string='Planned Route Distance (KM)',
         digits=(10, 2),
     )
-    km_at_start = fields.Float(string='KM at Start (Planned)', digits=(10, 2))
+    km_at_start = fields.Float(string='Starting Odometer', digits=(10, 2))
+
     fuel_at_start = fields.Float(string='Fuel at Start (L)', digits=(10, 2))
     km_per_liter = fields.Float(string='KM per Liter', digits=(10, 2))
     fuel_for_route = fields.Float(
@@ -276,20 +277,25 @@ class FleetTrip(models.Model):
 
     @api.onchange('allocation_id')
     def _onchange_allocation_id(self):
+        """Auto-populate trip planning info from linked allocation.
+
+        Starting odometer defaults to the vehicle's current odometer at allocation/trip creation time.
         """
-        Dynamically auto-populate trip information from the linked allocation,
-        leaving odometer fields blank for manual entry.
-        """
+
         if self.allocation_id:
             self.vehicle_id = self.allocation_id.vehicle_id
             self.company_id = self.allocation_id.company_id
             self.allocation_date = self.allocation_id.allocation_date
             self.planned_route_distance = self.allocation_id.planned_distance
-            # Leave km_at_start blank
+            # Default starting odometer from the vehicle's current odometer.
+            self.km_at_start = self.allocation_id.vehicle_id.odometer
+            # Actual start odometer must be entered at start time.
+            self.km_at_start_actual = False
+
             self.fuel_at_start = self.allocation_id.fuel_estimate
             if self.allocation_id.request_id:
                 self.requisition_ids = [(6, 0, [self.allocation_id.request_id.id])]
-            # Fetch previous trip km end (for info), but leave km_at_start_actual blank
+            # Fetch previous trip km end (for info only)
             if self.vehicle_id:
                 last_trip = self.search([
                     ('vehicle_id', '=', self.vehicle_id.id),
@@ -299,17 +305,15 @@ class FleetTrip(models.Model):
                 if last_trip:
                     self.prev_trip_km_end = last_trip.km_at_end_actual
                 else:
-                    # If no previous trips, use vehicle's current odometer
                     self.prev_trip_km_end = self.vehicle_id.odometer or 0.0
+
 
     @api.onchange('vehicle_id')
     def _onchange_vehicle_id(self):
-        """
-        Dynamically fetch vehicle defaults (km per liter), leave odometer fields blank.
-        """
+        """Fetch vehicle defaults (km per liter). Starting odometer must remain blank."""
         if self.vehicle_id:
             self.km_per_liter = self.vehicle_id.kmperl or 10.0
-            # Get previous trip's end KM (for info), but leave km_at_start_actual blank
+            # Get previous trip's end KM (for info only)
             last_trip = self.search([
                 ('vehicle_id', '=', self.vehicle_id.id),
                 ('state', '=', 'completed'),
@@ -318,8 +322,12 @@ class FleetTrip(models.Model):
             if last_trip:
                 self.prev_trip_km_end = last_trip.km_at_end_actual
             else:
-                # If no previous trips, use vehicle's current odometer
                 self.prev_trip_km_end = self.vehicle_id.odometer or 0.0
+
+            # Ensure actual start odometer must be entered later.
+            self.km_at_start_actual = False
+
+
 
     # ─── ORM ──────────────────────────────────────────────────────────────────
 
@@ -379,9 +387,19 @@ class FleetTrip(models.Model):
                 raise UserError(_('Only draft trips can be started.'))
             if not trip.km_at_start and not trip.km_at_start_actual:
                 raise UserError(_('A start odometer reading is required before starting the trip.'))
+
             trip.write({'state': 'started'})
+
+            # Update linked allocation when the trip starts.
+            # Requirement: After Confirm Assignment -> Start Trip -> vehicle becomes In Trip.
+            if trip.allocation_id and trip.allocation_id.state in ['assigned', 'draft']:
+                trip.allocation_id.write({'state': 'in_progress'})
+
+
+
             trip.message_post(body=_('Trip started.'))
         return True
+
 
     def action_record_actual_data(self):
         self.ensure_one()
@@ -477,13 +495,17 @@ class FleetTrip(models.Model):
                 trip.vehicle_id.odometer = trip.km_at_end_actual
             # Mark allocation as returned and then completed
             if trip.allocation_id:
-                if trip.allocation_id.state in ['dispatched', 'in_progress']:
+                if trip.allocation_id.state in ['in_progress', 'assigned']:
                     trip.allocation_id.write({'state': 'returned'})
                     # Then complete the allocation to make vehicle available
                     trip.allocation_id.action_complete_allocation()
+
+
             for req in trip.requisition_ids:
-                if req.state == 'dispatched':
+                # Keep existing requisition workflow semantics.
+                if req.state in ('dispatched', 'assigned'):
                     req.with_context(allow_workflow=True).write({'state': 'completed'})
+
             trip.message_post(body=_('Trip completed.'))
         return True
 

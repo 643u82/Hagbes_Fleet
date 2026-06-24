@@ -36,11 +36,13 @@ class HagbesFleetVehicle(models.Model, ApprovalIntegrationMixin):
     cost = fields.Float(string='Acquisition Cost')
     status = fields.Selection([
         ('available', 'Available'),
-        ('assigned', 'Assigned'),
-        ('maintenance', 'Maintenance'),
         ('waiting_approval', 'Waiting Approval'),
+        ('assigned', 'Assigned'),
+        ('in_trip', 'In Trip'),
+        ('maintenance', 'Maintenance'),
         ('out_of_service', 'Out of Service'),
     ], string='Status', compute='_compute_status', store=True, tracking=True, index=True)
+
     disposal_state = fields.Selection([
         ('none', 'None'),
         ('waiting_approval', 'Waiting Approval'),
@@ -98,10 +100,14 @@ class HagbesFleetVehicle(models.Model, ApprovalIntegrationMixin):
                 rec.status = 'waiting_approval'
             elif any(m.state == 'active' for m in rec.maintenance_ids):
                 rec.status = 'maintenance'
-            elif any(a.state in ('assigned', 'dispatched', 'in_progress') for a in rec.allocation_ids):
+            elif any(a.state == 'in_progress' for a in rec.allocation_ids):
+                rec.status = 'in_trip'
+            elif any(a.state == 'assigned' for a in rec.allocation_ids):
                 rec.status = 'assigned'
+            
             elif any(a.state == 'active' for a in rec.assignment_ids):
                 rec.status = 'assigned'
+
             else:
                 rec.status = 'available'
 

@@ -135,6 +135,7 @@
         </field>
     </record>
 
+
     <!-- Allocation Action -->
     <record id="action_fleet_allocation" model="ir.actions.act_window">
         <field name="name">Allocations</field>

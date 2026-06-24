@@ -53,16 +53,18 @@
                             class="btn-primary"
                             invisible="not can_fleet_approve"/>   
 
-                    <!-- FMO Actions -->
+                    <!-- FMO Actions (DISABLED: dispatch stage removed) -->
                     <button name="action_fmo_approve"
                             string="Dispatch"
                             type="object"
                             class="btn-primary"
-                            invisible="not can_fmo_approve"/>
+                            invisible="1"/>
+
 
                     <field name="state"
                            widget="statusbar"
                            statusbar_visible="draft,submitted,dept_approved,assigned,completed,rejected"/>
+
                 </header>
 
                 <sheet>
@@ -138,7 +140,8 @@
                                  once approved (state=assigned or later), the assigned vehicle becomes
                                  visible to everyone. This enforces clean role separation. -->
                             <field name="vehicle_id"
-                                   readonly="state in ['assigned', 'dispatched', 'completed']"
+                                   readonly="state in ['assigned', 'completed']"
+
                                    options="{'no_create': True}"
                                    invisible="state == 'submitted'"/>
                             <field name="vehicle_plate_number"
@@ -150,7 +153,8 @@
                         </group>
                     </group>
 
-                    <group string="Operational Execution Info" invisible="state not in ['assigned', 'dispatched', 'completed']">
+                    <group string="Operational Execution Info" invisible="state not in ['assigned', 'completed']">
+
                         <group>
                             <field name="allocation_id" readonly="1"/>
                         </group>

@@ -94,7 +94,6 @@ class HagbesFleetAllocation(models.Model):
         selection=[
             ('draft', 'Draft'),
             ('assigned', 'Assigned'),
-            ('dispatched', 'Dispatched'),
             ('in_progress', 'In Progress'),
             ('returned', 'Returned'),
             ('completed', 'Completed'),
@@ -107,6 +106,7 @@ class HagbesFleetAllocation(models.Model):
         copy=False,
         index=True,
     )
+
 
     # ─── Related Records ──────────────────────────────────────────────────────
     trip_id = fields.Many2one(
@@ -182,12 +182,13 @@ class HagbesFleetAllocation(models.Model):
         Blocks double allocations for all operational states: assigned, dispatched, and in progress.
         """
         for rec in self:
-            if rec.state in ('assigned', 'dispatched', 'in_progress'):
+            if rec.state in ('assigned', 'in_progress'):
                 domain = [
                     ('id', '!=', rec.id),
                     ('vehicle_id', '=', rec.vehicle_id.id),
-                    ('state', 'in', ('assigned', 'dispatched', 'in_progress')),
+                    ('state', 'in', ('assigned', 'in_progress')),
                 ]
+
                 duplicate = self.search(domain, limit=1)
                 if duplicate:
                     raise ValidationError(
@@ -251,15 +252,16 @@ class HagbesFleetAllocation(models.Model):
         self.ensure_one()
         
         # Centralized mapping dictionary - single source of truth
+        # IMPORTANT: this module must not introduce/retain a dispatch stage.
         allocation_to_requisition_map = {
-            'draft': 'assigned',           # Allocation draft means requisition approved but not operational
-            'assigned': 'assigned',              # Vehicle assigned to requisition
-            'dispatched': 'dispatched',          # Vehicle dispatched for travel
-            'in_progress': 'dispatched',         # Trip in progress - requisition remains dispatched
-            'returned': 'dispatched',            # Vehicle returned - requisition still dispatched
-            'completed': 'completed',           # Trip completed - requisition completed
-            'cancelled': 'cancelled',           # Allocation cancelled - requisition cancelled
+            'draft': 'assigned',
+            'assigned': 'assigned',
+            'in_progress': 'assigned',
+            'returned': 'assigned',
+            'completed': 'completed',
+            'cancelled': 'cancelled',
         }
+
         
         target_state = allocation_to_requisition_map.get(self.state)
         
@@ -315,11 +317,10 @@ class HagbesFleetAllocation(models.Model):
             subtype_xmlid='mail.mt_note',
         )
         
-        # When transitioning to 'returned' or 'cancelled', update vehicle status
+            # When transitioning to 'returned' or 'cancelled', update vehicle status
         if new_state in ('returned', 'cancelled'):
             if self.vehicle_id:
-                # The vehicle status is computed based on active assignments/maintenance
-                # We don't directly set it, but we can trigger a recompute
+                # The vehicle status is computed based on active allocations/maintenance.
                 self.vehicle_id._compute_status()
                 self.message_post(
                     body=_('Vehicle %s is now available.')
@@ -332,17 +333,53 @@ class HagbesFleetAllocation(models.Model):
     # =========================================================================
 
     def action_assign_vehicle(self):
-        """Confirm assignment with validation, then create trip and navigate to start trip."""
+        """Confirm assignment.
+
+        Required workflow (user-facing): Confirm Assignment -> Start Trip.
+        Do NOT dispatch as an intermediate manual step.
+        """
         for rec in self:
             if rec.state != 'draft':
                 raise UserError(_('Only draft allocations can be assigned.'))
             if not rec.vehicle_id:
                 raise UserError(_('Please assign a vehicle before confirming the assignment.'))
-            
-            # Transition state and create trip immediately
-            rec.action_dispatch_vehicle()
-            
-        # After dispatching, open the trip to start
+
+            # Move to assigned without dispatching.
+            rec.write({'state': 'assigned'})
+
+            # Ensure a linked trip exists (only create if missing) to keep trip mechanism stable.
+            if not rec.trip_id:
+                latest_completed_trip = self.env['fleet.trip'].search([
+                    ('vehicle_id', '=', rec.vehicle_id.id),
+                    ('state', '=', 'completed'),
+                    ('km_at_end_actual', '>', 0),
+                ], order='id desc', limit=1)
+
+                prev_trip_km_end = latest_completed_trip.km_at_end_actual if latest_completed_trip else (rec.vehicle_id.odometer or 0.0)
+
+                trip_vals = {
+                    'allocation_id': rec.id,
+                    'vehicle_id': rec.vehicle_id.id,
+                    'allocation_date': rec.allocation_date,
+                    'allocated_by': self.env.user.id,
+                    'start_location': rec.request_id.destination if hasattr(rec.request_id, 'destination') else 'Office',
+                    # Starting odometer must be manually entered later.
+                    'km_at_start': rec.assigned_odometer,
+                    'km_at_start_actual': 0.0,
+                    'prev_trip_km_end': prev_trip_km_end,
+                    'company_id': rec.company_id.id,
+                    'requisition_ids': [(4, rec.request_id.id)],
+                }
+                # create trip without changing existing business logic beyond ensuring linkage.
+                trip = self.env['fleet.trip'].create(trip_vals)
+                rec.write({'trip_id': trip.id})
+                rec.request_id.with_context(allow_workflow=True).write({
+                    'trip_id': trip.id,
+                    'allocated_by': self.env.user.id,
+                    'allocated_date': rec.allocation_date,
+                    'allocation_id': rec.id,
+                })
+
         if len(self) == 1:
             trip = self.trip_id
             return {
@@ -351,69 +388,19 @@ class HagbesFleetAllocation(models.Model):
                 'res_model': 'fleet.trip',
                 'view_mode': 'form',
                 'target': 'current',
-                'res_id': trip.id
+                'res_id': trip.id,
             }
         return True
 
+
     def action_dispatch_vehicle(self):
+        """DISABLED.
+
+        Dispatch is not a workflow stage in this module.
+        This method is kept only to avoid crashes if an old view/action still references it.
         """
-        Transition state to 'dispatched' and automatically create the Trip execution record.
-        This unifies the operational lifecycle as requested in Phase 3.
-        """
-        self.ensure_one()
-        if self.state != 'assigned':
-            raise UserError(_('Only assigned allocations can be dispatched.'))
-        
-        # Get latest completed trip's end odometer for prev_trip_km_end
-        latest_completed_trip = self.env['fleet.trip'].search([
-            ('vehicle_id', '=', self.vehicle_id.id),
-            ('state', '=', 'completed'),
-            ('km_at_end_actual', '>', 0),
-        ], order='id desc', limit=1)
-        
-        prev_trip_km_end = 0.0
-        if latest_completed_trip:
-            prev_trip_km_end = latest_completed_trip.km_at_end_actual
-        elif self.vehicle_id.odometer:
-            prev_trip_km_end = self.vehicle_id.odometer
-        
-        # Create Trip record
-        trip_vals = {
-            'allocation_id': self.id,
-            'vehicle_id': self.vehicle_id.id,
-            'allocation_date': self.allocation_date,
-            'allocated_by': self.env.user.id,
-            'start_location': self.request_id.destination if hasattr(self.request_id, 'destination') else 'Office',
-            'km_at_start': self.assigned_odometer,
-            'km_at_start_actual': prev_trip_km_end,
-            'prev_trip_km_end': prev_trip_km_end,
-            'company_id': self.company_id.id,
-            'requisition_ids': [(4, self.request_id.id)],
-        }
-        trip = self.env['fleet.trip'].create(trip_vals)
-        
-        self.write({
-            'state': 'dispatched',
-            'trip_id': trip.id,
-        })
-        
-        # Link trip and allocation back to requisition for traceability
-        self.request_id.with_context(allow_workflow=True).write({
-            'trip_id': trip.id,
-            'allocated_by': self.env.user.id,
-            'allocated_date': self.allocation_date,
-            'allocation_id': self.id,
-        })
-        
-        self.message_post(body=_('Vehicle dispatched. Trip %s has been created.') % trip.name)
-        return {
-            'name': _('Fleet Trip'),
-            'type': 'ir.actions.act_window',
-            'res_model': 'fleet.trip',
-            'res_id': trip.id,
-            'view_mode': 'form',
-            'target': 'current',
-        }
+        raise UserError(_('Dispatch workflow is disabled. Use Confirm Assignment -> Start Trip instead.'))
+
 
     def action_return_vehicle(self):
         """Mark allocation as returned and update trip if it exists."""

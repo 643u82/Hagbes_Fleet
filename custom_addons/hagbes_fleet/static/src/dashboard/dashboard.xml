@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="hagbes_fleet.Dashboard" owl="1">
+        <div class="o_dashboards_view o_action px-4 py-3 bg-100 overflow-auto">
+            <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom bg-white p-3 rounded shadow-sm">
+                <div>
+                    <h3 class="m-0" style="color: #017e84;">Fleet Dashboard</h3>
+                    <div class="text-muted mt-1 small d-flex align-items-center gap-2">
+                        <i class="fa fa-building"/>
+                        <span class="fw-semibold">Hagbes Plc</span>
+                        <span class="text-muted">-</span>
+                        <span>
+                            <span t-esc="new Date().toLocaleDateString()"/>
+
+                        </span>
+                    </div>
+                </div>
+                <div class="d-flex flex-wrap gap-2 justify-content-end">
+                    <button type="button"
+                            t-on-click="() => this._onOpenReport('hagbes_fleet.action_fleet_utilization_report')"
+                            class="btn btn-outline-secondary btn-sm rounded-pill px-3">
+                        <span>Utilization</span>
+                    </button>
+                    <button type="button"
+                            t-on-click="() => this._onOpenReport('hagbes_fleet.action_fleet_availability_report')"
+                            class="btn btn-outline-secondary btn-sm rounded-pill px-3">
+                        <span>Availability</span>
+                    </button>
+                    <button type="button"
+                            t-on-click="() => this._onOpenReport('hagbes_fleet.action_fleet_maintenance_history_report')"
+                            class="btn btn-outline-secondary btn-sm rounded-pill px-3">
+                        <span>Maintenance</span>
+                    </button>
+                    <button type="button"
+                            t-on-click="() => this._onOpenReport('hagbes_fleet.action_fleet_maintenance_due_report')"
+                            class="btn btn-outline-secondary btn-sm rounded-pill px-3">
+                        <span>Due</span>
+                    </button>
+                    <button type="button"
+                            t-on-click="() => this._onOpenReport('hagbes_fleet.action_fleet_allocation_report')"
+                            class="btn btn-outline-secondary btn-sm rounded-pill px-3">
+                        <span>Allocation</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="row g-3">
+                <!-- Fleet Overview KPI Grid -->
+                <div class="col-12">
+                    <div class="row g-3">
+                        <div class="col-12 col-md-6 col-lg-2 d-flex">
+                            <div class="card h-100 border-0 shadow-sm bg-white p-3 border-start border-4 border-secondary w-100">
+                                <div class="d-flex align-items-start gap-3">
+                                    <p class="p-2 bg-100 rounded d-inline-flex align-items-center justify-content-center">
+                                        <i class="fa fa-car text-muted"/>
+                                    </p>
+                                    <div>
+                                        <span class="text-muted d-block small fw-bold text-uppercase">Total Vehicles</span>
+                                        <div class="fs-2 fw-bold lh-1 mt-1" t-esc="metrics.total_vehicles"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-md-6 col-lg-2 d-flex">
+                            <div class="card h-100 border-0 shadow-sm bg-white p-3 border-start border-4 border-success w-100">
+                                <div class="d-flex align-items-start gap-3">
+                                    <p class="p-2 bg-100 rounded d-inline-flex align-items-center justify-content-center">
+                                        <i class="fa fa-check-circle text-success"/>
+                                    </p>
+                                    <div>
+                                        <span class="text-muted d-block small fw-bold text-uppercase">Available Vehicles</span>
+                                        <div class="fs-2 fw-bold lh-1 mt-1 text-success" t-esc="metrics.available_vehicles"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-md-6 col-lg-2 d-flex">
+                            <div class="card h-100 border-0 shadow-sm bg-white p-3 border-start border-4 border-warning w-100">
+                                <div class="d-flex align-items-start gap-3">
+                                    <p class="p-2 bg-100 rounded d-inline-flex align-items-center justify-content-center">
+                                        <i class="fa fa-wrench text-warning"/>
+                                    </p>
+                                    <div>
+                                        <span class="text-muted d-block small fw-bold text-uppercase">Vehicles In Maintenance</span>
+                                        <div class="fs-2 fw-bold lh-1 mt-1 text-warning" t-esc="metrics.in_maintenance_vehicles"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-md-6 col-lg-2 d-flex">
+                            <div class="card h-100 border-0 shadow-sm bg-white p-3 border-start border-4 border-secondary w-100">
+                                <div class="d-flex align-items-start gap-3">
+                                    <p class="p-2 bg-100 rounded d-inline-flex align-items-center justify-content-center">
+                                        <i class="fa fa-tools text-muted"/>
+                                    </p>
+                                    <div>
+                                        <span class="text-muted d-block small fw-bold text-uppercase">Allocated Vehicles</span>
+                                        <div class="fs-2 fw-bold lh-1 mt-1" t-esc="metrics.allocated_vehicles"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-md-6 col-lg-2 d-flex">
+                            <div class="card h-100 border-0 shadow-sm bg-white p-3 border-start border-4 border-danger w-100">
+                                <div class="d-flex align-items-start gap-3">
+                                    <p class="p-2 bg-100 rounded d-inline-flex align-items-center justify-content-center">
+                                        <i class="fa fa-exclamation-triangle text-danger"/>
+                                    </p>
+                                    <div>
+                                        <span class="text-muted d-block small fw-bold text-uppercase">Out Of Service</span>
+                                        <div class="fs-2 fw-bold lh-1 mt-1 text-danger" t-esc="metrics.out_of_service_vehicles"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Row 2: Analytics Grid (2 equal columns) -->
+                <div class="col-12">
+                    <div class="row g-3 mt-0">
+                        <div class="col-12 col-xl-6">
+                            <div class="card shadow-sm border-0 mb-0 h-100">
+                                <div class="card-header bg-transparent border-0 pb-0">
+                                    <div class="text-uppercase text-muted small fw-semibold">Utilization KPIs</div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row g-3">
+                                        <div class="col-12 col-md-6">
+                                            <div class="d-flex flex-column">
+                                                <div class="text-muted d-block small fw-bold text-uppercase">Total Distance</div>
+                                                <div class="fs-3 fw-bold" t-esc="metrics.total_fleet_distance">0</div>
+                                                <div class="text-muted small">KM</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-12 col-md-6">
+                                            <div class="d-flex flex-column">
+                                                <div class="text-muted d-block small fw-bold text-uppercase">Average Distance</div>
+                                                <div class="fs-3 fw-bold" t-esc="metrics.average_distance">0</div>
+                                                <div class="text-muted small">KM</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-12">
+                                            <div class="d-flex flex-column">
+                                                <div class="text-muted d-block small fw-bold text-uppercase">Total Trips</div>
+                                                <div class="fs-3 fw-bold" t-esc="metrics.total_trips">0</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-xl-6">
+                            <div class="card shadow-sm border-0 mb-0 h-100">
+                                <div class="card-header bg-transparent border-0 pb-0">
+                                    <div class="text-uppercase text-muted small fw-semibold">Maintenance Analytics</div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row g-3">
+                                        <div class="col-12 col-md-6">
+                                            <div class="d-flex flex-column">
+                                                <div class="text-muted d-block small fw-bold text-uppercase">Total Events</div>
+                                                <div class="fs-3 fw-bold" t-esc="metrics.total_maintenance_events">0</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-12 col-md-6">
+                                            <div class="d-flex flex-column">
+                                                <div class="text-muted d-block small fw-bold text-uppercase">Total Cost</div>
+                                                <div class="fs-3 fw-bold" t-esc="metrics.total_maintenance_cost">0</div>
+                                                <div class="text-muted small">$</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-12 col-md-6">
+                                            <div class="d-flex flex-column">
+                                                <div class="text-muted d-block small fw-bold text-uppercase">Due for Service</div>
+                                                <div class="fs-3 fw-bold text-warning" t-esc="metrics.vehicles_due">0</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-12 col-md-6">
+                                            <div class="d-flex flex-column">
+                                                <div class="text-muted d-block small fw-bold text-uppercase">Vehicles Overdue</div>
+                                                <div class="fs-3 fw-bold text-danger" t-esc="metrics.vehicles_overdue">0</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Row 3: Actions & Deep Dives -->
+                <div class="col-12">
+                    <div class="row g-3">
+                        <div class="col-12 col-xl-6">
+                            <div class="card shadow-sm border-0 mb-0 h-100">
+                                <div class="card-header bg-transparent border-0 pb-0">
+                                    <div class="text-uppercase text-muted small fw-semibold">Allocation Status</div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row g-3">
+                                        <div class="col-12 col-md-6">
+                                            <div class="d-flex flex-column">
+                                                <div class="text-muted d-block small fw-bold text-uppercase">Active Allocations</div>
+                                                <div class="fs-3 fw-bold text-primary" t-esc="metrics.active_allocations">0</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-12 col-md-6">
+                                            <div class="d-flex flex-column">
+                                                <div class="text-muted d-block small fw-bold text-uppercase">Total Allocations</div>
+                                                <div class="fs-3 fw-bold" t-esc="metrics.allocation_count">0</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-xl-6">
+                            <div class="card shadow-sm border-0 mb-0 h-100">
+                                <div class="card-header bg-transparent border-0 pb-0">
+                                    <div class="text-uppercase text-muted small fw-semibold">Quick Reports</div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row g-2">
+                                        <div class="col-12 col-sm-6">
+                                            <button type="button"
+                                                    t-on-click="() => this._onOpenReport('hagbes_fleet.action_fleet_utilization_report')"
+                                                    class="btn btn-outline-secondary btn-sm rounded-pill px-3 w-100">
+                                                <span class="fw-semibold">Utilization Analysis</span>
+                                            </button>
+                                        </div>
+                                        <div class="col-12 col-sm-6">
+                                            <button type="button"
+                                                    t-on-click="() => this._onOpenReport('hagbes_fleet.action_fleet_availability_report')"
+                                                    class="btn btn-outline-secondary btn-sm rounded-pill px-3 w-100">
+                                                <span class="fw-semibold">Availability Analysis</span>
+                                            </button>
+                                        </div>
+                                        <div class="col-12 col-sm-6">
+                                            <button type="button"
+                                                    t-on-click="() => this._onOpenReport('hagbes_fleet.action_fleet_maintenance_history_report')"
+                                                    class="btn btn-outline-secondary btn-sm rounded-pill px-3 w-100">
+                                                <span class="fw-semibold">Maintenance History</span>
+                                            </button>
+                                        </div>
+                                        <div class="col-12 col-sm-6">
+                                            <button type="button"
+                                                    t-on-click="() => this._onOpenReport('hagbes_fleet.action_fleet_maintenance_due_report')"
+                                                    class="btn btn-outline-secondary btn-sm rounded-pill px-3 w-100">
+                                                <span class="fw-semibold">Maintenance Due</span>
+                                            </button>
+                                        </div>
+                                        <div class="col-12">
+                                            <button type="button"
+                                                    t-on-click="() => this._onOpenReport('hagbes_fleet.action_fleet_allocation_report')"
+                                                    class="btn btn-outline-secondary btn-sm rounded-pill px-3 w-100">
+                                                <span class="fw-semibold">Allocation Analysis</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </t>
+</templates>
+

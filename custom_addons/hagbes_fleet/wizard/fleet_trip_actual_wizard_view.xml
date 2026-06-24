@@ -6,17 +6,17 @@
         <field name="arch" type="xml">
             <form string="Record Actual Trip Data">
                 <group>
-            <group>
-                <field name="trip_id" readonly="1"/>
-                <field name="return_date"/>
-                <field name="return_time" widget="float_time"/>
-                <field name="signed_by"/>
-            </group>
+                    <group>
+                        <field name="trip_id" readonly="1"/>
+                        <field name="actual_return_datetime" widget="datetime"/>
+                        <field name="signed_by"/>
+                    </group>
                     <group>
                         <field name="actual_start_place"/>
                         <field name="actual_destination"/>
                     </group>
                 </group>
+
                 <group string="Odometer Data">
                     <group>
                         <field name="km_at_start_actual"/>
