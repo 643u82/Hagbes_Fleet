@@ -9,7 +9,7 @@
                     <group>
                         <field name="trip_id" readonly="1"/>
                         <field name="actual_return_datetime" widget="datetime"/>
-                        <field name="signed_by"/>
+                        <field name="signed_by" readonly="1"/>
                     </group>
                     <group>
                         <field name="actual_start_place"/>
@@ -21,11 +21,13 @@
                     <group>
                         <field name="km_at_start_actual"/>
                         <field name="km_at_end_actual"/>
+                        <field name="fuel_used_l"/>
                     </group>
                     <group>
                         <field name="transport_km"/>
                     </group>
                 </group>
+
                 <group string="Additional Places">
                     <field name="additional_place_ids" widget="one2many_list">
                         <list editable="bottom">

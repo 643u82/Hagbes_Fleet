@@ -33,37 +33,29 @@
                             class="btn-secondary"
                             invisible="not can_cancel"/>
 
-                    <!-- Department Manager Actions -->
-                    <button name="action_dept_approve"
+                    <button name="action_approve"
                             string="Approve"
                             type="object"
                             class="btn-success"
-                            invisible="not can_dept_approve"/>
+                            invisible="state != 'submitted'"/>
 
                     <button name="%(action_fleet_requisition_reject_wizard)d"
                             string="Reject"
                             type="action"
                             class="btn-danger"
-                            invisible="state != 'submitted' or not can_dept_approve"/>
+                            invisible="state != 'submitted' and state != 'approved'"/>
 
-                    <!-- Fleet Officer Actions -->
+
                     <button name="action_fleet_approve"
                             string="Assign Vehicle"
                             type="object"
                             class="btn-primary"
-                            invisible="not can_fleet_approve"/>   
-
-                    <!-- FMO Actions (DISABLED: dispatch stage removed) -->
-                    <button name="action_fmo_approve"
-                            string="Dispatch"
-                            type="object"
-                            class="btn-primary"
-                            invisible="1"/>
-
+                            invisible="state != 'approved'"/>
 
                     <field name="state"
                            widget="statusbar"
-                           statusbar_visible="draft,submitted,dept_approved,assigned,completed,rejected"/>
+                           statusbar_visible="draft,submitted,approved,assigned,completed,rejected,cancelled"/>
+
 
                 </header>
 
@@ -100,9 +92,15 @@
                             <field name="department_id"
                                    options="{'no_create': True}"
                                    readonly="1"/>
-                            <field name="destination"
-                                   placeholder="Your destination ..."
+                            <field name="destination_branch_id"
+                                   placeholder="Select destination branch ..."
                                    readonly="state != 'draft'"/>
+                            <field name="additional_destination"
+                                   placeholder="Additional Destination (if not a branch) ..."
+                                   readonly="state != 'draft'"/>
+                            <field name="destination"
+                                   invisible="1"/>
+
                         </group>
                     </group>
 
@@ -113,37 +111,35 @@
                                readonly="state != 'draft'"/>
                     </group>
 
-                    <group string="Traveller Info">
-                        <field name="traveller"
+                    <group string="Travellers">
+                        <field name="traveller_ids"
+                               widget="many2many_tags"
                                options="{'no_open': True, 'no_create': True}"
                                readonly="state != 'draft'"/>
                         <field name="traveller_count"
-                               readonly="state != 'draft'"/>
-                        <field name="traveller_names"
-                               placeholder="Additional people travelling..."
-                               invisible="traveller_count == '0'"
-                               readonly="state != 'draft'"/>
+                               readonly="1"/>
                     </group>
 
                     <group string="Workflow Information" invisible="state == 'draft'">
                         <group>
-                            <field name="dept_approved_by" readonly="1" invisible="state not in ['dept_approved', 'assigned', 'dispatched', 'completed']"/>
-
-                            <field name="dept_approved_date" readonly="1" string="Dept. Approval Date" invisible="state not in ['dept_approved', 'assigned', 'dispatched', 'completed']"/>
-
-                            <field name="fmo_approved_by" readonly="1" invisible="state not in ['assigned', 'dispatched', 'completed']"/>
-                            <field name="fmo_approved_date" readonly="1" string="FMO Approval Date" invisible="state not in ['assigned', 'dispatched', 'completed']"/>
+                            <field name="approved_by" readonly="1" invisible="state != 'approved' and state != 'assigned' and state != 'completed'"/>
+                            <field name="approved_date" readonly="1" string="Approved Date" invisible="state != 'approved' and state != 'assigned' and state != 'completed'"/>
+                            <field name="fmo_approved_by" readonly="1" invisible="state not in ['assigned', 'completed']"/>
+                            <field name="fmo_approved_date" readonly="1" string="FMO Approval Date" invisible="state not in ['assigned', 'completed']"/>
                         </group>
+
                         <group>
                             <!-- Vehicle info: visible only after FMO/Fleet has assigned the vehicle.
                                  Department managers reviewing a submitted request see no vehicle info;
                                  once approved (state=assigned or later), the assigned vehicle becomes
                                  visible to everyone. This enforces clean role separation. -->
-                            <field name="vehicle_id"
+<field name="vehicle_id"
                                    readonly="state in ['assigned', 'completed']"
 
                                    options="{'no_create': True}"
-                                   invisible="state == 'submitted'"/>
+                                   invisible="state in ['submitted']"/>
+
+
                             <field name="vehicle_plate_number"
                                    readonly="1"
                                    invisible="state == 'submitted'"/>
@@ -197,10 +193,9 @@
                 <field name="date_from"/>
                 <field name="date_to"/>
                 <field name="purpose"/>
-                <field name="traveller_names"/>
+                <field name="traveller_ids" widget="many2many_tags"/>
                 <field name="destination"/>
                 <field name="request_by"/>
-                <field name="traveller"/>
                 <field name="state"/>
             </list>
         </field>
@@ -218,7 +213,7 @@
                 <field name="date_from"/>
                 <field name="date_to"/>
                 <field name="purpose"/>
-                <field name="traveller"/>
+                <field name="traveller_ids"/>
                 <field name="destination"/>
                 <field name="department_id"/>
                 <field name="state"/>
@@ -239,7 +234,7 @@
                                 <div class="mb-1"><strong>For Date:</strong> <field name="date_from"/></div>
                                 <div class="mb-1"><strong>From To:</strong> <field name="date_from" widget="datetime"/> - <field name="date_to" widget="datetime"/></div>
                                 <div class="mb-1 text-truncate"><strong>Purpose:</strong> <field name="purpose"/></div>
-                                <div class="mb-1"><strong>Traveller:</strong> <field name="traveller"/></div>
+                                <div class="mb-1"><strong>Travellers:</strong> <field name="traveller_ids" widget="many2many_tags"/></div>
                                 <div class="mb-1"><strong>Destination:</strong> <field name="destination"/></div>
                                 <div class="mb-1"><strong>Request By:</strong> <field name="request_by"/></div>
                                 <div class="mb-1"><strong>Department:</strong> <field name="department_id"/></div>
@@ -261,7 +256,8 @@
                                         <i class="fa fa-trash-o" title="Cancel"/>
                                     </button>
                                     <div class="ml-auto">
-                                        <field name="state" widget="label_selection" options="{'classes': {'draft': 'info', 'submitted': 'warning', 'dept_approved': 'warning', 'assigned': 'success', 'dispatched': 'success', 'completed': 'success', 'rejected': 'danger', 'cancelled': 'secondary'}}"/>
+                                        <field name="state" widget="label_selection" options="{'classes': {'draft': 'info', 'submitted': 'warning', 'approved': 'warning', 'assigned': 'success', 'completed': 'success', 'rejected': 'danger', 'cancelled': 'secondary'}}"/>
+
                                     </div>
                                 </div>
                             </div>
@@ -282,7 +278,7 @@
                 <field name="department_id"/>
                 <field name="destination"/>
                 <filter string="My Requisitions" name="my_requisitions" domain="[('request_by', '=', uid)]"/>
-                <filter string="Travelling With Me" name="travelling_with_me" domain="[('traveller', '=', uid)]"/>
+                <filter string="Travelling With Me" name="travelling_with_me" domain="[('traveller_ids', 'in', uid)]"/>
                 <separator/>
                 <filter string="Draft" name="draft" domain="[('state', '=', 'draft')]"/>
                 <filter string="Submitted" name="submitted" domain="[('state', '=', 'submitted')]"/>
@@ -290,7 +286,6 @@
 
                 <filter string="Assigned" name="assigned" domain="[('state', '=', 'assigned')]"/>
 
-                <filter string="Dispatched" name="dispatched" domain="[('state', '=', 'dispatched')]"/>
                 <filter string="Completed" name="completed" domain="[('state', '=', 'completed')]"/>
                 <group expand="0" string="Group By">
                     <filter string="Requester" name="group_by_requester" context="{'group_by': 'request_by'}"/>

@@ -171,9 +171,9 @@ class HagbesFleetAllocation(models.Model):
 
     @api.onchange('vehicle_id')
     def _onchange_vehicle_id(self):
-        """Stop auto-populating assigned odometer, leave blank for manual entry."""
-        # No auto-populate
-        pass
+        """Auto-populate assigned odometer from vehicle's current odometer."""
+        if self.vehicle_id:
+            self.assigned_odometer = self.vehicle_id.odometer
 
     @api.constrains('vehicle_id', 'state')
     def _check_unique_active_allocation(self):
@@ -363,16 +363,19 @@ class HagbesFleetAllocation(models.Model):
                     'allocation_date': rec.allocation_date,
                     'allocated_by': self.env.user.id,
                     'start_location': rec.request_id.destination if hasattr(rec.request_id, 'destination') else 'Office',
-                    # Starting odometer must be manually entered later.
-                    'km_at_start': rec.assigned_odometer,
+                    # Trip must start in Trip Planning so the UI never bypasses planning.
+                    'state': 'trip_planning',
+                    # Auto-populate starting odometer from allocation's assigned odometer
+                    'km_at_start': rec.assigned_odometer or rec.vehicle_id.odometer,
+                    # km_at_start_actual is only required for Start Trip; set to 0 to satisfy type.
                     'km_at_start_actual': 0.0,
                     'prev_trip_km_end': prev_trip_km_end,
                     'company_id': rec.company_id.id,
                     'requisition_ids': [(4, rec.request_id.id)],
                 }
-                # create trip without changing existing business logic beyond ensuring linkage.
                 trip = self.env['fleet.trip'].create(trip_vals)
                 rec.write({'trip_id': trip.id})
+
                 rec.request_id.with_context(allow_workflow=True).write({
                     'trip_id': trip.id,
                     'allocated_by': self.env.user.id,
@@ -382,8 +385,9 @@ class HagbesFleetAllocation(models.Model):
 
         if len(self) == 1:
             trip = self.trip_id
+            # Open Trip Planning screen (do not auto-start)
             return {
-                'name': _('Start Trip'),
+                'name': _('Trip Planning'),
                 'type': 'ir.actions.act_window',
                 'res_model': 'fleet.trip',
                 'view_mode': 'form',
@@ -391,6 +395,7 @@ class HagbesFleetAllocation(models.Model):
                 'res_id': trip.id,
             }
         return True
+
 
 
     def action_dispatch_vehicle(self):

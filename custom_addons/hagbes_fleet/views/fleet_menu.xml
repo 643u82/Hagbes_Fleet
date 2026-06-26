@@ -97,7 +97,7 @@
         <menuitem id="menu_fleet_dashboard"
                   name="Dashboard"
                   parent="menu_fleet_root"
-                  action="action_fleet_dashboard"
+                  action="action_fleet_dashboard_owl"
                   sequence="5"
                   groups="hagbes_fleet.group_fmo,hagbes_fleet.group_fleet_manager,hagbes_fleet.group_fleet_admin"/>
 

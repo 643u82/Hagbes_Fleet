@@ -54,6 +54,13 @@ class TestFleetRequisitionRegressionSuite(TransactionCase):
             'groups_id': [(6, 0, [cls.env.ref('hagbes_fleet.group_fleet_manager').id])]
         })
         
+        cls.team_leader_user = cls.env['res.users'].create({
+            'name': 'Test Team Leader',
+            'login': 'test_team_leader',
+            'email': 'team_leader@test.com',
+            'groups_id': [(6, 0, [cls.env.ref('hagbes_fleet.group_team_leader').id])]
+        })
+
         cls.fmo_user = cls.env['res.users'].create({
             'name': 'Test FMO',
             'login': 'test_fmo',
@@ -83,10 +90,20 @@ class TestFleetRequisitionRegressionSuite(TransactionCase):
             'destination': 'Test Destination',
             'date_from': datetime.now() + timedelta(days=1),
             'date_to': datetime.now() + timedelta(days=2),
-            'traveller_count': '1',
             'request_by': self.requester_user.id,
             'department_id': self.test_department.id
         })
+
+        self.test_driver = self.env['hr.employee'].create({
+            'name': 'Test Driver Employee'
+        })
+        self.test_vehicle = self.env['hagbes.fleet.vehicle'].create({
+            'name': 'Test Toyota',
+            'plate_number': 'AA-12345',
+            'driver': 'Test Driver Employee'
+        })
+        self.test_requisition.write({'vehicle_id': self.test_vehicle.id})
+
     
     def test_01_approval_workflow_state_progression(self):
         """Test that approval workflow progresses through correct states."""
@@ -105,13 +122,14 @@ class TestFleetRequisitionRegressionSuite(TransactionCase):
         requisition.with_user(self.dept_manager_user).action_dept_approve()
         self.assertEqual(requisition.state, 'dept_approved')
         
-        # Fleet officer assignment should move to assigned
-        requisition.with_user(self.fleet_manager_user).action_fleet_approve()
-        self.assertEqual(requisition.state, 'assigned')
+        # Team leader approval should move to team_leader_approved
+        requisition.with_user(self.team_leader_user).action_team_leader_approve()
+        self.assertEqual(requisition.state, 'team_leader_approved')
         
-        # FMO dispatch should move to dispatched
-        requisition.with_user(self.fmo_user).action_fmo_approve()
-        self.assertEqual(requisition.state, 'dispatched')
+        # Fleet officer assignment should move to assigned and return action to open allocation form
+        action = requisition.with_user(self.fleet_manager_user).action_fleet_approve()
+        self.assertEqual(requisition.state, 'assigned')
+        self.assertEqual(action.get('res_model'), 'fleet.trip')
         
         _logger.info("✅ Approval workflow state progression test passed")
     
@@ -186,13 +204,13 @@ class TestFleetRequisitionRegressionSuite(TransactionCase):
         requisition.with_user(self.requester_user).action_submit()
         
         with self.assertRaises((AccessError, UserError)):
-            requisition.with_user(self.fmo_user).action_fmo_approve()
+            requisition.with_user(self.fmo_user).action_fleet_approve()
         
         # Must follow proper sequence
         requisition.with_user(self.dept_manager_user).action_dept_approve()
         self.assertEqual(requisition.state, 'dept_approved')
         
-        # Now fleet manager can assign vehicle
+        # Fleet manager can now assign vehicle directly from dept_approved
         requisition.with_user(self.fleet_manager_user).action_fleet_approve()
         self.assertEqual(requisition.state, 'assigned')
         
@@ -209,7 +227,6 @@ class TestFleetRequisitionRegressionSuite(TransactionCase):
                 'destination': 'Test Destination',
                 'date_from': datetime.now() + timedelta(days=2),
                 'date_to': datetime.now() + timedelta(days=1),  # End before start
-                'traveller_count': '1',
                 'request_by': self.requester_user.id,
                 'department_id': self.test_department.id
             })
@@ -221,7 +238,6 @@ class TestFleetRequisitionRegressionSuite(TransactionCase):
                 'destination': 'Test Destination',
                 'date_from': datetime.now() - timedelta(days=1),  # Past date
                 'date_to': datetime.now() + timedelta(days=1),
-                'traveller_count': '1',
                 'request_by': self.requester_user.id,
                 'department_id': self.test_department.id
             })
@@ -241,7 +257,6 @@ class TestFleetRequisitionRegressionSuite(TransactionCase):
                 'destination': 'Different Destination',
                 'date_from': requisition.date_from,  # Same date
                 'date_to': requisition.date_to,
-                'traveller_count': '1',
                 'request_by': self.requester_user.id,
                 'department_id': self.test_department.id  # Same department
             })
@@ -283,18 +298,20 @@ class TestFleetRequisitionRegressionSuite(TransactionCase):
             'destination': 'Test Destination 2',
             'date_from': datetime.now() + timedelta(days=3),
             'date_to': datetime.now() + timedelta(days=4),
-            'traveller_count': '1',
             'request_by': self.requester_user.id,
             'department_id': self.test_department.id
         })
         
         # Submit and advance to an operational stage
+        # Must follow full workflow: submitted → dept_approved → team_leader_approved → assigned
         requisition2.with_user(self.requester_user).action_submit()
         requisition2.with_user(self.dept_manager_user).action_dept_approve()
+        requisition2.with_user(self.team_leader_user).action_team_leader_approve()
         requisition2.with_user(self.fleet_manager_user).action_fleet_approve()
+        self.assertEqual(requisition2.state, 'assigned')
         
-        # Simulate dispatch
-        requisition2.write({'state': 'dispatched'})
+        # Simulate dispatch (operational state via allocation)
+        requisition2.with_context(allow_workflow=True).write({'state': 'dispatched'})
         
         # Cannot cancel dispatched requisition
         with self.assertRaises(UserError):
@@ -330,7 +347,6 @@ class TestFleetRequisitionRegressionSuite(TransactionCase):
             'destination': 'Other Destination',
             'date_from': datetime.now() + timedelta(days=1),
             'date_to': datetime.now() + timedelta(days=2),
-            'traveller_count': '1',
             'request_by': other_user.id,
             'department_id': other_department.id
         })
@@ -435,7 +451,6 @@ class TestFleetSecurityRegressionSuite(TransactionCase):
             'destination': 'Test Destination',
             'date_from': datetime.now() + timedelta(days=1),
             'date_to': datetime.now() + timedelta(days=2),
-            'traveller_count': '1',
             'request_by': self.requester_user.id
         })
         

@@ -22,15 +22,19 @@ class FleetTripActualWizard(models.TransientModel):
     
     km_at_start_actual = fields.Float(string='KM at Start (Actual Odo.)', required=True)
     km_at_end_actual = fields.Float(string='KM at End (Actual Odo.)', required=True)
-    
+
+    # Fleet Management Officer enters actual fuel used (liters)
+    fuel_used_l = fields.Float(string='Fuel Used (L)', required=False, default=0.0)
+
     transport_km = fields.Float(
         string='Transport KM',
         compute='_compute_transport_km',
         store=True,
-        readonly=False,
+        readonly=True,
         default=0.0,
     )
-    signed_by = fields.Char(string='Signed By', required=False, default=lambda self: self.env.user.name)
+
+    signed_by = fields.Char(string='Signed By', required=False, readonly=True)
 
     @api.model
     def default_get(self, fields_list):
@@ -99,6 +103,10 @@ class FleetTripActualWizard(models.TransientModel):
                 _('End odometer (%s) must be greater than or equal to start odometer (%s).')
                 % (self.km_at_end_actual, self.km_at_start_actual)
             )
+
+        if self.fuel_used_l < 0:
+            raise ValidationError(_('Fuel Used (L) cannot be negative.'))
+
         # Prepare additional places data
         additional_places = []
         for place in self.additional_place_ids:
@@ -124,13 +132,17 @@ class FleetTripActualWizard(models.TransientModel):
             'actual_destination': self.actual_destination,
             'km_at_start_actual': self.km_at_start_actual,
             'km_at_end_actual': self.km_at_end_actual,
+            'fuel_used_l': self.fuel_used_l,
             'transport_km': self.transport_km,
+
             'signed_by': self.signed_by,
             'discrepancy_reason': self.discrepancy_reason,
             'additional_place_ids': additional_places,
         })
 
+        # Completion analytics + discrepancy_status must only be finalized when the trip is in execution stage.
         self.trip_id.action_complete_trip()
+
         if self.trip_id.vehicle_id:
             self.trip_id.vehicle_id._compute_status()
         return {'type': 'ir.actions.act_window_close'}

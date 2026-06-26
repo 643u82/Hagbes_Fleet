@@ -1,0 +1,1000 @@
+﻿2026-06-25 13:12:37,157 37836 INFO hag_db odoo.modules.loading: Model foreign.bank.process is declared but cannot be loaded! (Perhaps a module was partially removed or renamed) 
+2026-06-25 13:12:37,157 37836 INFO hag_db odoo.modules.loading: Model foreign.bank.process.pfi is declared but cannot be loaded! (Perhaps a module was partially removed or renamed) 
+2026-06-25 13:12:37,157 37836 INFO hag_db odoo.modules.loading: Model foreign.bank.process.lc.tracking is declared but cannot be loaded! (Perhaps a module was partially removed or renamed) 
+2026-06-25 13:12:37,157 37836 INFO hag_db odoo.modules.loading: Model foreign.bank.process.container is declared but cannot be loaded! (Perhaps a module was partially removed or renamed) 
+2026-06-25 13:12:37,157 37836 INFO hag_db odoo.modules.loading: Model foreign.bank.process.customer is declared but cannot be loaded! (Perhaps a module was partially removed or renamed) 
+2026-06-25 13:12:37,157 37836 INFO hag_db odoo.modules.loading: Model foreign.shipment is declared but cannot be loaded! (Perhaps a module was partially removed or renamed) 
+2026-06-25 13:12:37,157 37836 INFO hag_db odoo.modules.loading: Model foreign.landing is declared but cannot be loaded! (Perhaps a module was partially removed or renamed) 
+2026-06-25 13:12:37,157 37836 INFO hag_db odoo.modules.loading: Model foreign.costing is declared but cannot be loaded! (Perhaps a module was partially removed or renamed) 
+2026-06-25 13:12:37,158 37836 INFO hag_db odoo.modules.loading: Model foreign.costing.payment.line is declared but cannot be loaded! (Perhaps a module was partially removed or renamed) 
+2026-06-25 13:12:37,158 37836 INFO hag_db odoo.modules.loading: Model foreign.costing.product.line is declared but cannot be loaded! (Perhaps a module was partially removed or renamed) 
+2026-06-25 13:12:37,158 37836 INFO hag_db odoo.modules.loading: Model foreign.costing.additional.cost is declared but cannot be loaded! (Perhaps a module was partially removed or renamed) 
+2026-06-25 13:12:37,158 37836 INFO hag_db odoo.modules.loading: Model foreign.payment.request is declared but cannot be loaded! (Perhaps a module was partially removed or renamed) 
+2026-06-25 13:12:37,158 37836 INFO hag_db odoo.modules.loading: Model report.custom_financial_reports.report_tax_report is declared but cannot be loaded! (Perhaps a module was partially removed or renamed) 
+2026-06-25 13:12:37,158 37836 INFO hag_db odoo.modules.loading: Model foreign.payment.request.line is declared but cannot be loaded! (Perhaps a module was partially removed or renamed) 
+2026-06-25 13:12:37,158 37836 INFO hag_db odoo.modules.loading: Model foreign.payment.product.line is declared but cannot be loaded! (Perhaps a module was partially removed or renamed) 
+2026-06-25 13:12:37,158 37836 INFO hag_db odoo.modules.loading: Model foreign.lc is declared but cannot be loaded! (Perhaps a module was partially removed or renamed) 
+2026-06-25 13:12:37,158 37836 INFO hag_db odoo.modules.loading: Model foreign.lc.amendment is declared but cannot be loaded! (Perhaps a module was partially removed or renamed) 
+2026-06-25 13:12:37,158 37836 INFO hag_db odoo.modules.loading: Model foreign.document is declared but cannot be loaded! (Perhaps a module was partially removed or renamed) 
+2026-06-25 13:12:37,158 37836 INFO hag_db odoo.modules.loading: Model product.interchange is declared but cannot be loaded! (Perhaps a module was partially removed or renamed) 
+2026-06-25 13:12:37,158 37836 INFO hag_db odoo.modules.loading: Model approval.remark.wizard is declared but cannot be loaded! (Perhaps a module was partially removed or renamed) 
+2026-06-25 13:12:37,158 37836 INFO hag_db odoo.modules.loading: Model product.price.history is declared but cannot be loaded! (Perhaps a module was partially removed or renamed) 
+2026-06-25 13:12:37,158 37836 INFO hag_db odoo.modules.loading: Model product.group is declared but cannot be loaded! (Perhaps a module was partially removed or renamed) 
+2026-06-25 13:12:37,158 37836 INFO hag_db odoo.modules.loading: Model product.price.update.wizard is declared but cannot be loaded! (Perhaps a module was partially removed or renamed) 
+2026-06-25 13:12:37,158 37836 INFO hag_db odoo.modules.loading: Model product.price.update.preview is declared but cannot be loaded! (Perhaps a module was partially removed or renamed) 
+2026-06-25 13:12:37,158 37836 INFO hag_db odoo.modules.loading: Model local.purchase.request is declared but cannot be loaded! (Perhaps a module was partially removed or renamed) 
+2026-06-25 13:12:37,158 37836 INFO hag_db odoo.modules.loading: Model local.purchase.request.line is declared but cannot be loaded! (Perhaps a module was partially removed or renamed) 
+2026-06-25 13:12:37,158 37836 INFO hag_db odoo.modules.loading: Model user.manual.category is declared but cannot be loaded! (Perhaps a module was partially removed or renamed) 
+2026-06-25 13:12:37,158 37836 INFO hag_db odoo.modules.loading: Model success.message.wizard is declared but cannot be loaded! (Perhaps a module was partially removed or renamed) 
+2026-06-25 13:12:37,159 37836 INFO hag_db odoo.modules.loading: Model hr.leave.admin.wizard is declared but cannot be loaded! (Perhaps a module was partially removed or renamed) 
+2026-06-25 13:12:37,159 37836 INFO hag_db odoo.modules.loading: Model onduty.admin.wizard is declared but cannot be loaded! (Perhaps a module was partially removed or renamed) 
+2026-06-25 13:12:37,159 37836 INFO hag_db odoo.modules.loading: Model mrv.header is declared but cannot be loaded! (Perhaps a module was partially removed or renamed) 
+2026-06-25 13:12:37,159 37836 INFO hag_db odoo.modules.loading: Model mrv.line is declared but cannot be loaded! (Perhaps a module was partially removed or renamed) 
+2026-06-25 13:12:37,159 37836 INFO hag_db odoo.modules.loading: Model workshop.model is declared but cannot be loaded! (Perhaps a module was partially removed or renamed) 
+2026-06-25 13:12:37,159 37836 INFO hag_db odoo.modules.loading: Model workshop.vehicle is declared but cannot be loaded! (Perhaps a module was partially removed or renamed) 
+2026-06-25 13:12:37,159 37836 INFO hag_db odoo.modules.loading: Model workshop.order is declared but cannot be loaded! (Perhaps a module was partially removed or renamed) 
+2026-06-25 13:12:37,159 37836 INFO hag_db odoo.modules.loading: Model workshop.order.image is declared but cannot be loaded! (Perhaps a module was partially removed or renamed) 
+2026-06-25 13:12:37,159 37836 INFO hag_db odoo.modules.loading: Model workshop.job.accessory.line is declared but cannot be loaded! (Perhaps a module was partially removed or renamed) 
+2026-06-25 13:12:37,159 37836 INFO hag_db odoo.modules.loading: Model workshop.task is declared but cannot be loaded! (Perhaps a module was partially removed or renamed) 
+2026-06-25 13:12:37,159 37836 INFO hag_db odoo.modules.loading: Model workshop.vehicle.category is declared but cannot be loaded! (Perhaps a module was partially removed or renamed) 
+2026-06-25 13:12:37,159 37836 INFO hag_db odoo.modules.loading: Model workshop.vehicle.category.type is declared but cannot be loaded! (Perhaps a module was partially removed or renamed) 
+2026-06-25 13:12:37,160 37836 INFO hag_db odoo.modules.loading: Model workshop.vehicle.make is declared but cannot be loaded! (Perhaps a module was partially removed or renamed) 
+2026-06-25 13:12:37,160 37836 INFO hag_db odoo.modules.loading: Model workshop.accessory is declared but cannot be loaded! (Perhaps a module was partially removed or renamed) 
+2026-06-25 13:12:37,160 37836 INFO hag_db odoo.modules.loading: Model workshop.pm.chart is declared but cannot be loaded! (Perhaps a module was partially removed or renamed) 
+2026-06-25 13:12:37,160 37836 INFO hag_db odoo.modules.loading: Model workshop.pm.item is declared but cannot be loaded! (Perhaps a module was partially removed or renamed) 
+2026-06-25 13:12:37,160 37836 INFO hag_db odoo.modules.loading: Model workshop.pm.interval.line is declared but cannot be loaded! (Perhaps a module was partially removed or renamed) 
+2026-06-25 13:12:37,160 37836 INFO hag_db odoo.modules.loading: Model request.items is declared but cannot be loaded! (Perhaps a module was partially removed or renamed) 
+2026-06-25 13:12:37,165 37836 INFO hag_db odoo.modules.loading: Model custom.balance.sheet.wizard is declared but cannot be loaded! (Perhaps a module was partially removed or renamed) 
+2026-06-25 13:12:37,165 37836 INFO hag_db odoo.modules.loading: Model custom.profit.loss.wizard is declared but cannot be loaded! (Perhaps a module was partially removed or renamed) 
+2026-06-25 13:12:37,165 37836 INFO hag_db odoo.modules.loading: Model custom.cash.flow.wizard is declared but cannot be loaded! (Perhaps a module was partially removed or renamed) 
+2026-06-25 13:12:37,226 37836 INFO hag_db odoo.modules.registry: verifying fields for every extended model 
+2026-06-25 13:12:38,012 37836 ERROR hag_db odoo.modules.loading: At least one test failed when loading the modules. 
+2026-06-25 13:12:38,017 37836 INFO hag_db odoo.modules.registry: Registry changed, signaling through the database 
+2026-06-25 13:12:38,018 37836 INFO hag_db odoo.modules.registry: Registry loaded in 50.870s 
+2026-06-25 13:12:38,018 37836 INFO hag_db odoo.service.server: Starting post tests 
+2026-06-25 13:12:38,021 37836 INFO hag_db odoo.tests.common: C:\Users\abenezer.teshome\AppData\Local\Programs\Python\Python311\Lib\unittest\mock.py:1555:__enter__ setting Users._crypt_context to <function TransactionCase.setUpClass.<locals>._crypt_context at 0x000001B156B18CC0> 
+Stack (most recent call last):
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo-bin", line 8, in <module>
+    odoo.cli.main()
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\cli\command.py", line 76, in main
+    o.run(args)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\cli\server.py", line 182, in run
+    main(args)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\cli\server.py", line 175, in main
+    rc = odoo.service.server.start(preload=preload, stop=stop)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\service\server.py", line 1462, in start
+    rc = server.run(preload, stop)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\service\server.py", line 627, in run
+    rc = preload_registries(preload)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\service\server.py", line 1393, in preload_registries
+    result = loader.run_suite(post_install_suite, global_report=registry._assertion_report)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\tests\loader.py", line 118, in run_suite
+    suite(results)
+  File "C:\Users\abenezer.teshome\AppData\Local\Programs\Python\Python311\Lib\unittest\suite.py", line 84, in __call__
+    return self.run(*args, **kwds)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\tests\suite.py", line 43, in run
+    self._handleClassSetUp(test, result)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\tests\suite.py", line 175, in _handleClassSetUp
+    super()._handleClassSetUp(test, result)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\tests\suite.py", line 65, in _handleClassSetUp
+    currentClass.setUpClass()
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\tests\common.py", line 1075, in setUpClass
+    cls.startClassPatcher(cls._crypt_context_patcher)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\tests\common.py", line 444, in startClassPatcher
+    mock = patcher.start()
+  File "C:\Users\abenezer.teshome\AppData\Local\Programs\Python\Python311\Lib\unittest\mock.py", line 1594, in start
+    result = self.__enter__()
+  File "C:\Users\abenezer.teshome\AppData\Local\Programs\Python\Python311\Lib\unittest\mock.py", line 1555, in __enter__
+    setattr(self.target, self.attribute, new_attr)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\tests\common.py", line 986, in metamodel_setattr
+    _logger.runbot(
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\netsvc.py", line 360, in runbot
+    self.log(logging.RUNBOT, message, *args, **kws)
+2026-06-25 13:12:38,022 37836 INFO hag_db odoo.addons.hagbes_fleet.tests.test_dispatch_workflow: Starting TestDispatchWorkflow.test_dispatch_workflow_from_requisition ... 
+2026-06-25 13:12:38,104 37836 INFO hag_db odoo.tests.common: G:\NEXORA\Hagbes_Fleet\odoo\odoo\models.py:928:_constraint_methods setting fleet.requisition._constraint_methods to [<function FleetRequisition._check_dates at 0x000001B156635E40>, <function FleetRequisition._check_no_duplicate at 0x000001B156635F80>] 
+Stack (most recent call last):
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo-bin", line 8, in <module>
+    odoo.cli.main()
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\cli\command.py", line 76, in main
+    o.run(args)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\cli\server.py", line 182, in run
+    main(args)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\cli\server.py", line 175, in main
+    rc = odoo.service.server.start(preload=preload, stop=stop)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\service\server.py", line 1462, in start
+    rc = server.run(preload, stop)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\service\server.py", line 627, in run
+    rc = preload_registries(preload)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\service\server.py", line 1393, in preload_registries
+    result = loader.run_suite(post_install_suite, global_report=registry._assertion_report)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\tests\loader.py", line 118, in run_suite
+    suite(results)
+  File "C:\Users\abenezer.teshome\AppData\Local\Programs\Python\Python311\Lib\unittest\suite.py", line 84, in __call__
+    return self.run(*args, **kwds)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\tests\suite.py", line 47, in run
+    test(result)
+  File "C:\Users\abenezer.teshome\AppData\Local\Programs\Python\Python311\Lib\unittest\case.py", line 678, in __call__
+    return self.run(*args, **kwds)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\tests\common.py", line 358, in run
+    super().run(result)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\tests\case.py", line 213, in run
+    self._callSetUp()
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\tests\case.py", line 181, in _callSetUp
+    self.setUp()
+  File "g:\nexora\hagbes_fleet\custom_addons\hagbes_fleet\tests\test_dispatch_workflow.py", line 17, in setUp
+    self.requisition = self.env['fleet.requisition'].create({
+  File "<decorator-gen-230>", line 2, in create
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\api.py", line 497, in _model_create_multi
+    return create(self, [arg])
+  File "g:\nexora\hagbes_fleet\custom_addons\hagbes_fleet\models\fleet_requisition.py", line 517, in create
+    recs = super().create(vals_list)
+  File "<decorator-gen-51>", line 2, in create
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\api.py", line 498, in _model_create_multi
+    return create(self, arg)
+  File "g:\nexora\hagbes_fleet\odoo\addons\mail\models\mail_thread.py", line 294, in create
+    threads = super(MailThread, self).create(vals_list)
+  File "<decorator-gen-0>", line 2, in create
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\api.py", line 498, in _model_create_multi
+    return create(self, arg)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\models.py", line 5039, in create
+    records = self._create(data_list)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\models.py", line 5297, in _create
+    records._validate_fields(name for data in data_list for name in data['stored'])
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\models.py", line 1633, in _validate_fields
+    for check in self._constraint_methods:
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\models.py", line 928, in _constraint_methods
+    cls._constraint_methods = methods
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\tests\common.py", line 986, in metamodel_setattr
+    _logger.runbot(
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\netsvc.py", line 360, in runbot
+    self.log(logging.RUNBOT, message, *args, **kws)
+2026-06-25 13:12:38,116 37836 INFO hag_db odoo.tests.common: G:\NEXORA\Hagbes_Fleet\odoo\odoo\models.py:928:_constraint_methods setting mail.message._constraint_methods to [] 
+Stack (most recent call last):
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo-bin", line 8, in <module>
+    odoo.cli.main()
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\cli\command.py", line 76, in main
+    o.run(args)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\cli\server.py", line 182, in run
+    main(args)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\cli\server.py", line 175, in main
+    rc = odoo.service.server.start(preload=preload, stop=stop)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\service\server.py", line 1462, in start
+    rc = server.run(preload, stop)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\service\server.py", line 627, in run
+    rc = preload_registries(preload)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\service\server.py", line 1393, in preload_registries
+    result = loader.run_suite(post_install_suite, global_report=registry._assertion_report)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\tests\loader.py", line 118, in run_suite
+    suite(results)
+  File "C:\Users\abenezer.teshome\AppData\Local\Programs\Python\Python311\Lib\unittest\suite.py", line 84, in __call__
+    return self.run(*args, **kwds)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\tests\suite.py", line 47, in run
+    test(result)
+  File "C:\Users\abenezer.teshome\AppData\Local\Programs\Python\Python311\Lib\unittest\case.py", line 678, in __call__
+    return self.run(*args, **kwds)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\tests\common.py", line 358, in run
+    super().run(result)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\tests\case.py", line 213, in run
+    self._callSetUp()
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\tests\case.py", line 181, in _callSetUp
+    self.setUp()
+  File "g:\nexora\hagbes_fleet\custom_addons\hagbes_fleet\tests\test_dispatch_workflow.py", line 17, in setUp
+    self.requisition = self.env['fleet.requisition'].create({
+  File "<decorator-gen-230>", line 2, in create
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\api.py", line 497, in _model_create_multi
+    return create(self, [arg])
+  File "g:\nexora\hagbes_fleet\custom_addons\hagbes_fleet\models\fleet_requisition.py", line 517, in create
+    recs = super().create(vals_list)
+  File "<decorator-gen-51>", line 2, in create
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\api.py", line 498, in _model_create_multi
+    return create(self, arg)
+  File "g:\nexora\hagbes_fleet\odoo\addons\mail\models\mail_thread.py", line 332, in create
+    threads_no_subtype._message_log_batch(bodies=bodies)
+  File "g:\nexora\hagbes_fleet\odoo\addons\mail\models\mail_thread.py", line 2869, in _message_log_batch
+    return self.sudo()._message_create(values_list)
+  File "g:\nexora\hagbes_fleet\odoo\addons\mail\models\mail_thread.py", line 2970, in _message_create
+    ).create(create_values_list)
+  File "<decorator-gen-60>", line 2, in create
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\api.py", line 498, in _model_create_multi
+    return create(self, arg)
+  File "g:\nexora\hagbes_fleet\odoo\addons\mail\models\mail_message.py", line 682, in create
+    messages = super(Message, self).create(values_list)
+  File "<decorator-gen-0>", line 2, in create
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\api.py", line 498, in _model_create_multi
+    return create(self, arg)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\models.py", line 5039, in create
+    records = self._create(data_list)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\models.py", line 5297, in _create
+    records._validate_fields(name for data in data_list for name in data['stored'])
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\models.py", line 1633, in _validate_fields
+    for check in self._constraint_methods:
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\models.py", line 928, in _constraint_methods
+    cls._constraint_methods = methods
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\tests\common.py", line 986, in metamodel_setattr
+    _logger.runbot(
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\netsvc.py", line 360, in runbot
+    self.log(logging.RUNBOT, message, *args, **kws)
+2026-06-25 13:12:38,121 37836 INFO hag_db odoo.tests.common: G:\NEXORA\Hagbes_Fleet\odoo\odoo\models.py:928:_constraint_methods setting hagbes.fleet.vehicle._constraint_methods to [] 
+Stack (most recent call last):
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo-bin", line 8, in <module>
+    odoo.cli.main()
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\cli\command.py", line 76, in main
+    o.run(args)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\cli\server.py", line 182, in run
+    main(args)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\cli\server.py", line 175, in main
+    rc = odoo.service.server.start(preload=preload, stop=stop)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\service\server.py", line 1462, in start
+    rc = server.run(preload, stop)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\service\server.py", line 627, in run
+    rc = preload_registries(preload)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\service\server.py", line 1393, in preload_registries
+    result = loader.run_suite(post_install_suite, global_report=registry._assertion_report)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\tests\loader.py", line 118, in run_suite
+    suite(results)
+  File "C:\Users\abenezer.teshome\AppData\Local\Programs\Python\Python311\Lib\unittest\suite.py", line 84, in __call__
+    return self.run(*args, **kwds)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\tests\suite.py", line 47, in run
+    test(result)
+  File "C:\Users\abenezer.teshome\AppData\Local\Programs\Python\Python311\Lib\unittest\case.py", line 678, in __call__
+    return self.run(*args, **kwds)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\tests\common.py", line 358, in run
+    super().run(result)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\tests\case.py", line 213, in run
+    self._callSetUp()
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\tests\case.py", line 181, in _callSetUp
+    self.setUp()
+  File "g:\nexora\hagbes_fleet\custom_addons\hagbes_fleet\tests\test_dispatch_workflow.py", line 26, in setUp
+    self.vehicle = self.env['hagbes.fleet.vehicle'].create({
+  File "<decorator-gen-228>", line 2, in create
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\api.py", line 497, in _model_create_multi
+    return create(self, [arg])
+  File "g:\nexora\hagbes_fleet\custom_addons\hagbes_fleet\models\fleet_vehicle.py", line 130, in create
+    return super().create(vals_list)
+  File "<decorator-gen-51>", line 2, in create
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\api.py", line 498, in _model_create_multi
+    return create(self, arg)
+  File "g:\nexora\hagbes_fleet\odoo\addons\mail\models\mail_thread.py", line 294, in create
+    threads = super(MailThread, self).create(vals_list)
+  File "<decorator-gen-0>", line 2, in create
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\api.py", line 498, in _model_create_multi
+    return create(self, arg)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\models.py", line 5039, in create
+    records = self._create(data_list)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\models.py", line 5297, in _create
+    records._validate_fields(name for data in data_list for name in data['stored'])
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\models.py", line 1633, in _validate_fields
+    for check in self._constraint_methods:
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\models.py", line 928, in _constraint_methods
+    cls._constraint_methods = methods
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\tests\common.py", line 986, in metamodel_setattr
+    _logger.runbot(
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\netsvc.py", line 360, in runbot
+    self.log(logging.RUNBOT, message, *args, **kws)
+2026-06-25 13:12:38,129 37836 INFO hag_db odoo.tests.common: G:\NEXORA\Hagbes_Fleet\odoo\odoo\models.py:928:_constraint_methods setting resource.resource._constraint_methods to [] 
+Stack (most recent call last):
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo-bin", line 8, in <module>
+    odoo.cli.main()
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\cli\command.py", line 76, in main
+    o.run(args)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\cli\server.py", line 182, in run
+    main(args)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\cli\server.py", line 175, in main
+    rc = odoo.service.server.start(preload=preload, stop=stop)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\service\server.py", line 1462, in start
+    rc = server.run(preload, stop)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\service\server.py", line 627, in run
+    rc = preload_registries(preload)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\service\server.py", line 1393, in preload_registries
+    result = loader.run_suite(post_install_suite, global_report=registry._assertion_report)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\tests\loader.py", line 118, in run_suite
+    suite(results)
+  File "C:\Users\abenezer.teshome\AppData\Local\Programs\Python\Python311\Lib\unittest\suite.py", line 84, in __call__
+    return self.run(*args, **kwds)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\tests\suite.py", line 47, in run
+    test(result)
+  File "C:\Users\abenezer.teshome\AppData\Local\Programs\Python\Python311\Lib\unittest\case.py", line 678, in __call__
+    return self.run(*args, **kwds)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\tests\common.py", line 358, in run
+    super().run(result)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\tests\case.py", line 213, in run
+    self._callSetUp()
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\tests\case.py", line 181, in _callSetUp
+    self.setUp()
+  File "g:\nexora\hagbes_fleet\custom_addons\hagbes_fleet\tests\test_dispatch_workflow.py", line 38, in setUp
+    self.driver = self.env['hr.employee'].create({
+  File "<decorator-gen-186>", line 2, in create
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\api.py", line 497, in _model_create_multi
+    return create(self, [arg])
+  File "g:\nexora\hagbes_fleet\odoo\addons\hr_skills\models\hr_employee.py", line 22, in create
+    res = super(Employee, self).create(vals_list)
+  File "<decorator-gen-182>", line 2, in create
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\api.py", line 498, in _model_create_multi
+    return create(self, arg)
+  File "g:\nexora\hagbes_fleet\odoo\addons\hr_recruitment\models\hr_employee.py", line 21, in create
+    employees = super().create(vals_list)
+  File "<decorator-gen-138>", line 2, in create
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\api.py", line 498, in _model_create_multi
+    return create(self, arg)
+  File "g:\nexora\hagbes_fleet\odoo\addons\hr\models\hr_employee.py", line 507, in create
+    employees = super().create(vals_list)
+  File "<decorator-gen-176>", line 2, in create
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\api.py", line 498, in _model_create_multi
+    return create(self, arg)
+  File "g:\nexora\hagbes_fleet\odoo\addons\hr_holidays\models\hr_employee_base.py", line 451, in create
+    return super().create(vals_list)
+  File "<decorator-gen-51>", line 2, in create
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\api.py", line 498, in _model_create_multi
+    return create(self, arg)
+  File "g:\nexora\hagbes_fleet\odoo\addons\mail\models\mail_thread.py", line 294, in create
+    threads = super(MailThread, self).create(vals_list)
+  File "<decorator-gen-40>", line 2, in create
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\api.py", line 498, in _model_create_multi
+    return create(self, arg)
+  File "g:\nexora\hagbes_fleet\odoo\addons\resource\models\resource_mixin.py", line 44, in create
+    resources = self.env['resource.resource'].create(resources_vals_list)
+  File "<decorator-gen-41>", line 2, in create
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\api.py", line 498, in _model_create_multi
+    return create(self, arg)
+  File "g:\nexora\hagbes_fleet\odoo\addons\resource\models\resource_resource.py", line 74, in create
+    return super().create(vals_list)
+  File "<decorator-gen-0>", line 2, in create
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\api.py", line 498, in _model_create_multi
+    return create(self, arg)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\models.py", line 5039, in create
+    records = self._create(data_list)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\models.py", line 5297, in _create
+    records._validate_fields(name for data in data_list for name in data['stored'])
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\models.py", line 1633, in _validate_fields
+    for check in self._constraint_methods:
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\models.py", line 928, in _constraint_methods
+    cls._constraint_methods = methods
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\tests\common.py", line 986, in metamodel_setattr
+    _logger.runbot(
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\netsvc.py", line 360, in runbot
+    self.log(logging.RUNBOT, message, *args, **kws)
+2026-06-25 13:12:38,141 37836 INFO hag_db odoo.tests.common: G:\NEXORA\Hagbes_Fleet\odoo\odoo\models.py:928:_constraint_methods setting hr.employee._constraint_methods to [<function HrEmployee._check_license_expiry at 0x000001B156634400>, <function HrEmployeePrivate._check_ssnid at 0x000001B154146980>, <function Employee._check_work_contact_id at 0x000001B154A5D440>, <function HrEmployeePrivate._verify_barcode at 0x000001B1541468E0>, <function HrEmployeePrivate._verify_pin at 0x000001B154146840>] 
+Stack (most recent call last):
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo-bin", line 8, in <module>
+    odoo.cli.main()
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\cli\command.py", line 76, in main
+    o.run(args)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\cli\server.py", line 182, in run
+    main(args)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\cli\server.py", line 175, in main
+    rc = odoo.service.server.start(preload=preload, stop=stop)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\service\server.py", line 1462, in start
+    rc = server.run(preload, stop)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\service\server.py", line 627, in run
+    rc = preload_registries(preload)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\service\server.py", line 1393, in preload_registries
+    result = loader.run_suite(post_install_suite, global_report=registry._assertion_report)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\tests\loader.py", line 118, in run_suite
+    suite(results)
+  File "C:\Users\abenezer.teshome\AppData\Local\Programs\Python\Python311\Lib\unittest\suite.py", line 84, in __call__
+    return self.run(*args, **kwds)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\tests\suite.py", line 47, in run
+    test(result)
+  File "C:\Users\abenezer.teshome\AppData\Local\Programs\Python\Python311\Lib\unittest\case.py", line 678, in __call__
+    return self.run(*args, **kwds)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\tests\common.py", line 358, in run
+    super().run(result)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\tests\case.py", line 213, in run
+    self._callSetUp()
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\tests\case.py", line 181, in _callSetUp
+    self.setUp()
+  File "g:\nexora\hagbes_fleet\custom_addons\hagbes_fleet\tests\test_dispatch_workflow.py", line 38, in setUp
+    self.driver = self.env['hr.employee'].create({
+  File "<decorator-gen-186>", line 2, in create
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\api.py", line 497, in _model_create_multi
+    return create(self, [arg])
+  File "g:\nexora\hagbes_fleet\odoo\addons\hr_skills\models\hr_employee.py", line 22, in create
+    res = super(Employee, self).create(vals_list)
+  File "<decorator-gen-182>", line 2, in create
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\api.py", line 498, in _model_create_multi
+    return create(self, arg)
+  File "g:\nexora\hagbes_fleet\odoo\addons\hr_recruitment\models\hr_employee.py", line 21, in create
+    employees = super().create(vals_list)
+  File "<decorator-gen-138>", line 2, in create
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\api.py", line 498, in _model_create_multi
+    return create(self, arg)
+  File "g:\nexora\hagbes_fleet\odoo\addons\hr\models\hr_employee.py", line 507, in create
+    employees = super().create(vals_list)
+  File "<decorator-gen-176>", line 2, in create
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\api.py", line 498, in _model_create_multi
+    return create(self, arg)
+  File "g:\nexora\hagbes_fleet\odoo\addons\hr_holidays\models\hr_employee_base.py", line 451, in create
+    return super().create(vals_list)
+  File "<decorator-gen-51>", line 2, in create
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\api.py", line 498, in _model_create_multi
+    return create(self, arg)
+  File "g:\nexora\hagbes_fleet\odoo\addons\mail\models\mail_thread.py", line 294, in create
+    threads = super(MailThread, self).create(vals_list)
+  File "<decorator-gen-40>", line 2, in create
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\api.py", line 498, in _model_create_multi
+    return create(self, arg)
+  File "g:\nexora\hagbes_fleet\odoo\addons\resource\models\resource_mixin.py", line 49, in create
+    return super(ResourceMixin, self.with_context(check_idempotence=True)).create(vals_list)
+  File "<decorator-gen-0>", line 2, in create
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\api.py", line 498, in _model_create_multi
+    return create(self, arg)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\models.py", line 5039, in create
+    records = self._create(data_list)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\models.py", line 5276, in _create
+    records.modified(self._fields, create=True)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\models.py", line 7214, in modified
+    for field, records, create in itertools.chain.from_iterable(todo):
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\models.py", line 7302, in _modified_triggers
+    records = self[invf.name]
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\models.py", line 7083, in __getitem__
+    return self._fields[key].__get__(self)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\fields.py", line 3113, in __get__
+    return super().__get__(records, owner)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\fields.py", line 1244, in __get__
+    self.recompute(record)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\fields.py", line 1471, in recompute
+    apply_except_missing(self.compute_value, recs)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\fields.py", line 1444, in apply_except_missing
+    func(records)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\fields.py", line 1493, in compute_value
+    records._compute_field_value(self)
+  File "g:\nexora\hagbes_fleet\odoo\addons\mail\models\mail_thread.py", line 443, in _compute_field_value
+    return super()._compute_field_value(field)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\models.py", line 5307, in _compute_field_value
+    self.filtered('id')._validate_fields(fnames)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\models.py", line 1633, in _validate_fields
+    for check in self._constraint_methods:
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\models.py", line 928, in _constraint_methods
+    cls._constraint_methods = methods
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\tests\common.py", line 986, in metamodel_setattr
+    _logger.runbot(
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\netsvc.py", line 360, in runbot
+    self.log(logging.RUNBOT, message, *args, **kws)
+2026-06-25 13:12:38,156 37836 INFO hag_db odoo.tests.common: G:\NEXORA\Hagbes_Fleet\odoo\odoo\models.py:928:_constraint_methods setting res.partner._constraint_methods to [<function Partner._check_barcode_unicity at 0x000001B150E90540>, <function Partner._check_parent_id at 0x000001B150E47CE0>, <function Partner._check_partner_company at 0x000001B150E47D80>, <function ResPartner._check_peppol_fields at 0x000001B154974CC0>, <function ResPartner._ensure_same_company_than_projects at 0x000001B1543F20C0>, <function ResPartner._ensure_same_company_than_tasks at 0x000001B1543F2160>] 
+Stack (most recent call last):
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo-bin", line 8, in <module>
+    odoo.cli.main()
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\cli\command.py", line 76, in main
+    o.run(args)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\cli\server.py", line 182, in run
+    main(args)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\cli\server.py", line 175, in main
+    rc = odoo.service.server.start(preload=preload, stop=stop)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\service\server.py", line 1462, in start
+    rc = server.run(preload, stop)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\service\server.py", line 627, in run
+    rc = preload_registries(preload)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\service\server.py", line 1393, in preload_registries
+    result = loader.run_suite(post_install_suite, global_report=registry._assertion_report)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\tests\loader.py", line 118, in run_suite
+    suite(results)
+  File "C:\Users\abenezer.teshome\AppData\Local\Programs\Python\Python311\Lib\unittest\suite.py", line 84, in __call__
+    return self.run(*args, **kwds)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\tests\suite.py", line 47, in run
+    test(result)
+  File "C:\Users\abenezer.teshome\AppData\Local\Programs\Python\Python311\Lib\unittest\case.py", line 678, in __call__
+    return self.run(*args, **kwds)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\tests\common.py", line 358, in run
+    super().run(result)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\tests\case.py", line 213, in run
+    self._callSetUp()
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\tests\case.py", line 181, in _callSetUp
+    self.setUp()
+  File "g:\nexora\hagbes_fleet\custom_addons\hagbes_fleet\tests\test_dispatch_workflow.py", line 38, in setUp
+    self.driver = self.env['hr.employee'].create({
+  File "<decorator-gen-186>", line 2, in create
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\api.py", line 497, in _model_create_multi
+    return create(self, [arg])
+  File "g:\nexora\hagbes_fleet\odoo\addons\hr_skills\models\hr_employee.py", line 22, in create
+    res = super(Employee, self).create(vals_list)
+  File "<decorator-gen-182>", line 2, in create
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\api.py", line 498, in _model_create_multi
+    return create(self, arg)
+  File "g:\nexora\hagbes_fleet\odoo\addons\hr_recruitment\models\hr_employee.py", line 21, in create
+    employees = super().create(vals_list)
+  File "<decorator-gen-138>", line 2, in create
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\api.py", line 498, in _model_create_multi
+    return create(self, arg)
+  File "g:\nexora\hagbes_fleet\odoo\addons\hr\models\hr_employee.py", line 509, in create
+    employees.filtered(lambda e: not e.work_contact_id).sudo()._create_work_contacts()
+  File "g:\nexora\hagbes_fleet\odoo\addons\hr\models\hr_employee_base.py", line 224, in _create_work_contacts
+    work_contacts = self.env['res.partner'].create([{
+  File "<decorator-gen-115>", line 2, in create
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\api.py", line 498, in _model_create_multi
+    return create(self, arg)
+  File "g:\nexora\hagbes_fleet\odoo\addons\account\models\partner.py", line 836, in create
+    return super().create(vals_list)
+  File "<decorator-gen-23>", line 2, in create
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\api.py", line 498, in _model_create_multi
+    return create(self, arg)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\addons\base\models\res_partner.py", line 807, in create
+    partners = super().create(vals_list)
+  File "<decorator-gen-51>", line 2, in create
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\api.py", line 498, in _model_create_multi
+    return create(self, arg)
+  File "g:\nexora\hagbes_fleet\odoo\addons\mail\models\mail_thread.py", line 294, in create
+    threads = super(MailThread, self).create(vals_list)
+  File "<decorator-gen-166>", line 2, in create
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\api.py", line 498, in _model_create_multi
+    return create(self, arg)
+  File "g:\nexora\hagbes_fleet\odoo\addons\website\models\mixins.py", line 207, in create
+    records = super(WebsitePublishedMixin, self).create(vals_list)
+  File "<decorator-gen-0>", line 2, in create
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\api.py", line 498, in _model_create_multi
+    return create(self, arg)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\models.py", line 5039, in create
+    records = self._create(data_list)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\models.py", line 5297, in _create
+    records._validate_fields(name for data in data_list for name in data['stored'])
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\models.py", line 1633, in _validate_fields
+    for check in self._constraint_methods:
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\models.py", line 928, in _constraint_methods
+    cls._constraint_methods = methods
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\tests\common.py", line 986, in metamodel_setattr
+    _logger.runbot(
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\netsvc.py", line 360, in runbot
+    self.log(logging.RUNBOT, message, *args, **kws)
+2026-06-25 13:12:38,172 37836 INFO hag_db odoo.tests.common: G:\NEXORA\Hagbes_Fleet\odoo\odoo\models.py:928:_constraint_methods setting mail.followers._constraint_methods to [] 
+Stack (most recent call last):
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo-bin", line 8, in <module>
+    odoo.cli.main()
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\cli\command.py", line 76, in main
+    o.run(args)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\cli\server.py", line 182, in run
+    main(args)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\cli\server.py", line 175, in main
+    rc = odoo.service.server.start(preload=preload, stop=stop)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\service\server.py", line 1462, in start
+    rc = server.run(preload, stop)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\service\server.py", line 627, in run
+    rc = preload_registries(preload)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\service\server.py", line 1393, in preload_registries
+    result = loader.run_suite(post_install_suite, global_report=registry._assertion_report)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\tests\loader.py", line 118, in run_suite
+    suite(results)
+  File "C:\Users\abenezer.teshome\AppData\Local\Programs\Python\Python311\Lib\unittest\suite.py", line 84, in __call__
+    return self.run(*args, **kwds)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\tests\suite.py", line 47, in run
+    test(result)
+  File "C:\Users\abenezer.teshome\AppData\Local\Programs\Python\Python311\Lib\unittest\case.py", line 678, in __call__
+    return self.run(*args, **kwds)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\tests\common.py", line 358, in run
+    super().run(result)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\tests\case.py", line 213, in run
+    self._callSetUp()
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\tests\case.py", line 181, in _callSetUp
+    self.setUp()
+  File "g:\nexora\hagbes_fleet\custom_addons\hagbes_fleet\tests\test_dispatch_workflow.py", line 38, in setUp
+    self.driver = self.env['hr.employee'].create({
+  File "<decorator-gen-186>", line 2, in create
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\api.py", line 497, in _model_create_multi
+    return create(self, [arg])
+  File "g:\nexora\hagbes_fleet\odoo\addons\hr_skills\models\hr_employee.py", line 22, in create
+    res = super(Employee, self).create(vals_list)
+  File "<decorator-gen-182>", line 2, in create
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\api.py", line 498, in _model_create_multi
+    return create(self, arg)
+  File "g:\nexora\hagbes_fleet\odoo\addons\hr_recruitment\models\hr_employee.py", line 21, in create
+    employees = super().create(vals_list)
+  File "<decorator-gen-138>", line 2, in create
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\api.py", line 498, in _model_create_multi
+    return create(self, arg)
+  File "g:\nexora\hagbes_fleet\odoo\addons\hr\models\hr_employee.py", line 509, in create
+    employees.filtered(lambda e: not e.work_contact_id).sudo()._create_work_contacts()
+  File "g:\nexora\hagbes_fleet\odoo\addons\hr\models\hr_employee_base.py", line 232, in _create_work_contacts
+    employee.work_contact_id = work_contact
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\fields.py", line 1426, in __set__
+    records.write({self.name: write_value})
+  File "g:\nexora\hagbes_fleet\odoo\addons\hr_skills\models\hr_employee.py", line 39, in write
+    res = super().write(vals)
+  File "g:\nexora\hagbes_fleet\odoo\addons\hr_fleet\models\employee.py", line 61, in write
+    res = super().write(vals)
+  File "g:\nexora\hagbes_fleet\odoo\addons\hr_contract\models\hr_employee.py", line 289, in write
+    res = super().write(vals)
+  File "g:\nexora\hagbes_fleet\odoo\addons\hr\models\hr_employee.py", line 546, in write
+    self._message_subscribe([vals['work_contact_id']])
+  File "g:\nexora\hagbes_fleet\odoo\addons\mail\models\mail_thread.py", line 4382, in _message_subscribe
+    self.env['mail.followers']._insert_followers(
+  File "g:\nexora\hagbes_fleet\odoo\addons\mail\models\mail_followers.py", line 423, in _insert_followers
+    sudo_self.create([
+  File "<decorator-gen-57>", line 2, in create
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\api.py", line 498, in _model_create_multi
+    return create(self, arg)
+  File "g:\nexora\hagbes_fleet\odoo\addons\mail\models\mail_followers.py", line 53, in create
+    res = super(Followers, self).create(vals_list)
+  File "<decorator-gen-0>", line 2, in create
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\api.py", line 498, in _model_create_multi
+    return create(self, arg)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\models.py", line 5039, in create
+    records = self._create(data_list)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\models.py", line 5297, in _create
+    records._validate_fields(name for data in data_list for name in data['stored'])
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\models.py", line 1633, in _validate_fields
+    for check in self._constraint_methods:
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\models.py", line 928, in _constraint_methods
+    cls._constraint_methods = methods
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\tests\common.py", line 986, in metamodel_setattr
+    _logger.runbot(
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\netsvc.py", line 360, in runbot
+    self.log(logging.RUNBOT, message, *args, **kws)
+2026-06-25 13:12:38,193 37836 INFO hag_db odoo.tests.common: G:\NEXORA\Hagbes_Fleet\odoo\odoo\models.py:928:_constraint_methods setting ir.attachment._constraint_methods to [<function IrAttachment._check_serving_attachments at 0x000001B150767BA0>] 
+Stack (most recent call last):
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo-bin", line 8, in <module>
+    odoo.cli.main()
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\cli\command.py", line 76, in main
+    o.run(args)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\cli\server.py", line 182, in run
+    main(args)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\cli\server.py", line 175, in main
+    rc = odoo.service.server.start(preload=preload, stop=stop)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\service\server.py", line 1462, in start
+    rc = server.run(preload, stop)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\service\server.py", line 627, in run
+    rc = preload_registries(preload)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\service\server.py", line 1393, in preload_registries
+    result = loader.run_suite(post_install_suite, global_report=registry._assertion_report)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\tests\loader.py", line 118, in run_suite
+    suite(results)
+  File "C:\Users\abenezer.teshome\AppData\Local\Programs\Python\Python311\Lib\unittest\suite.py", line 84, in __call__
+    return self.run(*args, **kwds)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\tests\suite.py", line 47, in run
+    test(result)
+  File "C:\Users\abenezer.teshome\AppData\Local\Programs\Python\Python311\Lib\unittest\case.py", line 678, in __call__
+    return self.run(*args, **kwds)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\tests\common.py", line 358, in run
+    super().run(result)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\tests\case.py", line 213, in run
+    self._callSetUp()
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\tests\case.py", line 181, in _callSetUp
+    self.setUp()
+  File "g:\nexora\hagbes_fleet\custom_addons\hagbes_fleet\tests\test_dispatch_workflow.py", line 38, in setUp
+    self.driver = self.env['hr.employee'].create({
+  File "<decorator-gen-186>", line 2, in create
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\api.py", line 497, in _model_create_multi
+    return create(self, [arg])
+  File "g:\nexora\hagbes_fleet\odoo\addons\hr_skills\models\hr_employee.py", line 22, in create
+    res = super(Employee, self).create(vals_list)
+  File "<decorator-gen-182>", line 2, in create
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\api.py", line 498, in _model_create_multi
+    return create(self, arg)
+  File "g:\nexora\hagbes_fleet\odoo\addons\hr_recruitment\models\hr_employee.py", line 21, in create
+    employees = super().create(vals_list)
+  File "<decorator-gen-138>", line 2, in create
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\api.py", line 498, in _model_create_multi
+    return create(self, arg)
+  File "g:\nexora\hagbes_fleet\odoo\addons\hr\models\hr_employee.py", line 513, in create
+    employee_sudo.image_1920 = employee_sudo._avatar_generate_svg()
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\fields.py", line 1426, in __set__
+    records.write({self.name: write_value})
+  File "g:\nexora\hagbes_fleet\odoo\addons\hr_skills\models\hr_employee.py", line 39, in write
+    res = super().write(vals)
+  File "g:\nexora\hagbes_fleet\odoo\addons\hr_fleet\models\employee.py", line 61, in write
+    res = super().write(vals)
+  File "g:\nexora\hagbes_fleet\odoo\addons\hr_contract\models\hr_employee.py", line 289, in write
+    res = super().write(vals)
+  File "g:\nexora\hagbes_fleet\odoo\addons\hr\models\hr_employee.py", line 554, in write
+    res = super(HrEmployeePrivate, self).write(vals)
+  File "g:\nexora\hagbes_fleet\odoo\addons\hr_holidays_contract\models\hr_employee_base.py", line 13, in write
+    return super(HrEmployeeBase, self.with_context(no_leave_resource_calendar_update=True)).write(vals)
+  File "g:\nexora\hagbes_fleet\odoo\addons\hr_holidays\models\hr_employee_base.py", line 470, in write
+    res = super().write(values)
+  File "g:\nexora\hagbes_fleet\odoo\addons\mail\models\mail_thread.py", line 357, in write
+    result = super(MailThread, self).write(values)
+  File "g:\nexora\hagbes_fleet\odoo\addons\mail\models\mail_activity_mixin.py", line 243, in write
+    return super(MailActivityMixin, self).write(vals)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\models.py", line 4813, in write
+    field.write(self, value)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\fields.py", line 2762, in write
+    super(Image, self).write(records, new_value)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\fields.py", line 2697, in write
+    atts.create([{
+  File "<decorator-gen-165>", line 2, in create
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\api.py", line 498, in _model_create_multi
+    return create(self, arg)
+  File "g:\nexora\hagbes_fleet\odoo\addons\website\models\ir_attachment.py", line 22, in create
+    return super().create(vals_list)
+  File "<decorator-gen-89>", line 2, in create
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\api.py", line 498, in _model_create_multi
+    return create(self, arg)
+  File "g:\nexora\hagbes_fleet\odoo\addons\product\models\ir_attachment.py", line 12, in create
+    attachments = super().create(vals_list)
+  File "<decorator-gen-15>", line 2, in create
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\api.py", line 498, in _model_create_multi
+    return create(self, arg)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\addons\base\models\ir_attachment.py", line 669, in create
+    return super().create(vals_list)
+  File "<decorator-gen-0>", line 2, in create
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\api.py", line 498, in _model_create_multi
+    return create(self, arg)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\models.py", line 5039, in create
+    records = self._create(data_list)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\models.py", line 5297, in _create
+    records._validate_fields(name for data in data_list for name in data['stored'])
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\models.py", line 1633, in _validate_fields
+    for check in self._constraint_methods:
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\models.py", line 928, in _constraint_methods
+    cls._constraint_methods = methods
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\tests\common.py", line 986, in metamodel_setattr
+    _logger.runbot(
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\netsvc.py", line 360, in runbot
+    self.log(logging.RUNBOT, message, *args, **kws)
+2026-06-25 13:12:38,210 37836 INFO hag_db odoo.tests.common: G:\NEXORA\Hagbes_Fleet\odoo\odoo\models.py:928:_constraint_methods setting hr.resume.line._constraint_methods to [] 
+Stack (most recent call last):
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo-bin", line 8, in <module>
+    odoo.cli.main()
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\cli\command.py", line 76, in main
+    o.run(args)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\cli\server.py", line 182, in run
+    main(args)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\cli\server.py", line 175, in main
+    rc = odoo.service.server.start(preload=preload, stop=stop)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\service\server.py", line 1462, in start
+    rc = server.run(preload, stop)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\service\server.py", line 627, in run
+    rc = preload_registries(preload)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\service\server.py", line 1393, in preload_registries
+    result = loader.run_suite(post_install_suite, global_report=registry._assertion_report)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\tests\loader.py", line 118, in run_suite
+    suite(results)
+  File "C:\Users\abenezer.teshome\AppData\Local\Programs\Python\Python311\Lib\unittest\suite.py", line 84, in __call__
+    return self.run(*args, **kwds)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\tests\suite.py", line 47, in run
+    test(result)
+  File "C:\Users\abenezer.teshome\AppData\Local\Programs\Python\Python311\Lib\unittest\case.py", line 678, in __call__
+    return self.run(*args, **kwds)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\tests\common.py", line 358, in run
+    super().run(result)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\tests\case.py", line 213, in run
+    self._callSetUp()
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\tests\case.py", line 181, in _callSetUp
+    self.setUp()
+  File "g:\nexora\hagbes_fleet\custom_addons\hagbes_fleet\tests\test_dispatch_workflow.py", line 38, in setUp
+    self.driver = self.env['hr.employee'].create({
+  File "<decorator-gen-186>", line 2, in create
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\api.py", line 497, in _model_create_multi
+    return create(self, [arg])
+  File "g:\nexora\hagbes_fleet\odoo\addons\hr_skills\models\hr_employee.py", line 35, in create
+    self.env['hr.resume.line'].create(resume_lines_values)
+  File "<decorator-gen-0>", line 2, in create
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\api.py", line 498, in _model_create_multi
+    return create(self, arg)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\models.py", line 5039, in create
+    records = self._create(data_list)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\models.py", line 5297, in _create
+    records._validate_fields(name for data in data_list for name in data['stored'])
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\models.py", line 1633, in _validate_fields
+    for check in self._constraint_methods:
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\models.py", line 928, in _constraint_methods
+    cls._constraint_methods = methods
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\tests\common.py", line 986, in metamodel_setattr
+    _logger.runbot(
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\netsvc.py", line 360, in runbot
+    self.log(logging.RUNBOT, message, *args, **kws)
+2026-06-25 13:12:38,221 37836 INFO hag_db odoo.tests.common: G:\NEXORA\Hagbes_Fleet\odoo\odoo\models.py:928:_constraint_methods setting hagbes.fleet.allocation._constraint_methods to [<function HagbesFleetAllocation._check_driver_validity at 0x000001B1566591C0>, <function HagbesFleetAllocation._check_return_date at 0x000001B156659120>, <function HagbesFleetAllocation._check_unique_active_allocation at 0x000001B156659300>] 
+Stack (most recent call last):
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo-bin", line 8, in <module>
+    odoo.cli.main()
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\cli\command.py", line 76, in main
+    o.run(args)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\cli\server.py", line 182, in run
+    main(args)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\cli\server.py", line 175, in main
+    rc = odoo.service.server.start(preload=preload, stop=stop)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\service\server.py", line 1462, in start
+    rc = server.run(preload, stop)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\service\server.py", line 627, in run
+    rc = preload_registries(preload)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\service\server.py", line 1393, in preload_registries
+    result = loader.run_suite(post_install_suite, global_report=registry._assertion_report)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\tests\loader.py", line 118, in run_suite
+    suite(results)
+  File "C:\Users\abenezer.teshome\AppData\Local\Programs\Python\Python311\Lib\unittest\suite.py", line 84, in __call__
+    return self.run(*args, **kwds)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\tests\suite.py", line 47, in run
+    test(result)
+  File "C:\Users\abenezer.teshome\AppData\Local\Programs\Python\Python311\Lib\unittest\case.py", line 678, in __call__
+    return self.run(*args, **kwds)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\tests\common.py", line 358, in run
+    super().run(result)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\tests\case.py", line 216, in run
+    self._callTestMethod(testMethod)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\tests\case.py", line 184, in _callTestMethod
+    method()
+  File "g:\nexora\hagbes_fleet\custom_addons\hagbes_fleet\tests\test_dispatch_workflow.py", line 50, in test_dispatch_workflow_from_requisition
+    allocation = self.env['hagbes.fleet.allocation'].create({
+  File "<decorator-gen-232>", line 2, in create
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\api.py", line 497, in _model_create_multi
+    return create(self, [arg])
+  File "g:\nexora\hagbes_fleet\custom_addons\hagbes_fleet\models\fleet_allocation.py", line 210, in create
+    records = super().create(vals_list)
+  File "<decorator-gen-51>", line 2, in create
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\api.py", line 498, in _model_create_multi
+    return create(self, arg)
+  File "g:\nexora\hagbes_fleet\odoo\addons\mail\models\mail_thread.py", line 294, in create
+    threads = super(MailThread, self).create(vals_list)
+  File "<decorator-gen-0>", line 2, in create
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\api.py", line 498, in _model_create_multi
+    return create(self, arg)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\models.py", line 5039, in create
+    records = self._create(data_list)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\models.py", line 5297, in _create
+    records._validate_fields(name for data in data_list for name in data['stored'])
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\models.py", line 1633, in _validate_fields
+    for check in self._constraint_methods:
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\models.py", line 928, in _constraint_methods
+    cls._constraint_methods = methods
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\tests\common.py", line 986, in metamodel_setattr
+    _logger.runbot(
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\netsvc.py", line 360, in runbot
+    self.log(logging.RUNBOT, message, *args, **kws)
+2026-06-25 13:12:38,251 37836 INFO hag_db odoo.tests.common: G:\NEXORA\Hagbes_Fleet\odoo\odoo\models.py:928:_constraint_methods setting fleet.trip._constraint_methods to [<function FleetTrip._check_odometer_values at 0x000001B156658900>] 
+Stack (most recent call last):
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo-bin", line 8, in <module>
+    odoo.cli.main()
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\cli\command.py", line 76, in main
+    o.run(args)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\cli\server.py", line 182, in run
+    main(args)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\cli\server.py", line 175, in main
+    rc = odoo.service.server.start(preload=preload, stop=stop)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\service\server.py", line 1462, in start
+    rc = server.run(preload, stop)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\service\server.py", line 627, in run
+    rc = preload_registries(preload)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\service\server.py", line 1393, in preload_registries
+    result = loader.run_suite(post_install_suite, global_report=registry._assertion_report)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\tests\loader.py", line 118, in run_suite
+    suite(results)
+  File "C:\Users\abenezer.teshome\AppData\Local\Programs\Python\Python311\Lib\unittest\suite.py", line 84, in __call__
+    return self.run(*args, **kwds)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\tests\suite.py", line 47, in run
+    test(result)
+  File "C:\Users\abenezer.teshome\AppData\Local\Programs\Python\Python311\Lib\unittest\case.py", line 678, in __call__
+    return self.run(*args, **kwds)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\tests\common.py", line 358, in run
+    super().run(result)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\tests\case.py", line 216, in run
+    self._callTestMethod(testMethod)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\tests\case.py", line 184, in _callTestMethod
+    method()
+  File "g:\nexora\hagbes_fleet\custom_addons\hagbes_fleet\tests\test_dispatch_workflow.py", line 64, in test_dispatch_workflow_from_requisition
+    action = allocation.action_assign_vehicle()
+  File "g:\nexora\hagbes_fleet\custom_addons\hagbes_fleet\models\fleet_allocation.py", line 374, in action_assign_vehicle
+    trip = self.env['fleet.trip'].create(trip_vals)
+  File "<decorator-gen-231>", line 2, in create
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\api.py", line 497, in _model_create_multi
+    return create(self, [arg])
+  File "g:\nexora\hagbes_fleet\custom_addons\hagbes_fleet\models\fleet_trip.py", line 348, in create
+    return super().create(vals_list)
+  File "<decorator-gen-51>", line 2, in create
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\api.py", line 498, in _model_create_multi
+    return create(self, arg)
+  File "g:\nexora\hagbes_fleet\odoo\addons\mail\models\mail_thread.py", line 294, in create
+    threads = super(MailThread, self).create(vals_list)
+  File "<decorator-gen-0>", line 2, in create
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\api.py", line 498, in _model_create_multi
+    return create(self, arg)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\models.py", line 5039, in create
+    records = self._create(data_list)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\models.py", line 5297, in _create
+    records._validate_fields(name for data in data_list for name in data['stored'])
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\models.py", line 1633, in _validate_fields
+    for check in self._constraint_methods:
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\models.py", line 928, in _constraint_methods
+    cls._constraint_methods = methods
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\tests\common.py", line 986, in metamodel_setattr
+    _logger.runbot(
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\netsvc.py", line 360, in runbot
+    self.log(logging.RUNBOT, message, *args, **kws)
+2026-06-25 13:12:38,256 37836 INFO hag_db odoo.addons.hagbes_fleet.tests.test_dispatch_workflow: ====================================================================== 
+2026-06-25 13:12:38,256 37836 ERROR hag_db odoo.addons.hagbes_fleet.tests.test_dispatch_workflow: FAIL: TestDispatchWorkflow.test_dispatch_workflow_from_requisition
+Traceback (most recent call last):
+  File "g:\nexora\hagbes_fleet\custom_addons\hagbes_fleet\tests\test_dispatch_workflow.py", line 83, in test_dispatch_workflow_from_requisition
+    self.assertEqual(trip.km_at_start, 12000.0)
+AssertionError: 0.0 != 12000.0
+ 
+2026-06-25 13:12:38,261 37836 INFO hag_db odoo.addons.hagbes_fleet.tests.test_dispatch_workflow: Starting TestDispatchWorkflow.test_onchange_allocation_auto_population ... 
+2026-06-25 13:12:38,327 37836 INFO hag_db odoo.addons.hagbes_fleet.tests.test_dispatch_workflow: ====================================================================== 
+2026-06-25 13:12:38,327 37836 ERROR hag_db odoo.addons.hagbes_fleet.tests.test_dispatch_workflow: FAIL: TestDispatchWorkflow.test_onchange_allocation_auto_population
+Traceback (most recent call last):
+  File "g:\nexora\hagbes_fleet\custom_addons\hagbes_fleet\tests\test_dispatch_workflow.py", line 111, in test_onchange_allocation_auto_population
+    self.assertEqual(trip.km_at_start, 15500.0)
+AssertionError: 0.0 != 15500.0
+ 
+2026-06-25 13:12:38,334 37836 INFO hag_db odoo.tests.common: C:\Users\abenezer.teshome\AppData\Local\Programs\Python\Python311\Lib\unittest\mock.py:1574:__exit__ setting Users._crypt_context to <function Users._crypt_context at 0x000001B150F263E0> 
+Stack (most recent call last):
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo-bin", line 8, in <module>
+    odoo.cli.main()
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\cli\command.py", line 76, in main
+    o.run(args)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\cli\server.py", line 182, in run
+    main(args)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\cli\server.py", line 175, in main
+    rc = odoo.service.server.start(preload=preload, stop=stop)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\service\server.py", line 1462, in start
+    rc = server.run(preload, stop)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\service\server.py", line 627, in run
+    rc = preload_registries(preload)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\service\server.py", line 1393, in preload_registries
+    result = loader.run_suite(post_install_suite, global_report=registry._assertion_report)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\tests\loader.py", line 118, in run_suite
+    suite(results)
+  File "C:\Users\abenezer.teshome\AppData\Local\Programs\Python\Python311\Lib\unittest\suite.py", line 84, in __call__
+    return self.run(*args, **kwds)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\tests\suite.py", line 49, in run
+    self._tearDownPreviousClass(None, result)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\tests\suite.py", line 190, in _tearDownPreviousClass
+    super()._tearDownPreviousClass(test, result)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\tests\suite.py", line 112, in _tearDownPreviousClass
+    previousClass.doClassCleanups()
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\tests\case.py", line 247, in doClassCleanups
+    function(*args, **kwargs)
+  File "C:\Users\abenezer.teshome\AppData\Local\Programs\Python\Python311\Lib\unittest\mock.py", line 1607, in stop
+    return self.__exit__(None, None, None)
+  File "C:\Users\abenezer.teshome\AppData\Local\Programs\Python\Python311\Lib\unittest\mock.py", line 1574, in __exit__
+    setattr(self.target, self.attribute, self.temp_original)
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\tests\common.py", line 986, in metamodel_setattr
+    _logger.runbot(
+  File "G:\NEXORA\Hagbes_Fleet\odoo\odoo\netsvc.py", line 360, in runbot
+    self.log(logging.RUNBOT, message, *args, **kws)
+2026-06-25 13:12:38,343 37836 INFO hag_db odoo.addons.base.models.ir_attachment: filestore gc 1 checked, 1 removed 
+2026-06-25 13:12:38,352 37836 INFO hag_db odoo.service.server: 2 post-tests in 0.33s, 202 queries 
+2026-06-25 13:12:38,352 37836 INFO hag_db odoo.tests.stats: hagbes_fleet: 48 tests 44.31s 2893 queries 
+2026-06-25 13:12:38,352 37836 ERROR hag_db odoo.tests.result: 2 failed, 19 error(s) of 36 tests when loading database 'hag_db' 
+2026-06-25 13:12:38,352 37836 INFO hag_db odoo.service.server: Initiating shutdown 
+2026-06-25 13:12:38,352 37836 INFO hag_db odoo.service.server: Hit CTRL-C again or send a second signal to force the shutdown. 
+2026-06-25 13:12:38,373 37836 INFO hag_db odoo.sql_db: ConnectionPool(read/write;used=0/count=0/max=64): Closed 2 connections  
+2026-06-25 13:12:41,284 40952 INFO hag_db odoo.modules.registry: Reloading the model registry after database signaling. 
+2026-06-25 13:12:41,295 40952 INFO hag_db odoo.modules.loading: loading 1 modules... 
+2026-06-25 13:12:41,300 40952 INFO hag_db odoo.modules.loading: 1 modules loaded in 0.01s, 0 queries (+0 extra) 
+2026-06-25 13:12:41,309 40952 WARNING hag_db odoo.modules.graph: module customized_inventory: not installable, skipped 
+2026-06-25 13:12:41,309 40952 WARNING hag_db odoo.modules.graph: module employee_user_manual: not installable, skipped 
+2026-06-25 13:12:41,309 40952 WARNING hag_db odoo.modules.graph: module custom-price-update: not installable, skipped 
+2026-06-25 13:12:41,309 40952 WARNING hag_db odoo.modules.graph: module sales_custom_branch_pos: not installable, skipped 
+2026-06-25 13:12:41,309 40952 WARNING hag_db odoo.modules.graph: module custom_timeoff: not installable, skipped 
+2026-06-25 13:12:41,310 40952 WARNING hag_db odoo.modules.graph: module custom_procurement_module: not installable, skipped 
+2026-06-25 13:12:41,310 40952 WARNING hag_db odoo.modules.graph: module om_account_followup: not installable, skipped 
+2026-06-25 13:12:41,310 40952 WARNING hag_db odoo.modules.graph: module om_account_accountant: not installable, skipped 
+2026-06-25 13:12:41,310 40952 WARNING hag_db odoo.modules.graph: module accounting_pdf_reports: not installable, skipped 
+2026-06-25 13:12:41,310 40952 WARNING hag_db odoo.modules.graph: module om_account_asset: not installable, skipped 
+2026-06-25 13:12:41,310 40952 WARNING hag_db odoo.modules.graph: module om_fiscal_year: not installable, skipped 
+2026-06-25 13:12:41,310 40952 WARNING hag_db odoo.modules.graph: module custom_financial_reports: not installable, skipped 
+2026-06-25 13:12:41,310 40952 WARNING hag_db odoo.modules.graph: module custom_settings: not installable, skipped 
+2026-06-25 13:12:41,311 40952 WARNING hag_db odoo.modules.graph: module bank_reconciliation: not installable, skipped 
+2026-06-25 13:12:41,312 40952 WARNING hag_db odoo.modules.graph: module odoo_crud_logger: not installable, skipped 
+2026-06-25 13:12:41,312 40952 WARNING hag_db odoo.modules.graph: module custom_inventory_valuation: not installable, skipped 
+2026-06-25 13:12:41,313 40952 WARNING hag_db odoo.modules.graph: module om_recurring_payments: not installable, skipped 
+2026-06-25 13:12:41,313 40952 WARNING hag_db odoo.modules.graph: module om_account_budget: not installable, skipped 
+2026-06-25 13:12:41,313 40952 WARNING hag_db odoo.modules.graph: module approval_central: not installable, skipped 
+2026-06-25 13:12:41,314 40952 WARNING hag_db odoo.modules.graph: module custom_contacts: not installable, skipped 
+2026-06-25 13:12:41,315 40952 WARNING hag_db odoo.modules.graph: module custom_org_chart_extension: not installable, skipped 
+2026-06-25 13:12:41,315 40952 WARNING hag_db odoo.modules.graph: module on_duty: not installable, skipped 
+2026-06-25 13:12:41,315 40952 WARNING hag_db odoo.modules.graph: module crm_team_restriction: not installable, skipped 
+2026-06-25 13:12:41,315 40952 WARNING hag_db odoo.modules.graph: module workshop_management: not installable, skipped 
+2026-06-25 13:12:41,315 40952 WARNING hag_db odoo.modules.graph: module custom_invoices: not installable, skipped 
+2026-06-25 13:12:41,315 40952 WARNING hag_db odoo.modules.graph: module om_account_daily_reports: not installable, skipped 
+2026-06-25 13:12:41,316 40952 WARNING hag_db odoo.modules.graph: module my_custom_pos: not installable, skipped 
+2026-06-25 13:12:41,316 40952 WARNING hag_db odoo.modules.graph: module employee_registration: not installable, skipped 
+2026-06-25 13:12:41,316 40952 WARNING hag_db odoo.modules.graph: module custom_sale_proforma: not installable, skipped 
+2026-06-25 13:12:41,320 40952 INFO hag_db odoo.modules.loading: loading 170 modules... 
+2026-06-25 13:12:41,393 40952 INFO hag_db odoo.modules.loading: 170 modules loaded in 0.07s, 0 queries (+0 extra) 
+2026-06-25 13:12:41,506 40952 WARNING hag_db odoo.fields: mailing.mailing.state: selection=[('draft', 'Draft'), ('in_queue', 'Queue'), ('done', 'Sent'), ('failed', 'Failed')] overrides existing selection; use selection_add instead 
+2026-06-25 13:12:41,633 40952 ERROR hag_db odoo.modules.loading: Some modules are not loaded, some dependencies or manifest may be missing: ['accounting_pdf_reports', 'approval_central', 'bank_reconciliation', 'crm_team_restriction', 'custom-price-update', 'custom_contacts', 'custom_financial_reports', 'custom_inventory_valuation', 'custom_invoices', 'custom_org_chart_extension', 'custom_procurement_module', 'custom_sale_proforma', 'custom_settings', 'custom_timeoff', 'customized_inventory', 'employee_registration', 'employee_user_manual', 'my_custom_pos', 'odoo_crud_logger', 'om_account_accountant', 'om_account_asset', 'om_account_budget', 'om_account_daily_reports', 'om_account_followup', 'om_fiscal_year', 'om_recurring_payments', 'on_duty', 'sales_custom_branch_pos', 'workshop_management'] 
+2026-06-25 13:12:41,633 40952 INFO hag_db odoo.modules.loading: Modules loaded. 
+2026-06-25 13:12:41,639 40952 INFO hag_db odoo.modules.registry: Registry loaded in 0.355s 
+2026-06-25 13:12:41,675 40952 INFO hag_db odoo.addons.base.models.ir_cron: Job 'Event: Mail Scheduler' (28) starting 
+2026-06-25 13:12:41,681 40952 INFO hag_db odoo.addons.base.models.ir_cron: Job 'Event: Mail Scheduler' (28) done in 0.006s 
+2026-06-25 13:12:41,682 40952 INFO hag_db odoo.addons.base.models.ir_cron: Job 'Event: Mail Scheduler' (28) processed 0 records, 0 records remaining 
+2026-06-25 13:12:41,691 40952 INFO hag_db odoo.addons.base.models.ir_cron: Job 'Event: Mail Scheduler' (28) completed 
+2026-06-25 13:13:41,728 40952 INFO hag_db odoo.addons.base.models.ir_cron: Job 'Base: Auto-vacuum internal data' (1) starting 
+2026-06-25 13:13:41,764 40952 INFO hag_db odoo.addons.base.models.ir_attachment: filestore gc 0 checked, 0 removed 
+2026-06-25 13:13:41,772 40952 INFO hag_db odoo.models.unlink: User #1 deleted ir.cron.progress records with IDs: [192955, 192956, 192957, 192958, 192959, 192960, 192961, 192962] 
+2026-06-25 13:13:41,817 40952 INFO hag_db odoo.addons.base.models.res_users: GC'd 0 user log entries 
+2026-06-25 13:13:41,826 40952 INFO hag_db odoo.addons.base.models.res_users: GC 'res.users.apikeys' delete 0 entries 
+2026-06-25 13:13:41,838 40952 INFO hag_db odoo.addons.base.models.res_device: GC device logs delete 1 entries 
+2026-06-25 13:13:41,845 40952 INFO hag_db odoo.addons.base.models.res_device: GC device logs delete 0 entries 
+2026-06-25 13:13:41,861 40952 INFO hag_db odoo.addons.base.models.res_users: GC 'auth_totp.device' delete 0 entries 
+2026-06-25 13:13:41,974 40952 INFO hag_db odoo.addons.sms.models.sms_sms: GC'd 0 sms marked for deletion 
+2026-06-25 13:13:42,233 40952 INFO hag_db odoo.addons.base.models.ir_cron: Job 'Base: Auto-vacuum internal data' (1) done in 0.505s 
+2026-06-25 13:13:42,235 40952 INFO hag_db odoo.addons.base.models.ir_cron: Job 'Base: Auto-vacuum internal data' (1) processed 0 records, 0 records remaining 
+2026-06-25 13:13:42,238 40952 INFO hag_db odoo.addons.base.models.ir_cron: Job 'Base: Auto-vacuum internal data' (1) completed 

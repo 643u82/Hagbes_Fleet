@@ -5,7 +5,7 @@ from odoo.exceptions import UserError, ValidationError
 
 from .approval_integration_mixin import ApprovalIntegrationMixin
 
-class HagbesFleetVehicleAssign(models.Model, ApprovalIntegrationMixin):
+class HagbesFleetVehicleAssign(models.Model):
     _name = 'hagbes.fleet.vehicle.assign'
     _description = 'Fleet Vehicle Assignment'
     _inherit = ['mail.thread', 'mail.activity.mixin', 'approval.integration.mixin']

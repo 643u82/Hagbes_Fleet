@@ -57,8 +57,11 @@
     'assets': {
         'web.assets_backend': [
             'hagbes_fleet/static/src/css/fleet_layout_fix.css',
-            'hagbes_fleet/static/src/dashboard/dashboard_fixed.js',
-            'hagbes_fleet/static/src/dashboard/dashboard.xml',
+            'hagbes_fleet/static/src/dashboard/dashboard.js',
+        ],
+        # OWL templates must be loaded from an assets bundle.
+        'web.assets_qweb': [
+            'hagbes_fleet/static/src/xml/dashboard.xml',
         ],
     },
 }

@@ -27,18 +27,19 @@ class TestFleetAllocationAppend(TransactionCase):
             'engine_number': 'ENG-001',
             'chassis_number': 'CHS-001',
             'fuel_type': 'petrol',
-            'acquisition_date': '2024-01-01',
+            'acquisition_date': '2027-01-01',
             'company_id': self.company.id,
         })
         
         # Create a test requisition
         self.requisition = self.env['fleet.requisition'].create({
             'name': 'TEST-REQ-001',
-            'date_of_request': '2024-01-01',
+            'date_of_request': '2027-01-01',
             'department_id': self.env.ref('hr.dep_administration').id,
-            'date_from': '2024-01-02 08:00:00',
-            'date_to': '2024-01-02 18:00:00',
+            'date_from': '2027-01-02 08:00:00',
+            'date_to': '2027-01-02 18:00:00',
             'purpose': 'Test purpose',
+            'destination': 'Test Destination',
             'company_id': self.company.id,
         })
         
@@ -47,7 +48,7 @@ class TestFleetAllocationAppend(TransactionCase):
             'request_id': self.requisition.id,
             'vehicle_id': self.vehicle.id,
             'driver_id': self.driver.id,
-            'allocation_date': '2024-01-02 08:00:00',
+            'allocation_date': '2027-01-02 08:00:00',
             'planned_distance': 100.0,
             'fuel_estimate': 15.0,
             'company_id': self.company.id,

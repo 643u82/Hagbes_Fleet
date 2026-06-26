@@ -12,7 +12,9 @@ class TestFleetDiscrepancy(TransactionCase):
         # Create test requisition
         self.requisition = self.env['fleet.requisition'].create({
             'name': 'TEST-REQ-001',
-            'date_of_request': '2024-01-15',
+            'date_of_request': '2027-01-15',
+            'date_from': '2027-01-16 08:00:00',
+            'date_to': '2027-01-16 18:00:00',
             'destination': 'Test Destination',
             'purpose': 'Test Purpose',
             'state': 'draft'
@@ -27,7 +29,7 @@ class TestFleetDiscrepancy(TransactionCase):
             'engine_number': 'ENG-001',
             'chassis_number': 'CHS-001',
             'fuel_type': 'petrol',
-            'acquisition_date': '2024-01-01'
+            'acquisition_date': '2027-01-01'
         })
         
         self.driver = self.env['hr.employee'].create({
@@ -38,7 +40,7 @@ class TestFleetDiscrepancy(TransactionCase):
             'request_id': self.requisition.id,
             'vehicle_id': self.vehicle.id,
             'driver_id': self.driver.id,
-            'allocation_date': '2024-01-15 08:00:00',
+            'allocation_date': '2027-01-15 08:00:00',
             'planned_distance': 100.0,
             'fuel_estimate': 20.0
         })

@@ -28,6 +28,14 @@
             <field name="comment">Can review and approve department-level requests.</field>
         </record>
 
+        <!-- Team Leader - Approval authority only -->
+        <record id="group_team_leader" model="res.groups">
+            <field name="name">Team Leader</field>
+            <field name="category_id" ref="module_category_fleet_management"/>
+            <field name="implied_ids" eval="[(4, ref('group_fleet_requester'))]"/>
+            <field name="comment">Can review and approve team-level requests.</field>
+        </record>
+
         <!-- Fleet Operator (FMO) - Operational execution -->
         <record id="group_fmo" model="res.groups">
             <field name="name">Fleet Operator</field>

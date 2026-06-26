@@ -52,18 +52,23 @@ class ApprovalRequest(models.Model):
         if self.status != 'approved':
             return
 
+        # approval.request stores the actor in env.user (not self.user_id)
+        actor = self.env.user
+
         if dept_step and step == dept_step:
-            safe_write_state('dept_approved', {
-                'dept_approved_by': self.user_id.id,
-                'dept_approved_date': fields.Datetime.now(),
+            safe_write_state('submitted', {
+                'approved_by': actor.id,
+                'approved_date': fields.Datetime.now(),
+                'is_dept_manager_approved': True,
             })
         elif fmo_step and step == fmo_step:
             safe_write_state('assigned', {
-                'assigned_by': self.user_id.id,
+                'assigned_by': actor.id,
                 'assigned_date': fields.Datetime.now(),
             })
         elif final_step and step == final_step:
-            safe_write_state('dispatched', {
-                'fmo_approved_by': self.user_id.id,
-                'fmo_approved_date': fields.Datetime.now(),
+            safe_write_state('approved', {
+                'approved_by': actor.id,
+                'approved_date': fields.Datetime.now(),
             })
+

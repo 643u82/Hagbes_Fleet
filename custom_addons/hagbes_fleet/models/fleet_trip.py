@@ -158,6 +158,52 @@ class FleetTrip(models.Model):
     )
     discrepancy_reason = fields.Text(string='Discrepancy Reason', copy=False)
 
+    # ─── Fuel consumption tracking ───────────────────────────────────────
+    fuel_used_l = fields.Float(
+        string='Fuel Used (L)',
+        digits=(10, 2),
+        default=0.0,
+    )
+    distance_travelled_km = fields.Float(
+        string='Distance Travelled (KM)',
+        digits=(10, 2),
+        compute='_compute_fuel_metrics',
+        store=True,
+        readonly=True,
+    )
+    fuel_efficiency_km_per_l = fields.Float(
+        string='Fuel Efficiency (KM/L)',
+        digits=(10, 4),
+        compute='_compute_fuel_metrics',
+        store=True,
+        readonly=True,
+    )
+
+    @api.depends('km_at_start_actual', 'km_at_end_actual', 'fuel_used_l')
+    def _compute_fuel_metrics(self):
+        for trip in self:
+            start = trip.km_at_start_actual or 0.0
+            end = trip.km_at_end_actual or 0.0
+            distance = end - start if (end and start) or (end != 0.0 and start != 0.0) else (end - start)
+            if distance < 0:
+                distance = 0.0
+
+            trip.distance_travelled_km = distance
+
+            fuel = trip.fuel_used_l or 0.0
+            if fuel > 0:
+                trip.fuel_efficiency_km_per_l = trip.distance_travelled_km / fuel
+            else:
+                trip.fuel_efficiency_km_per_l = 0.0
+
+    @api.constrains('fuel_used_l')
+    def _check_fuel_used_l_non_negative(self):
+        for trip in self:
+            if trip.fuel_used_l < 0:
+                raise ValidationError(_('Fuel Used (L) cannot be negative.'))
+
+
+
     # ─── GPS summary (optional manual / integration fields) ───────────────────
     gps_distance = fields.Float(string='GPS Distance (KM)', digits=(10, 2))
     gps_km_at_end = fields.Float(string='GPS KM at End', digits=(10, 2))
@@ -165,13 +211,23 @@ class FleetTrip(models.Model):
     gps_fuel_consumed = fields.Float(string='GPS Fuel Consumed (L)', digits=(10, 2))
     unauthorized_stops = fields.Text(string='Unauthorized Stops')
     
-    # ─── Additional Places ───────────────────────────────────────────────────
+    # ─── Trip Route Stops (Trip Planning) ───────────────────────────────
+    stops_ids = fields.One2many(
+        'fleet.trip.stop',
+        'trip_id',
+        string='Route Stops',
+        copy=True,
+        help='Planning stops for this trip; editable during Trip Planning.',
+    )
+
+    # ─── Additional Places (Actual phase) ───────────────────────────────
     additional_place_ids = fields.One2many(
         'fleet.trip.additional.place',
         'trip_id',
         string='Additional Places',
         copy=True,
     )
+
 
     # ─── Report helpers ───────────────────────────────────────────────────────
     combined_purpose = fields.Text(
@@ -190,9 +246,13 @@ class FleetTrip(models.Model):
     state = fields.Selection(
         selection=[
             ('draft', 'Draft'),
-            ('started', 'Started'),
-            ('completed', 'Completed'),
+            ('planned', 'Planned'),
+            ('approved', 'Approved'),
+            ('dispatched', 'Dispatched'),
+            ('in_progress', 'In Progress'),
+            ('done', 'Done'),
             ('cancelled', 'Cancelled'),
+            ('trip_planning', 'Trip Planning'),
         ],
         string='Status',
         default='draft',
@@ -201,6 +261,8 @@ class FleetTrip(models.Model):
         copy=False,
         index=True,
     )
+
+
 
     # ─── Computes ─────────────────────────────────────────────────────────────
 
@@ -259,13 +321,16 @@ class FleetTrip(models.Model):
                 trip.odometer_gap = 0.0
             trip.odometer_gap_flag = abs(trip.odometer_gap) > 1.0
 
-    @api.depends('requisition_ids', 'requisition_ids.purpose', 'requisition_ids.destination', 'requisition_ids.traveller_names')
+    @api.depends('requisition_ids', 'requisition_ids.purpose', 'requisition_ids.destination', 'requisition_ids.traveller_ids')
     def _compute_combined_requisition_text(self):
         for trip in self:
             reqs = trip.requisition_ids
             trip.combined_purpose = '\n'.join(filter(None, reqs.mapped('purpose')))
             trip.combined_destination = '\n'.join(filter(None, reqs.mapped('destination')))
-            trip.combined_travellers = '\n'.join(filter(None, reqs.mapped('traveller_names')))
+            
+            # Map traveler names from Many2many traveller_ids recordsets of all linked requisitions
+            travellers = reqs.mapped('traveller_ids')
+            trip.combined_travellers = '\n'.join(filter(None, travellers.mapped('name')))
     
     @api.depends('km_at_start_actual', 'km_at_end_actual')
     def _compute_transport_km(self):
@@ -287,8 +352,8 @@ class FleetTrip(models.Model):
             self.company_id = self.allocation_id.company_id
             self.allocation_date = self.allocation_id.allocation_date
             self.planned_route_distance = self.allocation_id.planned_distance
-            # Default starting odometer from the vehicle's current odometer.
-            self.km_at_start = self.allocation_id.vehicle_id.odometer
+            # Default starting odometer from the allocation's assigned odometer.
+            self.km_at_start = self.allocation_id.assigned_odometer or self.allocation_id.vehicle_id.odometer
             # Actual start odometer must be entered at start time.
             self.km_at_start_actual = False
 
@@ -310,9 +375,13 @@ class FleetTrip(models.Model):
 
     @api.onchange('vehicle_id')
     def _onchange_vehicle_id(self):
-        """Fetch vehicle defaults (km per liter). Starting odometer must remain blank."""
+        """Fetch vehicle defaults and auto-populate starting odometer from vehicle current odometer."""
         if self.vehicle_id:
             self.km_per_liter = self.vehicle_id.kmperl or 10.0
+
+            # Auto-populate starting odometer from current vehicle odometer.
+            self.km_at_start = self.vehicle_id.odometer or 0.0
+
             # Get previous trip's end KM (for info only)
             last_trip = self.search([
                 ('vehicle_id', '=', self.vehicle_id.id),
@@ -366,6 +435,10 @@ class FleetTrip(models.Model):
         if not vehicle.exists():
             return
         vals.setdefault('km_per_liter', vehicle.kmperl or 10.0)
+
+        # Auto-populate starting odometer from current vehicle odometer unless explicitly provided.
+        vals.setdefault('km_at_start', vehicle.odometer or 0.0)
+
         if not vals.get('prev_trip_km_end'):
             last_trip = self.search([
                 ('vehicle_id', '=', vehicle.id),
@@ -381,24 +454,61 @@ class FleetTrip(models.Model):
 
     # ─── Workflow actions ─────────────────────────────────────────────────────
 
-    def action_start_trip(self):
+    def action_confirm_planning(self):
+        """Planning stage: move draft/planned -> planned.
+
+        Guardrails:
+        - must have at least one stop
+        - only planning fields should be filled by this point
+        """
         for trip in self:
-            if trip.state != 'draft':
-                raise UserError(_('Only draft trips can be started.'))
-            if not trip.km_at_start and not trip.km_at_start_actual:
-                raise UserError(_('A start odometer reading is required before starting the trip.'))
-
-            trip.write({'state': 'started'})
-
-            # Update linked allocation when the trip starts.
-            # Requirement: After Confirm Assignment -> Start Trip -> vehicle becomes In Trip.
-            if trip.allocation_id and trip.allocation_id.state in ['assigned', 'draft']:
-                trip.allocation_id.write({'state': 'in_progress'})
-
-
-
-            trip.message_post(body=_('Trip started.'))
+            if trip.state not in ('draft', 'planned'):
+                raise UserError(_('Only Draft/Planned trips can be confirmed as Planned.'))
+            if not trip.stops_ids:
+                raise UserError(_('Add at least one route stop before confirming planning.'))
+            trip.write({'state': 'planned'})
+            trip.message_post(body=_('Trip planned.'))
         return True
+
+    def action_approve_planning(self):
+        """Planning approval stage: planned -> approved."""
+        for trip in self:
+            if trip.state != 'planned':
+                raise UserError(_('Only Planned trips can be approved.'))
+            trip.write({'state': 'approved'})
+            trip.message_post(body=_('Trip approved.'))
+        return True
+
+    def action_dispatch(self):
+        """Dispatch stage: approved -> dispatched.
+
+        Dispatch unlocks dispatch inputs (km_at_start_actual / fuel_at_start) and locks planning inputs.
+        """
+        for trip in self:
+            if trip.state != 'approved':
+                raise UserError(_('Only Approved trips can be dispatched.'))
+            # Ensure dispatch baseline values exist
+            if not trip.km_at_start_actual and trip.km_at_start:
+                trip.km_at_start_actual = trip.km_at_start
+            if not trip.km_at_start_actual:
+                raise UserError(_('KM at Start (Actual) is required before dispatch.'))
+            trip.write({'state': 'dispatched'})
+            trip.message_post(body=_('Trip dispatched.'))
+        return True
+
+    def action_start_trip(self):
+        """Execution stage: dispatched -> in_progress."""
+        for trip in self:
+            if trip.state != 'dispatched':
+                raise UserError(_('Only Dispatched trips can be started.'))
+            trip.write({'state': 'in_progress'})
+            # Update linked allocation when the trip starts.
+            if trip.allocation_id and trip.allocation_id.state in ['assigned', 'draft', 'in_progress']:
+                trip.allocation_id.write({'state': 'in_progress'})
+            trip.message_post(body=_('Trip execution started.'))
+        return True
+
+
 
 
     def action_record_actual_data(self):
@@ -414,10 +524,11 @@ class FleetTrip(models.Model):
 
     def action_cancel_trip(self):
         for trip in self:
-            if trip.state not in ('draft', 'started'):
-                raise UserError(_('Only draft or started trips can be cancelled.'))
+            if trip.state in ('done', 'cancelled'):
+                raise UserError(_('Completed/Cancelled trips cannot be cancelled.'))
             trip.write({'state': 'cancelled'})
             trip.message_post(body=_('Trip cancelled.'))
+
             
             # Update linked allocation if it exists
             if trip.allocation_id and trip.allocation_id.state not in ('cancelled', 'completed', 'returned'):
@@ -471,25 +582,30 @@ class FleetTrip(models.Model):
 
     def action_complete_trip(self):
         for trip in self:
-            if trip.state != 'started':
-                raise UserError(_('Only started trips can be completed.'))
+            if trip.state != 'in_progress':
+                raise UserError(_('Only In-Progress trips can be completed.'))
+            if trip.km_at_end_actual == 0.0 and not trip.km_at_end_actual:
+                pass
             if not trip.km_at_end_actual:
                 raise ValidationError(_('KM at end (actual) is required to complete the trip.'))
-            # Check odometer values before completing
             if trip.km_at_end_actual < trip.km_at_start_actual:
                 raise ValidationError(
                     _('End odometer (%s) must be greater than or equal to start odometer (%s).')
                     % (trip.km_at_end_actual, trip.km_at_start_actual)
                 )
+            # Fuel must exist for completion analytics
+            if trip.fuel_used_l < 0:
+                raise ValidationError(_('Fuel Used (L) cannot be negative.'))
 
             discrepancy_status = 'none'
             if trip.odometer_gap_flag or abs(trip.distance_difference_pct) > 10.0:
                 discrepancy_status = 'flagged' if not trip.discrepancy_reason else 'resolved'
 
             trip.write({
-                'state': 'completed',
+                'state': 'done',
                 'discrepancy_status': discrepancy_status,
             })
+
             # Update vehicle's odometer to the trip's end odometer
             if trip.vehicle_id:
                 trip.vehicle_id.odometer = trip.km_at_end_actual
@@ -521,6 +637,68 @@ class FleetTrip(models.Model):
         }
 
 
+class FleetTripStop(models.Model):
+    _name = 'fleet.trip.stop'
+    _description = 'Fleet Trip Stop'
+    _order = 'sequence, id'
+
+    trip_id = fields.Many2one('fleet.trip', string='Trip', required=True, ondelete='cascade')
+    sequence = fields.Integer(string='Sequence', default=10)
+    location = fields.Char(string='Stop Location', required=True)
+    notes = fields.Text(string='Notes')
+
+
+
+
+    def action_mark_visited(self):
+        for stop in self:
+            if stop.trip_id.state != 'started':
+                raise UserError(_('You can mark stops as visited only when the trip is started.'))
+            stop.write({
+                'status': 'visited',
+                'visited_by': stop.env.user.id,
+                'visited_datetime': fields.Datetime.now(),
+            })
+
+    def action_mark_skipped(self, reason=None):
+        for stop in self:
+            if stop.trip_id.state != 'started':
+                raise UserError(_('You can mark stops as skipped only when the trip is started.'))
+            stop.write({
+                'status': 'skipped',
+                'skipped_reason': reason or stop.skipped_reason or False,
+            })
+
+
+    # Execution tracking (trip must be started)
+    status = fields.Selection(
+        [
+            ('planned', 'Planned'),
+            ('visited', 'Visited'),
+            ('skipped', 'Skipped'),
+        ],
+        string='Stop Status',
+        default='planned',
+        required=True,
+        tracking=True,
+    )
+    visited_by = fields.Many2one(
+        'res.users',
+        string='Visited By',
+        readonly=True,
+        copy=False,
+        tracking=True,
+    )
+    visited_datetime = fields.Datetime(
+        string='Visited Date Time',
+        readonly=True,
+        copy=False,
+        tracking=True,
+    )
+    skipped_reason = fields.Text(string='Skipped Reason')
+
+
+
 class FleetTripAdditionalPlace(models.Model):
     _name = 'fleet.trip.additional.place'
     _description = 'Fleet Trip Additional Place'
@@ -528,3 +706,5 @@ class FleetTripAdditionalPlace(models.Model):
     trip_id = fields.Many2one('fleet.trip', string='Trip', required=True, ondelete='cascade')
     place_name = fields.Char(string='Place Name', required=True)
     km_used = fields.Float(string='KM Used', digits=(10, 2), required=True)
+
+

@@ -31,7 +31,7 @@ class TestDispatchWorkflow(TransactionCase):
             'engine_number': 'ENG-HILUX-123',
             'chassis_number': 'CHS-HILUX-123',
             'fuel_type': 'diesel',
-            'acquisition_date': '2024-01-01',
+            'acquisition_date': '2027-01-01',
             'kmperl': 12.5,
         })
 
@@ -41,9 +41,9 @@ class TestDispatchWorkflow(TransactionCase):
         })
 
     def test_dispatch_workflow_from_requisition(self):
-        """Test that calling action_fmo_approve on requisition confirms allocation, creates a trip, and links all records."""
-        # 1. Transition requisition state to dept_approved, then assigned
-        self.requisition.write({'state': 'dept_approved'})
+        """Test that confirming allocation creates a trip and links all records."""
+        # 1. Transition requisition state to team_leader_approved, then assigned
+        self.requisition.write({'state': 'team_leader_approved'})
         self.requisition.write({'state': 'assigned'})
 
         # 2. Create allocation in draft
@@ -60,18 +60,18 @@ class TestDispatchWorkflow(TransactionCase):
         # Verify allocation linked back to requisition
         self.assertEqual(self.requisition.allocation_id, allocation)
 
-        # 3. Call action_fmo_approve (Dispatch button on requisition)
-        action = self.requisition.action_fmo_approve()
+        # 3. Call action_assign_vehicle (Confirm Assignment button on allocation)
+        action = allocation.action_assign_vehicle()
 
         # 4. Verify states and linkages
-        self.assertEqual(self.requisition.state, 'dispatched')
-        self.assertEqual(allocation.state, 'dispatched')
+        self.assertEqual(self.requisition.state, 'assigned')
+        self.assertEqual(allocation.state, 'assigned')
 
         # Verify trip was created and linked
         self.assertTrue(allocation.trip_id)
         self.assertEqual(self.requisition.trip_id, allocation.trip_id)
 
-        # Verify the returned action opens the trip form view
+        # Verify the returned action opens the start trip form view
         self.assertEqual(action.get('res_model'), 'fleet.trip')
         self.assertEqual(action.get('res_id'), allocation.trip_id.id)
         self.assertEqual(action.get('view_mode'), 'form')

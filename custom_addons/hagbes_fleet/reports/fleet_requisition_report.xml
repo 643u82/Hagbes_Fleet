@@ -70,16 +70,12 @@
                                             <td style="padding: 8px;"><span t-field="o.traveller_count"/></td>
                                         </tr>
                                         <tr>
-                                            <th style="padding: 8px; text-align: left; background-color: #f5f5f5;">Traveller</th>
+                                            <th style="padding: 8px; text-align: left; background-color: #f5f5f5;">Travellers</th>
                                             <td style="padding: 8px;">
-                                                <t t-if="o.traveller">
-                                                    <span t-field="o.traveller.name"/>
+                                                <t t-if="o.traveller_ids">
+                                                    <span t-esc="', '.join(o.traveller_ids.mapped('name'))"/>
                                                 </t>
-                                                <t t-if="o.traveller_names">
-                                                    <br/>
-                                                    <span t-field="o.traveller_names"/>
-                                                </t>
-                                                <t t-if="not o.traveller and not o.traveller_names">
+                                                <t t-else="">
                                                     <span style="color: #666;">Not specified</span>
                                                 </t>
                                             </td>

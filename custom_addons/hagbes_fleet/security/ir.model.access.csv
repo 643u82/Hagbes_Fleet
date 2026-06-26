@@ -24,7 +24,16 @@ access_fleet_trip_fmo,fleet.trip.fmo,model_fleet_trip,hagbes_fleet.group_fmo,1,1
 access_fleet_trip_manager,fleet.trip.manager,model_fleet_trip,hagbes_fleet.group_fleet_manager,1,1,1,1
 access_fleet_trip_admin,fleet.trip.admin,model_fleet_trip,hagbes_fleet.group_fleet_admin,1,1,1,1
 
+
+access_fleet_trip_stop_requester,fleet.trip.stop.requester,model_fleet_trip_stop,hagbes_fleet.group_fleet_requester,1,0,0,0
+
+access_fleet_trip_stop_dept_manager,fleet.trip.stop.dept.manager,model_fleet_trip_stop,hagbes_fleet.group_dept_manager,1,1,1,0
+access_fleet_trip_stop_fmo,fleet.trip.stop.fmo,model_fleet_trip_stop,hagbes_fleet.group_fmo,1,1,1,0
+access_fleet_trip_stop_manager,fleet.trip.stop.manager,model_fleet_trip_stop,hagbes_fleet.group_fleet_manager,1,1,1,0
+access_fleet_trip_stop_admin,fleet.trip.stop.admin,model_fleet_trip_stop,hagbes_fleet.group_fleet_admin,1,1,1,1
+
 access_fleet_requisition_internal_user,fleet.requisition.internal.user,model_fleet_requisition,base.group_user,1,0,0,0
+
 access_fleet_requisition_requester,fleet.requisition.requester,model_fleet_requisition,hagbes_fleet.group_fleet_requester,1,1,1,0
 access_fleet_requisition_dept_manager,fleet.requisition.dept.manager,model_fleet_requisition,hagbes_fleet.group_dept_manager,1,1,0,0
 access_fleet_requisition_fmo,fleet.requisition.fmo,model_fleet_requisition,hagbes_fleet.group_fmo,1,1,1,1

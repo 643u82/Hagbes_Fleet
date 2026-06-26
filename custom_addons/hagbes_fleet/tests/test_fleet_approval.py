@@ -23,7 +23,7 @@ class TestFleetApprovalIntegration(TransactionCase):
             'engine_number': 'EN123',
             'chassis_number': 'CH123',
             'fuel_type': 'petrol',
-            'acquisition_date': '2024-01-01',
+            'acquisition_date': '2027-01-01',
             'cost': 50000,
         })
         self.employee = self.env['hr.employee'].create({
@@ -98,7 +98,7 @@ class TestFleetApprovalIntegration(TransactionCase):
         assign = self.env['hagbes.fleet.vehicle.assign'].create({
             'vehicle_id': self.vehicle.id,
             'employee_id': self.employee.id,
-            'start_date': '2024-01-10',
+            'start_date': '2027-01-10',
         })
 
         assign.action_submit()
@@ -117,7 +117,7 @@ class TestFleetApprovalIntegration(TransactionCase):
         assign = self.env['hagbes.fleet.vehicle.assign'].create({
             'vehicle_id': self.vehicle.id,
             'employee_id': self.employee.id,
-            'start_date': '2024-01-10',
+            'start_date': '2027-01-10',
         })
 
         assign.action_submit()
@@ -129,7 +129,7 @@ class TestFleetApprovalIntegration(TransactionCase):
         assign = self.env['hagbes.fleet.vehicle.assign'].create({
             'vehicle_id': self.vehicle.id,
             'employee_id': self.employee.id,
-            'start_date': '2024-01-10',
+            'start_date': '2027-01-10',
         })
         assign.action_submit()
 
@@ -147,7 +147,7 @@ class TestFleetApprovalIntegration(TransactionCase):
         assign = self.env['hagbes.fleet.vehicle.assign'].create({
             'vehicle_id': self.vehicle.id,
             'employee_id': self.employee.id,
-            'start_date': '2024-01-10',
+            'start_date': '2027-01-10',
         })
         assign.action_submit()
 
@@ -165,7 +165,7 @@ class TestFleetApprovalIntegration(TransactionCase):
         maint = self.env['hagbes.fleet.maintenance'].create({
             'vehicle_id': self.vehicle.id,
             'service_type': 'corrective',
-            'service_date': '2024-02-01',
+            'service_date': '2027-02-01',
             'cost': 20000,
         })
 
@@ -183,7 +183,7 @@ class TestFleetApprovalIntegration(TransactionCase):
         maint = self.env['hagbes.fleet.maintenance'].create({
             'vehicle_id': self.vehicle.id,
             'service_type': 'corrective',
-            'service_date': '2024-02-01',
+            'service_date': '2027-02-01',
             'cost': 20000,
         })
 
@@ -217,7 +217,7 @@ class TestFleetApprovalIntegration(TransactionCase):
         assign = self.env['hagbes.fleet.vehicle.assign'].create({
             'vehicle_id': self.vehicle.id,
             'employee_id': self.employee.id,
-            'start_date': '2024-01-10',
+            'start_date': '2027-01-10',
         })
 
         with self.assertRaises(ValidationError):
@@ -227,7 +227,7 @@ class TestFleetApprovalIntegration(TransactionCase):
         maint = self.env['hagbes.fleet.maintenance'].create({
             'vehicle_id': self.vehicle.id,
             'service_type': 'preventive',
-            'service_date': '2024-03-01',
+            'service_date': '2027-03-01',
             'cost': 20000,
         })
         maint.action_submit()

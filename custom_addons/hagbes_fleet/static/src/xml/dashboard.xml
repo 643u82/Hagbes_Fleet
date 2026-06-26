@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="hagbes_fleet.Dashboard" owl="1">
+        <div class="o_dashboards_view o_action px-4 py-3 bg-100 overflow-auto">
+            <div class="mb-4 pb-3 border-bottom bg-white p-4 rounded shadow-sm">
+                <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                    <div>
+                        <h3 class="m-0 fw-bold" style="color: #017e84;">Fleet Overview</h3>
+                        <div class="text-muted mt-1 small d-flex align-items-center gap-2">
+                            <i class="fa fa-building"/>
+                            <span class="fw-semibold">Hagbes Plc</span>
+                            <span class="text-muted">-</span>
+                            <span>
+                                <span t-esc="new Date().toLocaleDateString()"/>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="d-flex flex-wrap gap-2 justify-content-end">
+                        <button type="button"
+                                t-on-click="() => this._onOpenReport('hagbes_fleet.action_fleet_utilization_report')"
+                                class="btn btn-outline-secondary btn-sm rounded-pill px-3">
+                            <span>Utilization</span>
+                        </button>
+                        <button type="button"
+                                t-on-click="() => this._onOpenReport('hagbes_fleet.action_fleet_availability_report')"
+                                class="btn btn-outline-secondary btn-sm rounded-pill px-3">
+                            <span>Availability</span>
+                        </button>
+                        <button type="button"
+                                t-on-click="() => this._onOpenReport('hagbes_fleet.action_fleet_maintenance_history_report')"
+                                class="btn btn-outline-secondary btn-sm rounded-pill px-3">
+                            <span>Maintenance</span>
+                        </button>
+                        <button type="button"
+                                t-on-click="() => this._onOpenReport('hagbes_fleet.action_fleet_maintenance_due_report')"
+                                class="btn btn-outline-secondary btn-sm rounded-pill px-3">
+                            <span>Due</span>
+                        </button>
+                        <button type="button"
+                                t-on-click="() => this._onOpenReport('hagbes_fleet.action_fleet_allocation_report')"
+                                class="btn btn-outline-secondary btn-sm rounded-pill px-3">
+                            <span>Allocation</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-4">
+                <div class="col-12">
+                    <div class="row g-4">
+                        <div class="col-lg-3 col-md-6 col-sm-12 d-flex">
+                            <div class="card shadow-sm border-0 h-100 w-100 border-start border-3 border-secondary">
+                                <div class="card-body text-center p-4 o_dashboard_kpi_hover">
+                                    <div class="text-muted small fw-bold text-uppercase">Total Vehicles</div>
+                                    <div class="font-monospace" style="font-size: 2.2rem; font-weight: 800; line-height: 1;" t-esc="metrics.total_vehicles">0</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-6 col-sm-12 d-flex">
+                            <div class="card shadow-sm border-0 h-100 w-100 border-start border-3 border-secondary">
+                                <div class="card-body text-center p-4 o_dashboard_kpi_hover">
+                                    <div class="text-muted small fw-bold text-uppercase">Total Trips</div>
+                                    <div class="font-monospace" style="font-size: 2.2rem; font-weight: 800; line-height: 1;" t-esc="metrics.total_trips">0</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-6 col-sm-12 d-flex">
+                            <div class="card shadow-sm border-0 h-100 w-100 border-start border-3 border-secondary">
+                                <div class="card-body text-center p-4 o_dashboard_kpi_hover">
+                                    <div class="text-muted small fw-bold text-uppercase">Total Fleet Distance</div>
+                                    <div class="font-monospace" style="font-size: 2.2rem; font-weight: 800; line-height: 1;" t-esc="metrics.total_fleet_distance">0</div>
+                                    <div class="text-muted small mt-1">KM</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-6 col-sm-12 d-flex">
+                            <div class="card shadow-sm border-0 h-100 w-100 border-start border-3 border-secondary">
+                                <div class="card-body text-center p-4 o_dashboard_kpi_hover">
+                                    <div class="text-muted small fw-bold text-uppercase">Allocation Count</div>
+                                    <div class="font-monospace" style="font-size: 2.2rem; font-weight: 800; line-height: 1;" t-esc="metrics.allocation_count">0</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <style>
+                .o_dashboards_view{min-height: 200px;}
+            </style>
+        </div>
+    </t>
+</templates>
+

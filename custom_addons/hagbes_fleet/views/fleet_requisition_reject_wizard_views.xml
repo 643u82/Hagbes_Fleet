@@ -78,6 +78,18 @@
         <field name="groups" eval="[(4, ref('hagbes_fleet.group_dept_manager'))]"/>
     </record>
 
+    <record id="rule_fleet_requisition_reject_wizard_team_leader" model="ir.rule">
+        <field name="name">Rejection Wizard - Team Leader Access</field>
+        <field name="model_id" ref="model_fleet_requisition_reject_wizard"/>
+        <field name="domain_force">[
+            ('create_uid', '=', user.id),
+            '|', 
+            ('requisition_id.state', '=', 'submitted'),
+            ('requisition_id.state', '=', 'dept_approved')
+        ]</field>
+        <field name="groups" eval="[(4, ref('hagbes_fleet.group_team_leader'))]"/>
+    </record>
+
     <record id="rule_fleet_requisition_reject_wizard_admin" model="ir.rule">
         <field name="name">Rejection Wizard - Admin Access</field>
         <field name="model_id" ref="model_fleet_requisition_reject_wizard"/>

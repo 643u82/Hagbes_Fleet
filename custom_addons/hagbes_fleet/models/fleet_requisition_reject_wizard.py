@@ -68,29 +68,34 @@ class FleetRequisitionRejectWizard(models.TransientModel):
         """Process the rejection with proper security validation."""
         self.ensure_one()
         
-        # Security validation - only Department Managers can reject
-        if not self.env.user.has_group('hagbes_fleet.group_dept_manager') and \
-           not self.env.user.has_group('hagbes_fleet.group_fleet_admin') and \
-           not self.env.user.has_group('base.group_system'):
-            raise AccessError(_('Only Department Managers can reject requisitions.'))
-        
-        # Validate requisition state
-        if self.requisition_id.state != 'submitted':
-            raise ValidationError(_('Only submitted requisitions can be rejected.'))
+        req = self.requisition_id
+        # Security and State validation depending on state
+        if req.state == 'submitted':
+            if not self.env.user.has_group('hagbes_fleet.group_dept_manager') and \
+               not self.env.user.has_group('hagbes_fleet.group_fleet_admin') and \
+               not self.env.user.has_group('base.group_system'):
+                raise AccessError(_('Only Department Managers can reject submitted requisitions.'))
+        elif req.state == 'dept_approved':
+            if not self.env.user.has_group('hagbes_fleet.group_team_leader') and \
+               not self.env.user.has_group('hagbes_fleet.group_fleet_admin') and \
+               not self.env.user.has_group('base.group_system'):
+                raise AccessError(_('Only Team Leaders can reject department approved requisitions.'))
+        else:
+            raise ValidationError(_('Requisitions in state %s cannot be rejected.') % req.state)
         
         # Validate reason is provided
         if not self.reason or not self.reason.strip():
             raise ValidationError(_('Rejection reason is required.'))
         
         # Process rejection
-        self.requisition_id.action_department_reject(self.reason.strip())
+        req.action_department_reject(self.reason.strip())
         
         # Return to requisition form
         return {
             'type': 'ir.actions.act_window',
             'name': _('Rejected Requisition'),
             'res_model': 'fleet.requisition',
-            'res_id': self.requisition_id.id,
+            'res_id': req.id,
             'view_mode': 'form',
             'target': 'current',
         }
@@ -101,19 +106,21 @@ class FleetRequisitionRejectWizard(models.TransientModel):
 
     # ─── Security Methods ───────────────────────────────────────────────────
     def check_access_rights(self, operation):
-        """Override to enforce Department Manager access."""
+        """Override to enforce Department Manager or Team Leader access."""
         if operation in ('write', 'unlink', 'create'):
             if not self.env.user.has_group('hagbes_fleet.group_dept_manager') and \
+               not self.env.user.has_group('hagbes_fleet.group_team_leader') and \
                not self.env.user.has_group('hagbes_fleet.group_fleet_admin') and \
                not self.env.user.has_group('base.group_system'):
-                raise AccessError(_('Only Department Managers can access rejection wizard.'))
+                raise AccessError(_('Only Department Managers or Team Leaders can access rejection wizard.'))
         return super().check_access_rights(operation)
 
     @api.model
     def fields_view_get(self, view_id=None, view_type='form', toolbar=False, submenu=False):
-        """Restrict wizard access to Department Managers only."""
+        """Restrict wizard access to authorized roles only."""
         if not self.env.user.has_group('hagbes_fleet.group_dept_manager') and \
+           not self.env.user.has_group('hagbes_fleet.group_team_leader') and \
            not self.env.user.has_group('hagbes_fleet.group_fleet_admin') and \
            not self.env.user.has_group('base.group_system'):
-            raise AccessError(_('Only Department Managers can access rejection wizard.'))
+            raise AccessError(_('Only Department Managers or Team Leaders can access rejection wizard.'))
         return super().fields_view_get(view_id, view_type, toolbar, submenu)

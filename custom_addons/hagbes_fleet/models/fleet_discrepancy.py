@@ -79,7 +79,7 @@ class FleetDiscrepancy(models.Model):
                 # Calculate percentage variance: ((actual - expected) / expected) × 100
                 record.variance_percent = ((record.actual_value - record.expected_value) / record.expected_value) * 100
 
-    @api.constrains('request_id', 'allocation_id')
+    @api.constrains('request_id', 'allocation_id', 'type')
     def _check_linked_record(self):
         """Ensure at least one of request_id or allocation_id is set"""
         for record in self:

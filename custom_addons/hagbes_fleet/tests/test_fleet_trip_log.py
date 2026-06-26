@@ -18,7 +18,7 @@ class TestFleetTripLog(TransactionCase):
             'engine_number': 'ENG123',
             'chassis_number': 'CHS123',
             'fuel_type': 'petrol',
-            'acquisition_date': '2024-01-01',
+            'acquisition_date': '2027-01-01',
             'cost': 50000,
         })
         
@@ -30,10 +30,10 @@ class TestFleetTripLog(TransactionCase):
         
         # Create test requisition
         self.requisition = self.env['fleet.requisition'].create({
-            'date_of_request': '2024-01-01',
+            'date_of_request': '2027-01-01',
             'destination': 'Test Destination',
-            'date_from': '2024-01-10 08:00:00',
-            'date_to': '2024-01-10 18:00:00',
+            'date_from': '2027-01-10 08:00:00',
+            'date_to': '2027-01-10 18:00:00',
             'purpose': 'Test Purpose',
         })
         
@@ -45,7 +45,7 @@ class TestFleetTripLog(TransactionCase):
             'assigned_odometer': 1000.0,
             'planned_distance': 100.0,
             'fuel_estimate': 10.0,
-            'allocation_date': '2024-01-10 08:00:00',
+            'allocation_date': '2027-01-10 08:00:00',
         })
 
     def test_trip_log_creation(self):
@@ -55,8 +55,8 @@ class TestFleetTripLog(TransactionCase):
             'start_odometer': 1000.0,
             'end_odometer': 1100.0,
             'fuel_used': 8.5,
-            'start_time': '2024-01-10 08:00:00',
-            'end_time': '2024-01-10 18:00:00',
+            'start_time': '2027-01-10 08:00:00',
+            'end_time': '2027-01-10 18:00:00',
         })
         
         self.assertEqual(trip_log.allocation_id, self.allocation)
@@ -88,8 +88,8 @@ class TestFleetTripLog(TransactionCase):
         with self.assertRaises(ValidationError):
             self.env['hagbes.fleet.trip.log'].create({
                 'allocation_id': self.allocation.id,
-                'start_time': '2024-01-10 18:00:00',
-                'end_time': '2024-01-10 08:00:00',
+                'start_time': '2027-01-10 18:00:00',
+                'end_time': '2027-01-10 08:00:00',
             })
 
     def test_multiple_trip_logs_per_allocation(self):
@@ -98,16 +98,16 @@ class TestFleetTripLog(TransactionCase):
             'allocation_id': self.allocation.id,
             'start_odometer': 1000.0,
             'end_odometer': 1050.0,
-            'start_time': '2024-01-10 08:00:00',
-            'end_time': '2024-01-10 12:00:00',
+            'start_time': '2027-01-10 08:00:00',
+            'end_time': '2027-01-10 12:00:00',
         })
         
         trip_log2 = self.env['hagbes.fleet.trip.log'].create({
             'allocation_id': self.allocation.id,
             'start_odometer': 1050.0,
             'end_odometer': 1100.0,
-            'start_time': '2024-01-10 13:00:00',
-            'end_time': '2024-01-10 18:00:00',
+            'start_time': '2027-01-10 13:00:00',
+            'end_time': '2027-01-10 18:00:00',
         })
         
         self.assertEqual(trip_log1.actual_distance, 50.0)

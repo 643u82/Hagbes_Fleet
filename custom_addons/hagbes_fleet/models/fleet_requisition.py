@@ -114,7 +114,23 @@ class FleetRequisition(models.Model):
     @api.onchange('request_by')
     def _onchange_request_by_department(self):
         for rec in self:
-            rec.department_id = rec._get_department_for_user(rec.request_by.id)
+            request_by = rec.request_by
+
+            # FIX: Never call getattr(rec, fname) over all Many2one fields during onchange.
+            # Doing so materialises '_unknown' proxy objects that the OWL web client cannot
+            # serialise, producing the RPC_ERROR: AttributeError '_unknown' object has no attribute 'id'.
+
+            # FIX: Extract .id safely before use; never pass an ORM recordset to department_id.
+            request_by_id = request_by.id if request_by else False
+            if not request_by_id:
+                rec.department_id = False
+            else:
+                dept = rec._get_department_for_user(request_by_id)
+                # FIX: Always assign integer id or False to Many2one, never an ORM record.
+                rec.department_id = dept.id if dept else False
+
+
+    # Traveler sync methods removed as traveller_ids is now the primary field
 
     # ─── Trip Details ─────────────────────────────────────────────────────────
     date_from = fields.Datetime(
@@ -132,29 +148,71 @@ class FleetRequisition(models.Model):
         string='Purpose',
         required=True,
     )
-    traveller_count = fields.Selection(
-        selection=[(str(i), str(i)) for i in range(1, 23)] + [('0', 'No')],
-        string='Number of Travellers',
-        default='1',
-        required=True,
-    )
-    traveller_names = fields.Text(
-        string='Additional Traveller Names',
-        help='Full names of additional people travelling.',
-    )
-    traveller = fields.Many2one(
+    traveller_ids = fields.Many2many(
         'res.users',
-        string='Traveller',
-        default=lambda self: self.env.user,
+        'fleet_requisition_traveller_rel',
+        'requisition_id',
+        'user_id',
+        string='Travellers',
+        default=lambda self: [(6, 0, [self.env.user.id])],
         tracking=True,
-        index=True,
-        ondelete='restrict',
+        help='Select travellers from registered users.',
     )
+
+    traveller_count = fields.Integer(
+        string='Number of Travellers',
+        compute='_compute_traveller_count',
+        store=True,
+        readonly=True,
+    )
+
+    @api.depends('traveller_ids')
+    def _compute_traveller_count(self):
+        for rec in self:
+            rec.traveller_count = len(rec.traveller_ids)
+    destination_branch_id = fields.Many2one(
+        'account.analytic.account',
+        string='Destination (Branch)',
+        index=True,
+        help='Select a registered company branch as destination.',
+    )
+
+    additional_destination = fields.Char(
+        string='Additional Destination',
+        size=256,
+        help='Optional free-form destination for non-branch locations (government offices, customer sites, temporary work areas).',
+    )
+
+    @api.onchange('destination_branch_id', 'additional_destination')
+    def _onchange_destination_parts_sync_legacy(self):
+        """Keep legacy `destination` Char compatible with structured branch+additional inputs."""
+        for rec in self:
+            parts = []
+            if rec.destination_branch_id:
+                parts.append(rec.destination_branch_id.name or '')
+
+            if rec.additional_destination:
+                parts.append(rec.additional_destination)
+
+            if parts:
+                # If both branch and additional are given: "Branch - Additional"
+                if rec.destination_branch_id and rec.additional_destination:
+                    rec.destination = '%s - %s' % (rec.destination_branch_id.name, rec.additional_destination)
+                else:
+                    rec.destination = ' '.join([p for p in parts if p]).strip()
+            else:
+                # Let the user provide legacy destination manually if neither structured field is set.
+                rec.destination = rec.destination or False
+
+
+    # Legacy compatibility field used by existing reports/analytics and trip planning.
+    # Kept as Char to avoid breaking existing integrations.
     destination = fields.Char(
         string='Destination',
         required=True,
         size=256,
     )
+
     request_by = fields.Many2one(
         'res.users',
         string='Requested By',
@@ -169,9 +227,8 @@ class FleetRequisition(models.Model):
         selection=[
             ('draft', 'Draft'),
             ('submitted', 'Submitted'),
-            ('dept_approved', 'Dept. Approved'),
-            ('assigned', 'Vehicle Assigned'),
-            ('dispatched', 'Dispatched'),
+            ('approved', 'Approved'),
+            ('assigned', 'Assigned'),
             ('completed', 'Completed'),
             ('rejected', 'Rejected'),
             ('cancelled', 'Cancelled'),
@@ -182,7 +239,24 @@ class FleetRequisition(models.Model):
         copy=False,
         index=True,
     )
+
+    approved_by = fields.Many2one(
+        'res.users',
+        string='Approved By',
+        readonly=True,
+        copy=False,
+    )
+    approved_date = fields.Datetime(
+        string='Approved Date',
+        readonly=True,
+        copy=False,
+    )
+
+    is_dept_manager_approved = fields.Boolean(string='Dept Manager Approved', default=False, copy=False)
+    is_team_leader_approved = fields.Boolean(string='Team Leader Approved', default=False, copy=False)
+
     reject_reason = fields.Text(string='Rejection Reason', copy=False)
+
 
     # ─── Department Approval ──────────────────────────────────────────────────
     dept_approved_by = fields.Many2one(
@@ -316,6 +390,7 @@ class FleetRequisition(models.Model):
     # ─── Permission Fields (Computed) ─────────────────────────────────────────
     can_submit = fields.Boolean(compute='_compute_permissions')
     can_dept_approve = fields.Boolean(compute='_compute_permissions')
+    can_team_leader_approve = fields.Boolean(compute='_compute_permissions')
 
     can_fmo_approve = fields.Boolean(compute='_compute_permissions')  # FMO dispatch action
     can_fleet_approve = fields.Boolean(compute='_compute_permissions')  # Fleet Officer assign vehicle action
@@ -323,62 +398,72 @@ class FleetRequisition(models.Model):
     can_allocate = fields.Boolean(compute='_compute_permissions')
     can_cancel = fields.Boolean(compute='_compute_permissions')
 
-    @api.depends('state', 'request_by')
+    @api.depends('state', 'request_by', 'traveller_ids')
     @api.depends_context('uid')
     def _compute_permissions(self):
         """
         Compute role-based permissions for clean workflow stages.
-        
-        Role-based access control ensures users only see relevant buttons
-        based on their security groups and current requisition state.
         """
         user = self.env.user
         is_fmo = user.has_group('hagbes_fleet.group_fmo')
         is_dept_manager = user.has_group('hagbes_fleet.group_dept_manager')
+        is_team_leader = user.has_group('hagbes_fleet.group_team_leader')
         is_fleet_manager = user.has_group('hagbes_fleet.group_fleet_manager')
         is_admin = user.has_group('hagbes_fleet.group_fleet_admin') or user.has_group('base.group_system')
-        
+
         for rec in self:
+            # Initialize all permission flags to avoid stale values.
+            rec.can_submit = False
+            rec.can_cancel = False
+            rec.can_dept_approve = False
+            rec.can_team_leader_approve = False
+            rec.can_fmo_approve = False
+            rec.can_fleet_approve = False
+            rec.can_reject = False
+            rec.can_allocate = False
+            rec.can_cancel = False
+
             # Employee/Requester: Can submit and cancel in draft stage
-            rec.can_submit = rec.state == 'draft' and (rec.request_by == user or is_fleet_manager or is_admin)
-            rec.can_cancel = rec.state == 'draft' and (rec.request_by == user or is_fleet_manager or is_admin)
-            
-            # Department Manager: Can approve/reject in submitted stage
-            rec.can_dept_approve = rec.state == 'submitted' and (is_dept_manager or is_admin)
-            rec.can_reject = rec.state == 'submitted' and (is_dept_manager or is_admin)
-            
-            # Fleet Officer: Can assign vehicle and reject in dept_approved stage
-            rec.can_fleet_approve = rec.state == 'dept_approved' and (is_fmo or is_admin)
-            rec.can_reject = rec.state == 'dept_approved' and (is_fmo or is_admin)
-            
-            # FMO: Can dispatch and reject in assigned stage
-            rec.can_fmo_approve = rec.state == 'assigned' and (is_fmo or is_admin)
-            rec.can_reject = rec.state == 'assigned' and (is_fmo or is_admin)
-            
+            if rec.state == 'draft' and (rec.request_by == user or is_fleet_manager or is_admin):
+                rec.can_submit = True
+                rec.can_cancel = True
+
+            # Department Manager: approve/reject in submitted stage
+            if rec.state == 'submitted' and (is_dept_manager or is_admin):
+                rec.can_dept_approve = True
+                rec.can_reject = True
+
+            # Team Leader: approve/reject in submitted stage
+            if rec.state == 'submitted' and (is_team_leader or is_admin):
+                rec.can_team_leader_approve = True
+                rec.can_reject = True
+
+            # Fleet Officer: assign vehicle after EITHER dept or team leader approval
+            if rec.state in ('dept_approved', 'team_leader_approved') and (is_fmo or is_admin):
+                rec.can_fleet_approve = True
+                rec.can_reject = True
+
+            # FMO: dispatch/assign in assigned stage (can reject before confirm)
+            if rec.state == 'assigned' and (is_fmo or is_admin):
+                rec.can_reject = True
+
             # Rejection state: No actions allowed after rejection
             if rec.state == 'rejected':
                 rec.can_submit = False
                 rec.can_cancel = False
                 rec.can_dept_approve = False
-                rec.can_reject = False
-                rec.can_fleet_approve = False
+                rec.can_team_leader_approve = False
                 rec.can_fmo_approve = False
+                rec.can_fleet_approve = False
+                rec.can_reject = False
                 rec.can_allocate = False
-            
-            # Completion: No further actions after dispatched
-            rec.can_allocate = False  # Replaced by specific role actions
 
 
     # =========================================================================
     # Computed helpers
     # =========================================================================
 
-    @api.constrains('traveller_count', 'traveller', 'traveller_names')
-    def _check_traveller_names_required(self):
-        """Traveller names are only required when there are actual travellers."""
-        for rec in self:
-            if rec.traveller_count and rec.traveller_count != '0' and not rec.traveller and not rec.traveller_names:
-                raise ValidationError(_('Please select a traveller or enter traveller names when there are travellers.'))
+    # Traveler name validation constraint removed
 
     @api.constrains('date_from', 'date_to')
     def _check_dates(self):
@@ -415,7 +500,7 @@ class FleetRequisition(models.Model):
         for vals in vals_list:
             if vals.get('name', 'New') == 'New':
                 vals['name'] = self.env['ir.sequence'].next_by_code('fleet.requisition') or 'New'
-            
+
             # Always fix request_by for non-admin requesters
             request_by_id = vals.get('request_by') or self.env.user.id
             if not self.env.su:
@@ -425,12 +510,14 @@ class FleetRequisition(models.Model):
                    not self.env.user.has_group('hagbes_fleet.group_fleet_admin'):
                     request_by_id = self.env.user.id
                     vals['request_by'] = request_by_id
-            vals.setdefault('traveller', request_by_id)
-            
+            vals.setdefault('traveller_ids', [(6, 0, [request_by_id])])
+
             # Department is owned by the requester employee/org record.
             department = self._get_department_for_user(request_by_id)
             vals['department_id'] = department.id or False
-        return super().create(vals_list)
+
+        recs = super().create(vals_list)
+        return recs
 
     def write(self, vals):
         """Override write to handle department synchronization and security."""
@@ -463,15 +550,22 @@ class FleetRequisition(models.Model):
                    self.env.user.has_group('hagbes_fleet.group_fleet_requester') and \
                    not self.env.user.has_group('hagbes_fleet.group_fmo') and \
                    not self.env.user.has_group('hagbes_fleet.group_fleet_admin'):
-                    
+
                     # Allow only limited field edits for requesters
                     allowed_requester_fields = {
-                        'traveller_names', 'purpose', 'destination', 'notes'
+                        'traveller_ids',
+                        'purpose',
+                        'destination',
+                        'destination_branch_id',
+                        'additional_destination',
+                        'notes',
                     }
+
                     if not set(vals.keys()).issubset(allowed_requester_fields):
                         raise AccessError(_('You cannot edit core requisition details after submission. Only purpose, destination, and notes can be modified.'))
-        
-        return super().write(vals)
+
+        res = super().write(vals)
+        return res
 
     def unlink(self):
         for rec in self:
@@ -486,30 +580,55 @@ class FleetRequisition(models.Model):
 
 
 
-    def action_dept_approve(self):
-        """Department Manager: Approve requisition and move to vehicle assignment stage."""
+    def action_approve(self):
+        """Approve requisition using OR-based rule: dept manager OR team leader."""
         for rec in self:
             if rec.state != 'submitted':
-                raise UserError(_('Only submitted requisitions can be approved by department.'))
-            rec.with_context(allow_workflow=True).write({
-                'state': 'dept_approved',
-                'dept_approved_by': self.env.user.id,
-                'dept_approved_date': fields.Datetime.now(),
-            })
-            rec.message_post(body=_('Requisition approved by department.'))
+                raise UserError(_('Only submitted requisitions can be approved.'))
 
-    def action_department_reject(self, reason):
-        """Department Manager: Reject requisition with mandatory reason."""
+            user = self.env.user
+            is_dept_manager = user.has_group('hagbes_fleet.group_dept_manager') or user.has_group('base.group_system') or user.has_group('hagbes_fleet.group_fleet_admin')
+            is_team_leader = user.has_group('hagbes_fleet.group_team_leader') or user.has_group('base.group_system') or user.has_group('hagbes_fleet.group_fleet_admin')
+
+            if not (is_dept_manager or is_team_leader):
+                raise AccessError(_('Only Department Managers or Team Leaders can approve.'))
+
+            # Prevent double approvals
+            if rec.state == 'approved':
+                raise UserError(_('This requisition has already been approved.'))
+
+            rec.with_context(allow_workflow=True).write({
+                'state': 'approved',
+                'approved_by': user.id,
+                'approved_date': fields.Datetime.now(),
+                'is_dept_manager_approved': bool(is_dept_manager),
+                'is_team_leader_approved': bool(is_team_leader),
+                # keep legacy fields for backward compatibility, if they exist in DB/views
+                'dept_approved_by': user.id if is_dept_manager else False,
+                'dept_approved_date': fields.Datetime.now() if is_dept_manager else False,
+                'team_leader_approved_by': user.id if is_team_leader else False,
+                'team_leader_approved_date': fields.Datetime.now() if is_team_leader else False,
+            })
+            rec.message_post(body=_('Requisition approved.'))
+
+    def action_reject(self, reason):
+        """Reject requisition with mandatory reason."""
+
         for rec in self:
-            # Security validation
-            if not self.env.user.has_group('hagbes_fleet.group_dept_manager') and \
-               not self.env.user.has_group('hagbes_fleet.group_fleet_admin') and \
-               not self.env.user.has_group('base.group_system'):
-                raise AccessError(_('Only Department Managers can reject requisitions.'))
-            
-            # State validation
-            if rec.state != 'submitted':
-                raise UserError(_('Only submitted requisitions can be rejected by Department Manager.'))
+            # Security & State validation depending on state
+            if rec.state == 'submitted':
+                if not self.env.user.has_group('hagbes_fleet.group_dept_manager') and \
+                   not self.env.user.has_group('hagbes_fleet.group_fleet_admin') and \
+                   not self.env.user.has_group('base.group_system'):
+                    raise AccessError(_('Only Department Managers can reject requisitions in Submitted state.'))
+            elif rec.state in ('dept_approved', 'team_leader_approved'):
+                if not self.env.user.has_group('hagbes_fleet.group_team_leader') and \
+                   not self.env.user.has_group('hagbes_fleet.group_fleet_admin') and \
+                   not self.env.user.has_group('base.group_system') and \
+                   not self.env.user.has_group('hagbes_fleet.group_fmo'):
+                    raise AccessError(_('Only Team Leaders or Fleet Officers can reject requisitions in Approved state.'))
+            else:
+                raise UserError(_('Requisitions in state %s cannot be rejected.') % rec.state)
             
             # Reason validation
             if not reason or not reason.strip():
@@ -537,30 +656,79 @@ class FleetRequisition(models.Model):
 
 
     def action_fleet_approve(self):
-        """Fleet Officer: Assign vehicle and prepare for dispatch."""
-        for rec in self:
-            if rec.state != 'dept_approved':
-                raise UserError(_('Only department approved requisitions can be assigned vehicles.'))
-            rec.with_context(allow_workflow=True).write({'state': 'assigned'})
-            rec.message_post(body=_('Vehicle assignment initiated.'))
-
-    def action_fmo_approve(self):
-        """FMO: Dispatch vehicle for official travel by triggering allocation dispatch.
-        
-        This action now redirects the user to the Fleet Allocation form with pre-filled data.
-        """
+        """Fleet Officer: Assign vehicle, create allocation and trip, and transition to trip planning."""
         self.ensure_one()
-        if self.state != 'assigned':
-            raise UserError(_('Only assigned requisitions can be dispatched.'))
+        if self.state != 'approved':
+            raise UserError(_('Only approved requisitions can be assigned vehicles.'))
+
         
+        if not self.vehicle_id:
+            raise UserError(_('Please select a vehicle to assign to this requisition before confirming.'))
+
+        # Advance the state
+        self.with_context(allow_workflow=True).write({'state': 'assigned'})
+        self.message_post(body=_('Vehicle assignment initiated.'))
+
         # Check if an allocation already exists for this requisition
         allocation = self.env['hagbes.fleet.allocation'].search([
             ('request_id', '=', self.id),
             ('state', 'not in', ('completed', 'cancelled')),
         ], limit=1)
         
-        if allocation:
-            # If an allocation exists, open it
+        if not allocation:
+            # Try to find the driver from the vehicle or traveller
+            driver_id = False
+            if self.vehicle_id and self.vehicle_id.driver:
+                # Search for employee by name (case-insensitive)
+                driver = self.env['hr.employee'].search([('name', '=ilike', self.vehicle_id.driver.strip())], limit=1)
+                if not driver:
+                    driver = self.env['hr.employee'].search([('name', 'ilike', self.vehicle_id.driver.strip())], limit=1)
+                if driver:
+                    driver_id = driver.id
+            
+            if not driver_id and self.traveller_ids:
+                for user in self.traveller_ids:
+                    employee = user.employee_id
+                    if employee and 'driver' in (employee.job_id.name or '').lower():
+                        driver_id = employee.id
+                        break
+
+            if not driver_id:
+                raise UserError(_('A driver could not be automatically determined. Please ensure the vehicle has a driver set, or one of the travellers is a driver.'))
+
+            # Create the allocation programmatically
+            allocation = self.env['hagbes.fleet.allocation'].create({
+                'request_id': self.id,
+                'vehicle_id': self.vehicle_id.id,
+                'driver_id': driver_id,
+                'company_id': self.company_id.id,
+                'allocation_date': self.date_from or fields.Datetime.now(),
+                'return_date': self.date_to,
+                'state': 'draft',
+            })
+            
+            # Link back to requisition
+            self.with_context(allow_workflow=True).write({
+                'allocation_id': allocation.id
+            })
+
+        # At this point we have an allocation. Confirm it to create the Trip!
+        if allocation.state == 'draft':
+            action = allocation.action_assign_vehicle()
+            # Ensure we open Trip Planning (no auto-start)
+            return action
+        elif allocation.trip_id:
+            # If already confirmed and trip exists, open the trip in planning context
+            return {
+                'name': _('Trip Planning'),
+                'type': 'ir.actions.act_window',
+                'res_model': 'fleet.trip',
+                'view_mode': 'form',
+                'target': 'current',
+                'res_id': allocation.trip_id.id,
+            }
+        else:
+            # Fallback
             return {
                 'name': _('Fleet Allocation'),
                 'type': 'ir.actions.act_window',
@@ -570,63 +738,60 @@ class FleetRequisition(models.Model):
                 'target': 'current',
             }
 
-        # Otherwise, prepare context to create a new allocation with pre-filled data
-        ctx = {
-            'default_request_id': self.id,
-            'default_vehicle_id': self.vehicle_id.id if self.vehicle_id else False,
-            'default_company_id': self.company_id.id,
-            'default_allocation_date': self.date_from or fields.Datetime.now(),
-            'default_return_date': self.date_to,
-        }
-        
-        # Try to find the driver from the vehicle or traveller
-        if self.vehicle_id and self.vehicle_id.driver:
-            # Search for employee by name (case-insensitive)
-            driver = self.env['hr.employee'].search([('name', '=ilike', self.vehicle_id.driver.strip())], limit=1)
-            if driver:
-                ctx['default_driver_id'] = driver.id
-            else:
-                # If not found by full name, try searching within the name
-                driver = self.env['hr.employee'].search([('name', 'ilike', self.vehicle_id.driver.strip())], limit=1)
-                if driver:
-                    ctx['default_driver_id'] = driver.id
-        
-        if 'default_driver_id' not in ctx and self.traveller:
-            employee = self.traveller.employee_id
-            if employee and 'driver' in (employee.job_id.name or '').lower():
-                ctx['default_driver_id'] = employee.id
 
-        return {
-            'name': _('Fleet Allocation'),
-            'type': 'ir.actions.act_window',
-            'res_model': 'hagbes.fleet.allocation',
-            'view_mode': 'form',
-            'target': 'current',
-            'context': ctx,
-        }
+    def action_fmo_approve(self):
+        """Deprecated: Keep to prevent broken views temporarily."""
+        return self.action_fleet_approve()
 
     # =========================================================================
     # Legacy Workflow Callbacks (from hagbes_approval_workflow)
     # =========================================================================
 
     def _on_approval_approved(self):
-        """Callback when entire approval flow is finished (FMO step completed)."""
+        """Callback when entire approval flow is finished.
+
+        Regression guard:
+        - Do NOT move the requisition to state 'assigned' unless the operational chain exists.
+        - An allocation must exist and be confirmed (draft -> action_assign_vehicle) so it creates/links a trip.
+        """
         for rec in self:
+            # Find any operational allocation linked to this requisition.
             allocation = self.env['hagbes.fleet.allocation'].search([
                 ('request_id', '=', rec.id),
-                ('state', 'in', ('assigned', 'draft')),
+                ('state', 'in', ('draft', 'assigned', 'in_progress')),
             ], limit=1)
-            if allocation:
-                if allocation.state == 'draft':
-                    allocation.action_assign_vehicle()
-                allocation.action_dispatch_vehicle()
-            else:
+
+            if not allocation:
+                _logger.warning(
+                    "Approval approved for requisition %s, but no allocation exists. Keeping requisition state (%s).",
+                    rec.id, rec.state
+                )
+                continue
+
+            # If allocation is still in draft, confirm it (creates/links trip and returns Start Trip action).
+            if allocation.state == 'draft':
+                allocation.action_assign_vehicle()
+
+            # Reload after action_assign_vehicle side effects.
+            allocation = self.env['hagbes.fleet.allocation'].browse(allocation.id)
+
+            # Ensure trip is linked; action_assign_vehicle should create trip if missing.
+            if not allocation.trip_id:
+                _logger.error(
+                    "Allocation %s for requisition %s has no linked trip after confirmation. Keeping requisition state (%s).",
+                    allocation.id, rec.id, rec.state
+                )
+                continue
+
+            # Now it's safe to mark requisition as assigned.
+            if rec.state != 'assigned':
                 rec.with_context(allow_workflow=True).write({
-                    'state': 'dispatched',
+                    'state': 'assigned',
                     'fmo_approved_by': self.env.user.id,
                     'fmo_approved_date': fields.Datetime.now(),
                 })
-                rec.message_post(body=_('Request approved and dispatched.'))
+                rec.message_post(body=_('Request assigned.'))
+
 
     def _on_approval_rejected(self):
         """Callback when any step is rejected."""
@@ -739,9 +904,8 @@ class FleetRequisition(models.Model):
         allocation_to_requisition_map = {
             'draft': 'assigned',           # Allocation draft means requisition approved but not operational
             'assigned': 'assigned',              # Vehicle assigned to requisition
-            'dispatched': 'dispatched',          # Vehicle dispatched for travel
-            'in_progress': 'dispatched',         # Trip in progress - requisition remains dispatched
-            'returned': 'dispatched',            # Vehicle returned - requisition still dispatched
+            'in_progress': 'assigned',         # Trip in progress - requisition remains assigned
+            'returned': 'assigned',            # Vehicle returned - requisition still assigned
             'completed': 'completed',           # Trip completed - requisition completed
             'cancelled': 'cancelled',           # Allocation cancelled - requisition cancelled
         }
